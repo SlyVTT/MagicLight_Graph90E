@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/sylvain/opt/Casio/Glacial/src/colors.h
+
+/home/sylvain/opt/Casio/Glacial/src/main.cpp
+stdlib.h
+-
+stdio.h
+-
+gint/display.h
+-
+gint/keyboard.h
+-
+gint/gint.h
+-
+colors.h
+/home/sylvain/opt/Casio/Glacial/src/colors.h
+structs.h
+/home/sylvain/opt/Casio/Glacial/src/structs.h
+primitives.h
+/home/sylvain/opt/Casio/Glacial/src/primitives.h
+
+/home/sylvain/opt/Casio/Glacial/src/primitives.h
+gint/display.h
+-
+
+/home/sylvain/opt/Casio/Glacial/src/structs.h
+
