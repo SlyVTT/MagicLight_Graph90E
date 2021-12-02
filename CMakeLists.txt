@@ -24,6 +24,7 @@ set(ASSETS_fx
 )
 set(ASSETS_cg
   assets-cg/leveldoor.png
+  assets-cg/levelsimple.png
   assets-cg/sprites.png
   assets-cg/player.png
   assets-cg/light.png
@@ -31,6 +32,7 @@ set(ASSETS_cg
   assets-cg/plop.png
   assets-cg/parchemin.png
   assets-cg/treasures.png
+  assets-cg/chests.png
   assets-cg/fontFantasy.png
   assets-cg/fontTiny.png
   # ...

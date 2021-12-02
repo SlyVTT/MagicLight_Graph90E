@@ -123,6 +123,15 @@ myaddin/fast:
 	$(MAKE) -f CMakeFiles/myaddin.dir/build.make CMakeFiles/myaddin.dir/build
 .PHONY : myaddin/fast
 
+assets-cg/chests.png: assets-cg/chests.png
+
+.PHONY : assets-cg/chests.png
+
+# target to build an object file
+assets-cg/chests.png:
+	$(MAKE) -f CMakeFiles/myaddin.dir/build.make CMakeFiles/myaddin.dir/assets-cg/chests.png
+.PHONY : assets-cg/chests.png
+
 assets-cg/cursor.png: assets-cg/cursor.png
 
 .PHONY : assets-cg/cursor.png
@@ -158,6 +167,15 @@ assets-cg/leveldoor.png: assets-cg/leveldoor.png
 assets-cg/leveldoor.png:
 	$(MAKE) -f CMakeFiles/myaddin.dir/build.make CMakeFiles/myaddin.dir/assets-cg/leveldoor.png
 .PHONY : assets-cg/leveldoor.png
+
+assets-cg/levelsimple.png: assets-cg/levelsimple.png
+
+.PHONY : assets-cg/levelsimple.png
+
+# target to build an object file
+assets-cg/levelsimple.png:
+	$(MAKE) -f CMakeFiles/myaddin.dir/build.make CMakeFiles/myaddin.dir/assets-cg/levelsimple.png
+.PHONY : assets-cg/levelsimple.png
 
 assets-cg/light.png: assets-cg/light.png
 
@@ -276,10 +294,12 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... myaddin"
+	@echo "... assets-cg/chests.png"
 	@echo "... assets-cg/cursor.png"
 	@echo "... assets-cg/fontFantasy.png"
 	@echo "... assets-cg/fontTiny.png"
 	@echo "... assets-cg/leveldoor.png"
+	@echo "... assets-cg/levelsimple.png"
 	@echo "... assets-cg/light.png"
 	@echo "... assets-cg/parchemin.png"
 	@echo "... assets-cg/player.png"

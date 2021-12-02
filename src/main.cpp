@@ -31,6 +31,7 @@ unsigned int SCALE_Y_MINIMAP = 6;
 
 unsigned char ALPHA_OPAQUE = 191;
 unsigned char ALPHA_TRANSPARENT = 62;
+unsigned char ALPHA_BLOQUE = 10;
 
 unsigned int SPEEDUP_RAY = 1;
 unsigned int SPEEDUP_WALL = 1;
@@ -39,6 +40,7 @@ unsigned int SPEEDUP_WALL = 1;
 #define NB_RECEPTORS_MAX  8
 #define NB_DOORS_MAX  4
 #define NB_TREASURE_MAX 4
+#define NB_OBSTACLE_MAX 4
 
 #define NB_LEVELS 4
 
@@ -46,18 +48,27 @@ unsigned char NbReceptorsLevel;
 unsigned char NbDoorsLevel;
 unsigned char NbBlocksLevel;
 unsigned char NbTreasureLevel;
+unsigned char NbObstacleLevel;
 
 selection selected = JOUEUR;
 
+#define SIZE_MAP_X 13
+#define SIZE_MAP_Y 11
+
 Player joueur;
 Light lumiere;
-MapItem carte[13][11];
+MapItem carte[SIZE_MAP_X][SIZE_MAP_Y];
 Wall murs[4];
 
 Blocks BlocRouge;
 Blocks BlocVert ;
 Blocks BlocBleu;
 Blocks BlocNoir;
+
+Obstacle BlocObstacle01;
+Obstacle BlocObstacle02;
+Obstacle BlocObstacle03;
+Obstacle BlocObstacle04;
 
 Receptor CapteurRouge;
 Receptor CapteurVert;
@@ -82,6 +93,8 @@ Blocks* BlocksCollection[NB_BLOCKS_MAX];
 Receptor* ReceptorCollection[NB_RECEPTORS_MAX];
 Door* DoorCollection[ NB_DOORS_MAX ];
 Treasure* TreasureCollection[ NB_TREASURE_MAX ];
+Obstacle* ObstaclesCollection[ NB_OBSTACLE_MAX ];
+
 
 Minimap Map[ NB_LEVELS ];
 
@@ -91,6 +104,7 @@ unsigned char ALPHA_NON_VALIDE = 100;
 unsigned char EPSILON = 16;
 
 extern bopti_image_t mapbackgrd;
+extern bopti_image_t leveltiles;
 extern bopti_image_t sprites;
 extern bopti_image_t player;
 extern bopti_image_t light;
@@ -98,6 +112,7 @@ extern bopti_image_t cursor;
 extern bopti_image_t plop;
 extern bopti_image_t parchemin;
 extern bopti_image_t treasures;
+extern bopti_image_t chests;
 
 extern font_t font_fantasy;
 extern font_t font_tiny;
@@ -107,6 +122,7 @@ bool done = false;
 
 unsigned int compteur_mouvement = 0;
 unsigned int frame_cursor = 0;
+unsigned int frame_light = 0;
 unsigned int frame=0;
 bool mouvement=false;
 orientations direction=HAUT;
@@ -116,65 +132,67 @@ unsigned int currentLevel;
 
 void initMap( void )
 {
-       for( unsigned int x=0; x<13; x++)
-       {
-              for( unsigned int y=0; y<11; y++)
-              {
-                     carte[x][y].ID = VIDE;
-                     carte[x][y].x = x;
-                     carte[x][y].y = y;
-                     carte[x][y].direction =  AUCUNE;
+       /*
+          for( unsigned int x=0; x<SIZE_MAP_X; x++)
+          {
+                 for( unsigned int y=0; y<SIZE_MAP_Y; y++)
+                 {
+                        carte[x][y].ID = VIDE;
+                        carte[x][y].x = x;
+                        carte[x][y].y = y;
+                        carte[x][y].direction =  AUCUNE;
 
-                     if (x==0)
-                     {
-                            if (y!=5) //(y!=4 && y!=5 && y!=6)
-                            {
-                                   carte[x][y].ID = MUR;
-                            }
-                            else
-                            {
-                                   carte[x][y].ID = PORTE;
-                                   carte[x][y].direction = DROITE;
-                            }
-                     }
-                     if (x==12)
-                     {
-                            if (y!=5) //(y!=4 && y!=5 && y!=6)
-                            {
-                                   carte[x][y].ID = MUR;
-                            }
-                            else
-                            {
-                                   carte[x][y].ID = PORTE;
-                                   carte[x][y].direction = GAUCHE;
-                            }
-                     }
-                     if (y==0)
-                     {
-                            if (x!=6) //(x!=5 && x!=6 && x!=7)
-                            {
-                                   carte[x][y].ID = MUR;
-                            }
-                            else
-                            {
-                                   carte[x][y].ID = PORTE;
-                                   carte[x][y].direction = BAS;
-                            }
-                     }
-                     if (y==10)
-                     {
-                            if (x!=6) //(x!=5 && x!=6 && x!=7)
-                            {
-                                   carte[x][y].ID = MUR;
-                            }
-                            else
-                            {
-                                   carte[x][y].ID = PORTE;
-                                   carte[x][y].direction = HAUT;
-                            }
-                     }
-              }
-       }
+                        if (x==0)
+                        {
+                               if (y!=5) //(y!=4 && y!=5 && y!=6)
+                               {
+                                      carte[x][y].ID = MUR;
+                               }
+                               else
+                               {
+                                      carte[x][y].ID = PORTE;
+                                      carte[x][y].direction = DROITE;
+                               }
+                        }
+                        if (x==12)
+                        {
+                               if (y!=5) //(y!=4 && y!=5 && y!=6)
+                               {
+                                      carte[x][y].ID = MUR;
+                               }
+                               else
+                               {
+                                      carte[x][y].ID = PORTE;
+                                      carte[x][y].direction = GAUCHE;
+                               }
+                        }
+                        if (y==0)
+                        {
+                               if (x!=6) //(x!=5 && x!=6 && x!=7)
+                               {
+                                      carte[x][y].ID = MUR;
+                               }
+                               else
+                               {
+                                      carte[x][y].ID = PORTE;
+                                      carte[x][y].direction = BAS;
+                               }
+                        }
+                        if (y==10)
+                        {
+                               if (x!=6) //(x!=5 && x!=6 && x!=7)
+                               {
+                                      carte[x][y].ID = MUR;
+                               }
+                               else
+                               {
+                                      carte[x][y].ID = PORTE;
+                                      carte[x][y].direction = HAUT;
+                               }
+                        }
+                 }
+          }
+          */
 }
 
 void loadLevel( unsigned char numLevel )
@@ -187,6 +205,7 @@ void loadLevel( unsigned char numLevel )
               NbDoorsLevel = 4;
               NbBlocksLevel = 4;
               NbTreasureLevel = 4;
+              NbObstacleLevel = 4;
 
               Map[0].x=0;
               Map[0].y=0;
@@ -195,6 +214,27 @@ void loadLevel( unsigned char numLevel )
               Map[0].B=255;
               Map[0].A=255;
               Map[0].visited=true;
+
+              BlocObstacle01.x=3;
+              BlocObstacle01.y=3;
+              BlocObstacle01.type=BLOCK_STONE;
+
+              BlocObstacle02.x=3;
+              BlocObstacle02.y=5;
+              BlocObstacle02.type=BLOCK_SUN;
+
+              BlocObstacle03.x=2;
+              BlocObstacle03.y=5;
+              BlocObstacle03.type=BLOCK_MOON;
+
+              BlocObstacle04.x=3;
+              BlocObstacle04.y=6;
+              BlocObstacle04.type=BLOCK_WOOD;
+
+              ObstaclesCollection[0] = &BlocObstacle01;
+              ObstaclesCollection[1] = &BlocObstacle02;
+              ObstaclesCollection[2] = &BlocObstacle03;
+              ObstaclesCollection[3] = &BlocObstacle04;
 
 
               joueur = { 7, 9, HAUT };
@@ -219,10 +259,10 @@ void loadLevel( unsigned char numLevel )
               PorteEst = { 12, 5, DROITE, false, false, 0, { -1, -1, -1 }, -1};
               PorteSud = { 6, 10, BAS, false, true, 1, { R_BLANC, -1, -1 }, 3};
 
-              TresorA = {2,2, ARGENT, false, PIERRE_BLANCHE, 100 };
-              TresorB = {11,9, OR, false, PIERRE_BLANCHE, 100 };
-              TresorC = {10,4, BOIS, false, PIERRE_BLANCHE, 100 };
-              TresorD = {1,1, BOIS, true, PIERRE_BLANCHE, 100 };
+              TresorA = {2,2, T_RED, false, PIERRE_BLANCHE, 100 };
+              TresorB = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100 };
+              TresorC = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100 };
+              TresorD = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100 };
 
               //BlocksCollection = [ &BlocRouge, &BlocVert, &BlocBleu, &BlocNoir ];
               BlocksCollection[0] = &BlocRouge;
@@ -375,7 +415,7 @@ void loadLevel( unsigned char numLevel )
        }
        else if (numLevel==3)
        {
-               currentLevel = 3;
+              currentLevel = 3;
 
               NbReceptorsLevel = 8;
               NbDoorsLevel = 4;
@@ -439,48 +479,99 @@ void loadLevel( unsigned char numLevel )
 
 void initWalls( void )
 {
-       murs[0] = { HORIZONTAL, OFFSET_X+SIZE*1, OFFSET_X+SIZE*12, OFFSET_Y+SIZE };
-       murs[1] = { VERTICAL, OFFSET_Y+SIZE*1, OFFSET_Y+SIZE*10, OFFSET_X+SIZE*12 };
-       murs[2] = { HORIZONTAL, OFFSET_X+SIZE*1, OFFSET_X+SIZE*12, OFFSET_Y+SIZE*10 };
-       murs[3] = { VERTICAL, OFFSET_Y+SIZE*1, OFFSET_Y+SIZE*10, OFFSET_X+SIZE };
+       murs[0] = { HORIZONTAL, OFFSET_X+SIZE*1, OFFSET_X+SIZE*(SIZE_MAP_X-1), OFFSET_Y+SIZE };
+       murs[1] = { VERTICAL, OFFSET_Y+SIZE*1, OFFSET_Y+SIZE*(SIZE_MAP_Y-1), OFFSET_X+SIZE*(SIZE_MAP_X-1) };
+       murs[2] = { HORIZONTAL, OFFSET_X+SIZE*1, OFFSET_X+SIZE*(SIZE_MAP_X-1), OFFSET_Y+SIZE*(SIZE_MAP_Y-1) };
+       murs[3] = { VERTICAL, OFFSET_Y+SIZE*1, OFFSET_Y+SIZE*(SIZE_MAP_Y-1), OFFSET_X+SIZE };
 
-       for(int k=0; k<13; k++)
+       for(int k=0; k<SIZE_MAP_X; k++)
               dprint_opt( OFFSET_X+SIZE*k+SIZE/2, OFFSET_Y-SIZE/2, C_WHITE, C_NONE, DTEXT_CENTER, DTEXT_MIDDLE, "%d", k );
 
-       for( int k=1; k<11; k++)
+       for( int k=1; k<SIZE_MAP_Y; k++)
               dprint_opt( OFFSET_X-SIZE/2, OFFSET_Y+k*SIZE+SIZE/2, C_WHITE, C_NONE, DTEXT_CENTER, DTEXT_MIDDLE, "%d", k );
 }
 
 void renderMap( void )
 {
-       dimage(OFFSET_X, OFFSET_Y, &mapbackgrd);
+       //dimage(OFFSET_X, OFFSET_Y, &mapbackgrd);
+
+       for(int x=0; x<SIZE_MAP_X; x++)
+              for( int y=0; y<SIZE_MAP_Y; y++)
+              {
+                     unsigned int lX=OFFSET_X+x*SIZE;
+                     unsigned int lY=OFFSET_Y+y*SIZE;
+
+                     if(y==0)
+                     {
+                            if (x==0)
+                                   dsubimage( lX, lY, &leveltiles, 0,0,16,16,  DIMAGE_NONE);
+                            else if (x==SIZE_MAP_X-1)
+                                   dsubimage( lX, lY, &leveltiles, 16,0,16,16,  DIMAGE_NONE);
+                            else
+                                   dsubimage( lX, lY, &leveltiles, 32,0,16,16,  DIMAGE_NONE);
+                     }
+                     else if(y==SIZE_MAP_Y-1)
+                     {
+                            if (x==0)
+                                   dsubimage( lX, lY, &leveltiles, 0,16,16,16,  DIMAGE_NONE);
+                            else if (x==SIZE_MAP_X-1)
+                                   dsubimage( lX, lY, &leveltiles, 16,16,16,16,  DIMAGE_NONE);
+                            else
+                                   dsubimage( lX, lY, &leveltiles, 48,16,16,16,  DIMAGE_NONE);
+                     }
+                     else
+                     {
+                            if (x==0)
+                                   dsubimage( lX, lY, &leveltiles, 48,0,16,16,  DIMAGE_NONE);
+                            else if (x==SIZE_MAP_X-1)
+                                   dsubimage( lX, lY, &leveltiles, 32,16,16,16,  DIMAGE_NONE);
+                            else if ((x+y)%2==0)
+                                   dsubimage( lX, lY, &leveltiles, 0,32,16,16,  DIMAGE_NONE);
+                            else
+                                   dsubimage( lX, lY, &leveltiles, 16,32,16,16,  DIMAGE_NONE);
+                     }
+              }
 }
 
 void computeLightModification( unsigned int currentCellX, unsigned int currentCellY, unsigned char* R, unsigned char* G, unsigned char* B, unsigned char* A )
 {
-       for( unsigned int k=0; k<NbBlocksLevel; k++ )
+       if (*A!=ALPHA_BLOQUE)
        {
-              if (BlocksCollection[k]->x == currentCellX)
-                     if (BlocksCollection[k]->y == currentCellY)
-                     {
-                            if (*R!=BlocNoir.R || *G!=BlocNoir.G || *B!=BlocNoir.B || *A!=ALPHA_OPAQUE )
+
+              for( unsigned int k=0; k<NbBlocksLevel; k++ )
+              {
+                     if (BlocksCollection[k]->x == currentCellX)
+                            if (BlocksCollection[k]->y == currentCellY)
                             {
-                                   if (BlocksCollection[k]->type == OPAQUE)
+                                   if (*R!=BlocNoir.R || *G!=BlocNoir.G || *B!=BlocNoir.B || *A!=ALPHA_OPAQUE )
                                    {
-                                          *R = *R & BlocksCollection[k]->R;
-                                          *G = *G & BlocksCollection[k]->G;
-                                          *B = *B & BlocksCollection[k]->B;
-                                          *A = ALPHA_OPAQUE;
-                                   }
-                                   if (BlocksCollection[k]->type == TRANSPARENT)
-                                   {
-                                          *R = *R | BlocksCollection[k]->R;
-                                          *G = *G | BlocksCollection[k]->G;
-                                          *B = *B | BlocksCollection[k]->B;
-                                          *A = ALPHA_TRANSPARENT;
+                                          if (BlocksCollection[k]->type == OPAQUE)
+                                          {
+                                                 *R = *R & BlocksCollection[k]->R;
+                                                 *G = *G & BlocksCollection[k]->G;
+                                                 *B = *B & BlocksCollection[k]->B;
+                                                 *A = ALPHA_OPAQUE;
+                                          }
+                                          if (BlocksCollection[k]->type == TRANSPARENT)
+                                          {
+                                                 *R = *R | BlocksCollection[k]->R;
+                                                 *G = *G | BlocksCollection[k]->G;
+                                                 *B = *B | BlocksCollection[k]->B;
+                                                 *A = ALPHA_TRANSPARENT;
+                                          }
                                    }
                             }
-                     }
+              }
+
+              for( unsigned int k=0; k<NbObstacleLevel; k++ )
+              {
+                     if (ObstaclesCollection[k]->x == currentCellX)
+                            if (ObstaclesCollection[k]->y == currentCellY)
+                            {
+                                   *A = ALPHA_BLOQUE;
+                            }
+              }
+
        }
 }
 
@@ -573,9 +664,12 @@ void renderWalls( void )
 
                             if (lR!=lumiere.couleur.R || lG!=lumiere.couleur.G || lB!=lumiere.couleur.B || lA!=lumiere.couleur.A )
                             {
-                                   _pixelRGBA(  z, murs[k].fixe+1,  lR,lG,lB, 255 );
-                                   _pixelRGBA(  z, murs[k].fixe,  lR,lG,lB, 255 );
-                                   _pixelRGBA(  z, murs[k].fixe-1,  lR,lG,lB, 255 );
+                                   if(lA!=ALPHA_BLOQUE)
+                                   {
+                                          _pixelRGBA(  z, murs[k].fixe+1,  lR,lG,lB, 255 );
+                                          _pixelRGBA(  z, murs[k].fixe,  lR,lG,lB, 255 );
+                                          _pixelRGBA(  z, murs[k].fixe-1,  lR,lG,lB, 255 );
+                                   }
                             }
                      }
 
@@ -591,12 +685,33 @@ void renderWalls( void )
 
                             if (lR!=lumiere.couleur.R || lG!=lumiere.couleur.G || lB!=lumiere.couleur.B || lA!=lumiere.couleur.A )
                             {
-                                   _pixelRGBA(  murs[k].fixe+1, z, lR,lG,lB,255 );
-                                   _pixelRGBA(  murs[k].fixe, z, lR,lG,lB,255 );
-                                   _pixelRGBA(  murs[k].fixe-1, z, lR,lG,lB,255 );
+                                   if (lA!=ALPHA_BLOQUE)
+                                   {
+                                          _pixelRGBA(  murs[k].fixe+1, z, lR,lG,lB,255 );
+                                          _pixelRGBA(  murs[k].fixe, z, lR,lG,lB,255 );
+                                          _pixelRGBA(  murs[k].fixe-1, z, lR,lG,lB,255 );
+                                   }
                             }
                      }
 
+       }
+}
+
+void renderObstacles( void )
+{
+       for( int k=0; k<NbObstacleLevel; k++ )
+       {
+              unsigned int Xb = ObstaclesCollection[k]->x;
+              unsigned int Yb = ObstaclesCollection[k]->y;
+              unsigned char Tb = ObstaclesCollection[k]->type;
+
+              unsigned int lX = SIZE*Xb+OFFSET_X;
+              unsigned int lY = SIZE*Yb+OFFSET_Y;
+
+              if (Tb==BLOCK_STONE) dsubimage( lX, lY, &sprites, 0,64,16,16,  DIMAGE_NONE);
+              else if (Tb==BLOCK_MOON) dsubimage( lX, lY, &sprites, 16,64,16,16,  DIMAGE_NONE);
+              else if (Tb==BLOCK_WOOD) dsubimage( lX, lY, &sprites, 32,64,16,16,  DIMAGE_NONE);
+              else if (Tb==BLOCK_SUN) dsubimage( lX, lY, &sprites, 48,64,16,16,  DIMAGE_NONE);
        }
 }
 
@@ -612,37 +727,48 @@ void renderTreasures( void )
               unsigned int lX = SIZE*Xb+OFFSET_X;
               unsigned int lY = SIZE*Yb+OFFSET_Y;
 
-              if (Tb==BOIS)
+              if (Tb==T_RED)
               {
                      if (Ob==false)
                      {
-                            dsubimage( lX, lY, &treasures, 0,0,16,16,  DIMAGE_NONE);
+                            dsubimage( lX, lY, &chests, 0,0,16,16,  DIMAGE_NONE);
                      }
                      else
                      {
-                            dsubimage( lX, lY, &treasures, 16,0,16,16,  DIMAGE_NONE);
+                            dsubimage( lX, lY, &chests, 0,48,16,16,  DIMAGE_NONE);
                      }
               }
-              else if (Tb==ARGENT)
+              else if (Tb==T_YELLOW)
               {
                      if (Ob==false)
                      {
-                            dsubimage( lX, lY, &treasures, 32,0,16,16,  DIMAGE_NONE);
+                            dsubimage( lX, lY, &chests, 16,0,16,16,  DIMAGE_NONE);
                      }
                      else
                      {
-                            dsubimage( lX, lY, &treasures, 48,0,16,16,  DIMAGE_NONE);
+                            dsubimage( lX, lY, &chests, 16,48,16,16,  DIMAGE_NONE);
                      }
               }
-              else if (Tb==OR)
+              else if (Tb==T_GREEN)
               {
                      if (Ob==false)
                      {
-                            dsubimage( lX, lY, &treasures, 64,0,16,16,  DIMAGE_NONE);
+                            dsubimage( lX, lY, &chests, 32,0,16,16,  DIMAGE_NONE);
                      }
                      else
                      {
-                            dsubimage( lX, lY, &treasures, 80,0,16,16,  DIMAGE_NONE);
+                            dsubimage( lX, lY, &chests, 32,48,16,16,  DIMAGE_NONE);
+                     }
+              }
+              else if (Tb==T_BLUE)
+              {
+                     if (Ob==false)
+                     {
+                            dsubimage( lX, lY, &chests, 48,0,16,16,  DIMAGE_NONE);
+                     }
+                     else
+                     {
+                            dsubimage( lX, lY, &chests, 48,48,16,16,  DIMAGE_NONE);
                      }
               }
        }
@@ -776,29 +902,32 @@ void renderLight( void )
        unsigned int lX = SIZE*lumiere.x+OFFSET_X;
        unsigned int lY = SIZE*lumiere.y+OFFSET_Y;
 
-       dsubimage( lX, lY, &light, 0,0,16,16,  DIMAGE_NONE);
+       frame_light%=6;
+       dsubimage( lX, lY, &light, 16*frame_light,0,16,16,  DIMAGE_NONE);
+       frame_light++;
+
 }
 
 void drawMinimap( void )
 {
-    for( int k=0; k< NB_LEVELS; k++ )
-    {
-        if (Map[k].visited==true)
-        {
-            unsigned char R= Map[k].R;
-            unsigned char G= Map[k].G;
-            unsigned char B= Map[k].B;
-            unsigned char A= Map[k].A;
+       for( int k=0; k< NB_LEVELS; k++ )
+       {
+              if (Map[k].visited==true)
+              {
+                     unsigned char R= Map[k].R;
+                     unsigned char G= Map[k].G;
+                     unsigned char B= Map[k].B;
+                     unsigned char A= Map[k].A;
 
-            unsigned int lX = OFFSET_X_MINIMAP + Map[k].x*(SCALE_X_MINIMAP+2);
-            unsigned int lY = OFFSET_Y_MINIMAP + Map[k].y*(SCALE_Y_MINIMAP+2);
+                     unsigned int lX = OFFSET_X_MINIMAP + Map[k].x*(SCALE_X_MINIMAP+2);
+                     unsigned int lY = OFFSET_Y_MINIMAP + Map[k].y*(SCALE_Y_MINIMAP+2);
 
-            if (k==currentLevel)
-                _boxRGBA( lX-4, lY-3, lX+4, lY+3, 0, 255, 0, 100);
+                     if (k==currentLevel)
+                            _boxRGBA( lX-4, lY-3, lX+4, lY+3, 0, 255, 0, 100);
 
-            _rectangleRGBA( lX-4, lY-3, lX+4, lY+3, R, G, B, 255);
-        }
-    }
+                     _rectangleRGBA( lX-4, lY-3, lX+4, lY+3, R, G, B, 255);
+              }
+       }
 
 }
 
@@ -884,12 +1013,24 @@ bool isValidMove( selection selected, unsigned int x, unsigned int y, orientatio
               else if (x==BlocVert.x && y==BlocVert.y) return false;
               else if (x==BlocBleu.x && y==BlocBleu.y) return false;
               else if (x==BlocNoir.x && y==BlocNoir.y) return false;
-              else return true;
+              else
+              {
+                     for (int k =0; k<NbObstacleLevel; k++)
+                            if (ObstaclesCollection[k]->x==x && ObstaclesCollection[k]->y==y)
+                                   return false;
+                     return true;
+              }
        }
        else if (selected == LUMIERE)
        {
               if (x==joueur.x && y==joueur.y) return false;
-              else return true;
+              else
+              {
+                     for (int k =0; k<NbObstacleLevel; k++)
+                            if (ObstaclesCollection[k]->x==x && ObstaclesCollection[k]->y==y)
+                                   return false;
+                     return true;
+              }
        }
        else if (selected == ROUGE)
        {
@@ -897,7 +1038,13 @@ bool isValidMove( selection selected, unsigned int x, unsigned int y, orientatio
               else if (x==BlocVert.x && y==BlocVert.y) return false;
               else if (x==BlocBleu.x && y==BlocBleu.y) return false;
               else if (x==BlocNoir.x && y==BlocNoir.y) return false;
-              else return true;
+              else
+              {
+                     for (int k =0; k<NbObstacleLevel; k++)
+                            if (ObstaclesCollection[k]->x==x && ObstaclesCollection[k]->y==y)
+                                   return false;
+                     return true;
+              }
        }
        else if (selected == VERT)
        {
@@ -905,7 +1052,13 @@ bool isValidMove( selection selected, unsigned int x, unsigned int y, orientatio
               else if (x==BlocRouge.x && y==BlocRouge.y) return false;
               else if (x==BlocBleu.x && y==BlocBleu.y) return false;
               else if (x==BlocNoir.x && y==BlocNoir.y) return false;
-              else return true;
+              else
+              {
+                     for (int k =0; k<NbObstacleLevel; k++)
+                            if (ObstaclesCollection[k]->x==x && ObstaclesCollection[k]->y==y)
+                                   return false;
+                     return true;
+              }
        }
        else if (selected == BLEU)
        {
@@ -913,7 +1066,13 @@ bool isValidMove( selection selected, unsigned int x, unsigned int y, orientatio
               else if (x==BlocRouge.x && y==BlocRouge.y) return false;
               else if (x==BlocVert.x && y==BlocVert.y) return false;
               else if (x==BlocNoir.x && y==BlocNoir.y) return false;
-              else return true;
+              else
+              {
+                     for (int k =0; k<NbObstacleLevel; k++)
+                            if (ObstaclesCollection[k]->x==x && ObstaclesCollection[k]->y==y)
+                                   return false;
+                     return true;
+              }
        }
        else if (selected == NOIR)
        {
@@ -921,7 +1080,13 @@ bool isValidMove( selection selected, unsigned int x, unsigned int y, orientatio
               else if (x==BlocRouge.x && y==BlocRouge.y) return false;
               else if (x==BlocVert.x && y==BlocVert.y) return false;
               else if (x==BlocBleu.x && y==BlocBleu.y) return false;
-              else return true;
+              else
+              {
+                     for (int k =0; k<NbObstacleLevel; k++)
+                            if (ObstaclesCollection[k]->x==x && ObstaclesCollection[k]->y==y)
+                                   return false;
+                     return true;
+              }
        }
 }
 
@@ -1442,9 +1607,9 @@ void drawMenu( void )
 
 int main ( int argc, char** argv )
 {
-      for( int k=0; k < NB_LEVELS; k++) Map[k].visited = true;
+       for( int k=0; k < NB_LEVELS; k++) Map[k].visited = true;
 
-      currentLevel = 0;
+       currentLevel = 0;
 
        dfont( &font_fantasy );
 
@@ -1477,6 +1642,7 @@ int main ( int argc, char** argv )
               renderDoors( );
 
               renderMovable(  );
+              renderObstacles(  );
               renderLight(  );
               renderTreasures( );
               renderPlayer(  );

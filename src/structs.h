@@ -111,9 +111,24 @@ enum content
 
 enum chest
 {
-    BOIS = 0,
-    ARGENT,
-    OR
+    T_RED = 0,
+    T_YELLOW,
+    T_GREEN,
+    T_BLUE
+};
+
+enum nonmovable
+{
+    BLOCK_STONE = 0,
+    BLOCK_MOON,
+    BLOCK_WOOD,
+    BLOCK_SUN
+};
+
+struct Obstacle
+{
+    unsigned int x, y;
+    nonmovable type;
 };
 
 struct Treasure

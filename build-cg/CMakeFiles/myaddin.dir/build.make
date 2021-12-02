@@ -89,58 +89,70 @@ CMakeFiles/myaddin.dir/assets-cg/leveldoor.png: ../assets-cg/fxconv-metadata.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/leveldoor.png"
 	fxconv /home/sylvain/opt/Casio/Glacial/assets-cg/leveldoor.png -o CMakeFiles/myaddin.dir/assets-cg/leveldoor.png --toolchain=sh-elf --cg
 
+CMakeFiles/myaddin.dir/assets-cg/levelsimple.png: CMakeFiles/myaddin.dir/flags.make
+CMakeFiles/myaddin.dir/assets-cg/levelsimple.png: ../assets-cg/levelsimple.png
+CMakeFiles/myaddin.dir/assets-cg/levelsimple.png: ../assets-cg/fxconv-metadata.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/levelsimple.png"
+	fxconv /home/sylvain/opt/Casio/Glacial/assets-cg/levelsimple.png -o CMakeFiles/myaddin.dir/assets-cg/levelsimple.png --toolchain=sh-elf --cg
+
 CMakeFiles/myaddin.dir/assets-cg/sprites.png: CMakeFiles/myaddin.dir/flags.make
 CMakeFiles/myaddin.dir/assets-cg/sprites.png: ../assets-cg/sprites.png
 CMakeFiles/myaddin.dir/assets-cg/sprites.png: ../assets-cg/fxconv-metadata.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/sprites.png"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/sprites.png"
 	fxconv /home/sylvain/opt/Casio/Glacial/assets-cg/sprites.png -o CMakeFiles/myaddin.dir/assets-cg/sprites.png --toolchain=sh-elf --cg
 
 CMakeFiles/myaddin.dir/assets-cg/player.png: CMakeFiles/myaddin.dir/flags.make
 CMakeFiles/myaddin.dir/assets-cg/player.png: ../assets-cg/player.png
 CMakeFiles/myaddin.dir/assets-cg/player.png: ../assets-cg/fxconv-metadata.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/player.png"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/player.png"
 	fxconv /home/sylvain/opt/Casio/Glacial/assets-cg/player.png -o CMakeFiles/myaddin.dir/assets-cg/player.png --toolchain=sh-elf --cg
 
 CMakeFiles/myaddin.dir/assets-cg/light.png: CMakeFiles/myaddin.dir/flags.make
 CMakeFiles/myaddin.dir/assets-cg/light.png: ../assets-cg/light.png
 CMakeFiles/myaddin.dir/assets-cg/light.png: ../assets-cg/fxconv-metadata.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/light.png"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/light.png"
 	fxconv /home/sylvain/opt/Casio/Glacial/assets-cg/light.png -o CMakeFiles/myaddin.dir/assets-cg/light.png --toolchain=sh-elf --cg
 
 CMakeFiles/myaddin.dir/assets-cg/cursor.png: CMakeFiles/myaddin.dir/flags.make
 CMakeFiles/myaddin.dir/assets-cg/cursor.png: ../assets-cg/cursor.png
 CMakeFiles/myaddin.dir/assets-cg/cursor.png: ../assets-cg/fxconv-metadata.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/cursor.png"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/cursor.png"
 	fxconv /home/sylvain/opt/Casio/Glacial/assets-cg/cursor.png -o CMakeFiles/myaddin.dir/assets-cg/cursor.png --toolchain=sh-elf --cg
 
 CMakeFiles/myaddin.dir/assets-cg/plop.png: CMakeFiles/myaddin.dir/flags.make
 CMakeFiles/myaddin.dir/assets-cg/plop.png: ../assets-cg/plop.png
 CMakeFiles/myaddin.dir/assets-cg/plop.png: ../assets-cg/fxconv-metadata.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/plop.png"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/plop.png"
 	fxconv /home/sylvain/opt/Casio/Glacial/assets-cg/plop.png -o CMakeFiles/myaddin.dir/assets-cg/plop.png --toolchain=sh-elf --cg
 
 CMakeFiles/myaddin.dir/assets-cg/parchemin.png: CMakeFiles/myaddin.dir/flags.make
 CMakeFiles/myaddin.dir/assets-cg/parchemin.png: ../assets-cg/parchemin.png
 CMakeFiles/myaddin.dir/assets-cg/parchemin.png: ../assets-cg/fxconv-metadata.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/parchemin.png"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/parchemin.png"
 	fxconv /home/sylvain/opt/Casio/Glacial/assets-cg/parchemin.png -o CMakeFiles/myaddin.dir/assets-cg/parchemin.png --toolchain=sh-elf --cg
 
 CMakeFiles/myaddin.dir/assets-cg/treasures.png: CMakeFiles/myaddin.dir/flags.make
 CMakeFiles/myaddin.dir/assets-cg/treasures.png: ../assets-cg/treasures.png
 CMakeFiles/myaddin.dir/assets-cg/treasures.png: ../assets-cg/fxconv-metadata.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/treasures.png"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/treasures.png"
 	fxconv /home/sylvain/opt/Casio/Glacial/assets-cg/treasures.png -o CMakeFiles/myaddin.dir/assets-cg/treasures.png --toolchain=sh-elf --cg
+
+CMakeFiles/myaddin.dir/assets-cg/chests.png: CMakeFiles/myaddin.dir/flags.make
+CMakeFiles/myaddin.dir/assets-cg/chests.png: ../assets-cg/chests.png
+CMakeFiles/myaddin.dir/assets-cg/chests.png: ../assets-cg/fxconv-metadata.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/chests.png"
+	fxconv /home/sylvain/opt/Casio/Glacial/assets-cg/chests.png -o CMakeFiles/myaddin.dir/assets-cg/chests.png --toolchain=sh-elf --cg
 
 CMakeFiles/myaddin.dir/assets-cg/fontFantasy.png: CMakeFiles/myaddin.dir/flags.make
 CMakeFiles/myaddin.dir/assets-cg/fontFantasy.png: ../assets-cg/fontFantasy.png
 CMakeFiles/myaddin.dir/assets-cg/fontFantasy.png: ../assets-cg/fxconv-metadata.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/fontFantasy.png"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/fontFantasy.png"
 	fxconv /home/sylvain/opt/Casio/Glacial/assets-cg/fontFantasy.png -o CMakeFiles/myaddin.dir/assets-cg/fontFantasy.png --toolchain=sh-elf --cg
 
 CMakeFiles/myaddin.dir/assets-cg/fontTiny.png: CMakeFiles/myaddin.dir/flags.make
 CMakeFiles/myaddin.dir/assets-cg/fontTiny.png: ../assets-cg/fontTiny.png
 CMakeFiles/myaddin.dir/assets-cg/fontTiny.png: ../assets-cg/fxconv-metadata.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/fontTiny.png"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building FXCONV object CMakeFiles/myaddin.dir/assets-cg/fontTiny.png"
 	fxconv /home/sylvain/opt/Casio/Glacial/assets-cg/fontTiny.png -o CMakeFiles/myaddin.dir/assets-cg/fontTiny.png --toolchain=sh-elf --cg
 
 # Object files for target myaddin
@@ -148,6 +160,7 @@ myaddin_OBJECTS = \
 "CMakeFiles/myaddin.dir/src/primitives.cpp.obj" \
 "CMakeFiles/myaddin.dir/src/main.cpp.obj" \
 "CMakeFiles/myaddin.dir/assets-cg/leveldoor.png" \
+"CMakeFiles/myaddin.dir/assets-cg/levelsimple.png" \
 "CMakeFiles/myaddin.dir/assets-cg/sprites.png" \
 "CMakeFiles/myaddin.dir/assets-cg/player.png" \
 "CMakeFiles/myaddin.dir/assets-cg/light.png" \
@@ -155,6 +168,7 @@ myaddin_OBJECTS = \
 "CMakeFiles/myaddin.dir/assets-cg/plop.png" \
 "CMakeFiles/myaddin.dir/assets-cg/parchemin.png" \
 "CMakeFiles/myaddin.dir/assets-cg/treasures.png" \
+"CMakeFiles/myaddin.dir/assets-cg/chests.png" \
 "CMakeFiles/myaddin.dir/assets-cg/fontFantasy.png" \
 "CMakeFiles/myaddin.dir/assets-cg/fontTiny.png"
 
@@ -164,6 +178,7 @@ myaddin_EXTERNAL_OBJECTS =
 myaddin: CMakeFiles/myaddin.dir/src/primitives.cpp.obj
 myaddin: CMakeFiles/myaddin.dir/src/main.cpp.obj
 myaddin: CMakeFiles/myaddin.dir/assets-cg/leveldoor.png
+myaddin: CMakeFiles/myaddin.dir/assets-cg/levelsimple.png
 myaddin: CMakeFiles/myaddin.dir/assets-cg/sprites.png
 myaddin: CMakeFiles/myaddin.dir/assets-cg/player.png
 myaddin: CMakeFiles/myaddin.dir/assets-cg/light.png
@@ -171,6 +186,7 @@ myaddin: CMakeFiles/myaddin.dir/assets-cg/cursor.png
 myaddin: CMakeFiles/myaddin.dir/assets-cg/plop.png
 myaddin: CMakeFiles/myaddin.dir/assets-cg/parchemin.png
 myaddin: CMakeFiles/myaddin.dir/assets-cg/treasures.png
+myaddin: CMakeFiles/myaddin.dir/assets-cg/chests.png
 myaddin: CMakeFiles/myaddin.dir/assets-cg/fontFantasy.png
 myaddin: CMakeFiles/myaddin.dir/assets-cg/fontTiny.png
 myaddin: CMakeFiles/myaddin.dir/build.make
@@ -178,7 +194,7 @@ myaddin: /home/sylvain/opt/sh-elf-2.32-9.2.0/lib/gcc/sh3eb-elf/9.2.0/libgint-cg.
 myaddin: ../assets-cg/icon-uns.png
 myaddin: ../assets-cg/icon-sel.png
 myaddin: CMakeFiles/myaddin.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable myaddin"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX executable myaddin"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/myaddin.dir/link.txt --verbose=$(VERBOSE)
 	/home/sylvain/opt/sh-elf-2.32-9.2.0/bin/sh-elf-objcopy -O binary -R .bss -R .gint_bss myaddin myaddin.bin
 	mkg3a -n basic:\  -i uns:/home/sylvain/opt/Casio/Glacial/assets-cg/icon-uns.png -i sel:/home/sylvain/opt/Casio/Glacial/assets-cg/icon-sel.png myaddin.bin /home/sylvain/opt/Casio/Glacial/MagicLight.g3a

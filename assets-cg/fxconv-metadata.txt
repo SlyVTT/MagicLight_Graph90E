@@ -2,6 +2,10 @@ leveldoor.png:
   type: bopti-image
   name: mapbackgrd
 
+levelsimple.png:
+  type: bopti-image
+  name: leveltiles
+
 sprites.png:
   type: bopti-image
   name: sprites
@@ -15,6 +19,11 @@ treasures.png:
   type: bopti-image
   profile: r5g6b5a
   name: treasures
+
+chests.png:
+  type: bopti-image
+  profile: r5g6b5a
+  name: chests
 
 light.png:
   type: bopti-image

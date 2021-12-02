@@ -1,8 +1,10 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/myaddin.dir/assets-cg/chests.png"
   "CMakeFiles/myaddin.dir/assets-cg/cursor.png"
   "CMakeFiles/myaddin.dir/assets-cg/fontFantasy.png"
   "CMakeFiles/myaddin.dir/assets-cg/fontTiny.png"
   "CMakeFiles/myaddin.dir/assets-cg/leveldoor.png"
+  "CMakeFiles/myaddin.dir/assets-cg/levelsimple.png"
   "CMakeFiles/myaddin.dir/assets-cg/light.png"
   "CMakeFiles/myaddin.dir/assets-cg/parchemin.png"
   "CMakeFiles/myaddin.dir/assets-cg/player.png"

@@ -21,10 +21,12 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/home/sylvain/opt/sh-elf-2.32-9.2.0/lib/gcc/sh3eb-elf/9.2.0/./include/openlibm"
   )
 set(CMAKE_DEPENDS_CHECK_FXCONV
+  "/home/sylvain/opt/Casio/Glacial/assets-cg/chests.png" "/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles/myaddin.dir/assets-cg/chests.png"
   "/home/sylvain/opt/Casio/Glacial/assets-cg/cursor.png" "/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles/myaddin.dir/assets-cg/cursor.png"
   "/home/sylvain/opt/Casio/Glacial/assets-cg/fontFantasy.png" "/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles/myaddin.dir/assets-cg/fontFantasy.png"
   "/home/sylvain/opt/Casio/Glacial/assets-cg/fontTiny.png" "/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles/myaddin.dir/assets-cg/fontTiny.png"
   "/home/sylvain/opt/Casio/Glacial/assets-cg/leveldoor.png" "/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles/myaddin.dir/assets-cg/leveldoor.png"
+  "/home/sylvain/opt/Casio/Glacial/assets-cg/levelsimple.png" "/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles/myaddin.dir/assets-cg/levelsimple.png"
   "/home/sylvain/opt/Casio/Glacial/assets-cg/light.png" "/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles/myaddin.dir/assets-cg/light.png"
   "/home/sylvain/opt/Casio/Glacial/assets-cg/parchemin.png" "/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles/myaddin.dir/assets-cg/parchemin.png"
   "/home/sylvain/opt/Casio/Glacial/assets-cg/player.png" "/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles/myaddin.dir/assets-cg/player.png"
