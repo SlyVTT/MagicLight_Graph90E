@@ -1,4 +1,4 @@
-# MagicLight
+# MagicLight Add-ins pour Casio Graph 90+E
 
 
 
