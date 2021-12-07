@@ -1,3 +1,0 @@
-/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles/rebuild_cache.dir
-/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles/edit_cache.dir
-/home/sylvain/opt/Casio/Glacial/build-cg/CMakeFiles/myaddin.dir
