@@ -18,8 +18,12 @@ La lumière de base est blanche (petite boule au centre de l'écran qui peut êt
 
 Quand une porte est ouverte, donnant sur un escalier, notre perso peut franchir la porte et changer de pièce. La minimap sur la droite se trace au fur et à mesure de votre avancée.
 
+
 Listing des contrôles :
 
+
 [F1] à [F6] sélectionner l'entité à déplacer : JOUEUR / LUMIERE / BLOCS de CONVERSION
+
 [OPTN] affiche le menu d'options
+
 [EXIT] Pause / Menu pour quitter.
