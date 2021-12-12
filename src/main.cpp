@@ -22,7 +22,6 @@
 #define LAYER_BELOW_RAYS 0
 #define LAYER_ABOVE_RAYS 1
 
-
 unsigned int SIZE = 16;
 unsigned int OFFSET_X = 12;
 unsigned int OFFSET_Y = 12;
@@ -45,6 +44,7 @@ unsigned char SPEEDUP_WALL = 1;
 char LEVELCOLOR=0;
 
 
+
 #define NB_LEVELS 4
 
 unsigned char NbReceptorsLevel;
@@ -52,10 +52,13 @@ unsigned char NbDoorsLevel;
 unsigned char NbBlocksLevel;
 unsigned char NbTreasureLevel;
 unsigned char NbObstacleLevel;
+unsigned char NbMonsterLevel;
 
 selection selected = JOUEUR;
 
 unsigned int score;
+unsigned char life = 3;
+unsigned char lifeMax = 5;
 
 unsigned char SIZE_MAP_X=13;
 unsigned char  SIZE_MAP_Y=11;
@@ -76,7 +79,7 @@ Receptor* ReceptorCollection=NULL;
 Door* DoorCollection=NULL;
 Treasure* TreasureCollection=NULL;
 Obstacle* ObstaclesCollection=NULL;
-
+Monster* MonstersCollection=NULL;
 
 Minimap Map[ NB_LEVELS ];
 
@@ -94,6 +97,9 @@ extern bopti_image_t cursor;
 extern bopti_image_t parchemin;
 extern bopti_image_t treasures;
 extern bopti_image_t chests;
+extern bopti_image_t monstres;
+extern bopti_image_t hearts;
+
 
 extern font_t font_fantasy;
 extern font_t font_tiny;
@@ -104,10 +110,13 @@ bool doneOption = false;
 bool doneGame = false;
 bool doneStart = false;
 bool doneTitle = false;
+bool doneLoose = false;
+bool doneDifficulty = false;
 
 unsigned int compteur_mouvement = 0;
 unsigned char frame_cursor = 0;
 unsigned char frame_light = 0;
+unsigned char frame_monster = 0;
 unsigned char frame=0;
 bool mouvement=false;
 orientations direction=HAUT;
@@ -115,8 +124,12 @@ orientations direction=HAUT;
 unsigned char nextLevel;
 unsigned char currentLevel;
 unsigned char selectStartMenu = 0;
+unsigned char selectDifficultyMenu = 0;
 unsigned char selectOptionMenu = 0;
 unsigned char selectOptionPause = 0;
+unsigned char selectOptionLoose = 0;
+unsigned char difficulty = 0;
+
 
 void initMap( void )
 {
@@ -131,12 +144,14 @@ void loadLevel( unsigned char numLevel )
        free(DoorCollection);
        free(TreasureCollection);
        free(ObstaclesCollection);
+       free(MonstersCollection);
 
        BlocksCollection=NULL;
        ReceptorCollection=NULL;
        DoorCollection=NULL;
        TreasureCollection=NULL;
        ObstaclesCollection=NULL;
+       MonstersCollection=NULL;
 
        if (numLevel==0)
        {
@@ -149,14 +164,16 @@ void loadLevel( unsigned char numLevel )
               NbReceptorsLevel = 3;
               NbDoorsLevel = 1;
               NbBlocksLevel = 4;
-              NbTreasureLevel = 0;
+              NbTreasureLevel = 1;
               NbObstacleLevel = 8;
+              NbMonsterLevel = 2;
 
               BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
               ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
               DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
               TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
               ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
 
               Map[numLevel].x=0;
               Map[numLevel].y=0;
@@ -166,7 +183,7 @@ void loadLevel( unsigned char numLevel )
               Map[numLevel].A=255;
               Map[numLevel].visited=true;
 
-              joueur = { 7, 9, HAUT };
+              joueur = { 6, 9, HAUT };
               lumiere = { 6, 5, 1,1,1,0, false };
 
               ObstaclesCollection[0] = {2,2,BLOCK_SUN};
@@ -202,10 +219,14 @@ void loadLevel( unsigned char numLevel )
               //DoorCollection[2] = { 12, 5, DROITE, false, true, 1, { R_VERT, -1, -1 }, 0}; // Door EAST
               //DoorCollection[3] = { 6, 10, BAS, false, false, 0, { -1 -1, -1 }, -1}; // Door SOUTH
 
-              //TreasureCollection[0] = {2,2, T_RED, false, PIERRE_BLANCHE, 100 };
-              //TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100 };
-              //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100 };
-              //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100 };
+              TreasureCollection[0] = {1,1, T_RED, false, PIERRE_BLANCHE, 100, true };
+              //TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100, true };
+              //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100, true };
+              //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100, true };
+
+              MonstersCollection[0] = { 6, 4, 2, 10, HORIZONTAL, GAUCHE, BLOB };
+              MonstersCollection[1] = { 7, 5, 2, 8, VERTICAL, HAUT, SKELETON };
+
        }
        else if (numLevel==1)
        {
@@ -220,12 +241,14 @@ void loadLevel( unsigned char numLevel )
               NbBlocksLevel = 4;
               NbTreasureLevel = 0;
               NbObstacleLevel = 16;
+              NbMonsterLevel = 3;
 
               BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
               ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
               DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
               TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
               ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
 
               Map[numLevel].x=-1;
               Map[numLevel].y=-1;
@@ -235,7 +258,7 @@ void loadLevel( unsigned char numLevel )
               Map[numLevel].A=255;
               Map[numLevel].visited=true;
 
-              joueur = { 7, 9, HAUT };
+              joueur = { 6, 9, HAUT };
               lumiere = { 6, 5, 1,1,1,0, false };
 
               ObstaclesCollection[0] = {1,1,BLOCK_STONE};
@@ -280,13 +303,18 @@ void loadLevel( unsigned char numLevel )
 
               DoorCollection[0] = { 6,0, HAUT, false, false, 0, { R_ROUGE,R_BLEU, -1 }, 1}; // Door NORTH
               //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 1, { R_BLEU, -1, -1 }, 0}; // Door WEST
-              DoorCollection[1] = { 12, 5, DROITE, false, true, 2, { R_VERT, R_NOIR, -1 }, 0}; // Door EAST
+              DoorCollection[1] = { 12, 5, DROITE, false, true, 2, { R_VERT, R_NOIR, -1 }, 2}; // Door EAST
               //DoorCollection[3] = { 6, 10, BAS, false, false, 0, { -1 -1, -1 }, -1}; // Door SOUTH
 
-              //TreasureCollection[0] = {2,2, T_RED, false, PIERRE_BLANCHE, 100 };
-              //TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100 };
-              //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100 };
-              //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100 };
+              //TreasureCollection[0] = {2,2, T_RED, false, PIERRE_BLANCHE, 100,  true };
+              //TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100,  true };
+              //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100,  true };
+              //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100,  true };
+
+              MonstersCollection[0] = { 6, 2, 1, 11, HORIZONTAL, DROITE, BAT };
+              MonstersCollection[1] = { 1, 5, 1, 9, VERTICAL, BAS, SPIDER };
+              MonstersCollection[2] = { 10, 5, 1, 9, VERTICAL, HAUT, GHOST };
+
        }
        else if (numLevel==2)
        {
@@ -299,14 +327,16 @@ void loadLevel( unsigned char numLevel )
               NbReceptorsLevel = 8;
               NbDoorsLevel = 3;
               NbBlocksLevel = 4;
-              NbTreasureLevel = 0;
+              NbTreasureLevel = 2;
               NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
 
               BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
               ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
               DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
               TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
               ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
 
               Map[numLevel].x=0;
               Map[numLevel].y=-1;
@@ -316,7 +346,7 @@ void loadLevel( unsigned char numLevel )
               Map[numLevel].A=255;
               Map[numLevel].visited=true;
 
-              joueur = { 7, 9, HAUT };
+              joueur = { 6, 9, HAUT };
               lumiere = { 6, 5, 1,1,1,0, false };
 
               //ObstaclesCollection[0] = {2,2,BLOCK_SUN};
@@ -352,10 +382,10 @@ void loadLevel( unsigned char numLevel )
               DoorCollection[1] = { 12, 5, DROITE, false, true, 1, { R_BLANC, -1, -1 }, 3}; // Door EAST
               DoorCollection[2] = { 6, 10, BAS, false, true, 2, { R_NOIR, R_ROSE, -1 }, 0}; // Door SOUTH
 
-              //TreasureCollection[0] = {2,2, T_RED, false, PIERRE_BLANCHE, 100 };
-              //TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100 };
-              //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100 };
-              //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100 };
+              TreasureCollection[0] = {1,2, T_RED, false, PIERRE_BLANCHE, 100,  true };
+              TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100,  true };
+              //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100,  true };
+              //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100,  true };
        }
        else if (numLevel==3)
        {
@@ -370,12 +400,14 @@ void loadLevel( unsigned char numLevel )
               NbBlocksLevel = 4;
               NbTreasureLevel = 0;
               NbObstacleLevel = 8;
+              NbMonsterLevel = 0;
 
               BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
               ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
               DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
               TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
               ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
 
               Map[numLevel].x=1;
               Map[numLevel].y=-1;
@@ -385,7 +417,7 @@ void loadLevel( unsigned char numLevel )
               Map[numLevel].A=255;
               Map[numLevel].visited=true;;
 
-              joueur = { 7, 9, HAUT };
+              joueur = { 6, 9, HAUT };
               lumiere = { 6, 5, 1,1,1,0, false };
 
               ObstaclesCollection[0] = {2,2,BLOCK_SUN};
@@ -421,10 +453,10 @@ void loadLevel( unsigned char numLevel )
               //DoorCollection[2] = { 12, 5, DROITE, false, true, 1, { R_VERT, -1, -1 }, 0}; // Door EAST
               //DoorCollection[3] = { 6, 10, BAS, false, false, 0, { -1 -1, -1 }, -1}; // Door SOUTH
 
-              //TreasureCollection[0] = {2,2, T_RED, false, PIERRE_BLANCHE, 100 };
-              //TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100 };
-              //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100 };
-              //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100 };
+              //TreasureCollection[0] = {2,2, T_RED, false, PIERRE_BLANCHE, 100,  true };
+              //TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100,  true };
+              //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100,  true };
+              //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100,  true };
        }
 
 }
@@ -732,52 +764,57 @@ void renderTreasures( void )
               unsigned int Yb = TreasureCollection[k].y;
               chest Tb = TreasureCollection[k].type;
               bool Ob = TreasureCollection[k].isopen;
+              bool Vis = TreasureCollection[k].isvisible;
 
               unsigned int lX = SIZE*Xb+OFFSET_X;
               unsigned int lY = SIZE*Yb+OFFSET_Y;
 
-              if (Tb==T_RED)
+              if (Vis==true)
               {
-                     if (Ob==false)
+
+                     if (Tb==T_RED)
                      {
-                            dsubimage( lX, lY, &chests, 0,0,16,16,  DIMAGE_NONE);
+                            if (Ob==false)
+                            {
+                                   dsubimage( lX, lY, &chests, 0,0,16,16,  DIMAGE_NONE);
+                            }
+                            else
+                            {
+                                   dsubimage( lX, lY, &chests, 0,48,16,16,  DIMAGE_NONE);
+                            }
                      }
-                     else
+                     else if (Tb==T_YELLOW)
                      {
-                            dsubimage( lX, lY, &chests, 0,48,16,16,  DIMAGE_NONE);
+                            if (Ob==false)
+                            {
+                                   dsubimage( lX, lY, &chests, 16,0,16,16,  DIMAGE_NONE);
+                            }
+                            else
+                            {
+                                   dsubimage( lX, lY, &chests, 16,48,16,16,  DIMAGE_NONE);
+                            }
                      }
-              }
-              else if (Tb==T_YELLOW)
-              {
-                     if (Ob==false)
+                     else if (Tb==T_GREEN)
                      {
-                            dsubimage( lX, lY, &chests, 16,0,16,16,  DIMAGE_NONE);
+                            if (Ob==false)
+                            {
+                                   dsubimage( lX, lY, &chests, 32,0,16,16,  DIMAGE_NONE);
+                            }
+                            else
+                            {
+                                   dsubimage( lX, lY, &chests, 32,48,16,16,  DIMAGE_NONE);
+                            }
                      }
-                     else
+                     else if (Tb==T_BLUE)
                      {
-                            dsubimage( lX, lY, &chests, 16,48,16,16,  DIMAGE_NONE);
-                     }
-              }
-              else if (Tb==T_GREEN)
-              {
-                     if (Ob==false)
-                     {
-                            dsubimage( lX, lY, &chests, 32,0,16,16,  DIMAGE_NONE);
-                     }
-                     else
-                     {
-                            dsubimage( lX, lY, &chests, 32,48,16,16,  DIMAGE_NONE);
-                     }
-              }
-              else if (Tb==T_BLUE)
-              {
-                     if (Ob==false)
-                     {
-                            dsubimage( lX, lY, &chests, 48,0,16,16,  DIMAGE_NONE);
-                     }
-                     else
-                     {
-                            dsubimage( lX, lY, &chests, 48,48,16,16,  DIMAGE_NONE);
+                            if (Ob==false)
+                            {
+                                   dsubimage( lX, lY, &chests, 48,0,16,16,  DIMAGE_NONE);
+                            }
+                            else
+                            {
+                                   dsubimage( lX, lY, &chests, 48,48,16,16,  DIMAGE_NONE);
+                            }
                      }
               }
        }
@@ -921,8 +958,8 @@ void drawInterface( void )
        dsubimage( 232, 0, &parchemin, 0,0, 164, 210,  DIMAGE_NONE);
        dfont( &font_fantasy );
 
-       dprint( 256, 36, C_RGB(150,150,150), "MAGIC Light v0.3B");
-       dprint( 255, 35, C_BLACK, "MAGIC Light v0.3B");
+       dprint( 256, 36, C_RGB(150,150,150), "MAGIC Light v0.5B");
+       dprint( 255, 35, C_BLACK, "MAGIC Light v0.5B");
 
        dfont( &font_tiny );
 
@@ -931,6 +968,19 @@ void drawInterface( void )
 
        dprint( 251, 66, C_RGB(150,150,150), "Level : %d", currentLevel );
        dprint( 250, 65, C_BLACK, "Level : %d",  currentLevel );
+
+       dprint( 316, 56, C_RGB(150,150,150), "Life :");
+       dprint( 315, 55, C_BLACK, "Life :" );
+
+       for( unsigned char k = 0; k< life; k++)
+       {
+           dsubimage( 340 + k*8, 57, &hearts, 8, 0, 8, 8,  DIMAGE_NONE);
+       }
+
+        for( unsigned char k = life; k< lifeMax; k++)
+       {
+           dsubimage( 340 + k*8, 57, &hearts, 0, 0, 8, 8,  DIMAGE_NONE);
+       }
 
 
        midY=(200+224)/2;
@@ -1149,6 +1199,359 @@ void gameMechanics(  selection what, orientations touche )
               else if (what==BLEU && isValidMove(BLEU, BlocBleu->x, BlocBleu->y+1, touche))     BlocBleu->y++;
               else if (what==NOIR && isValidMove(NOIR, BlocNoir->x, BlocNoir->y+1, touche))     BlocNoir->y++;
        }
+}
+
+bool checkNextPositionMonster( unsigned int Xtarget, unsigned int Ytarget, unsigned int direction )
+{
+
+    for( unsigned char k=0; k<NbObstacleLevel; k++)
+    {
+        if (ObstaclesCollection[k].x==Xtarget  && ObstaclesCollection[k].y==Ytarget)
+            return false;
+    }
+
+    //if (Xtarget>=lumiere.x-1 && Xtarget<=lumiere.x+1 && Ytarget>=lumiere.y-1 && Ytarget<=lumiere.y+1)
+    if (Xtarget==lumiere.x && Ytarget==lumiere.y)
+    {
+        return false;
+    }
+    else if (Xtarget==joueur.x && Ytarget==joueur.y)
+    {
+        if (life>0) life--;
+        return false;
+    }
+    else if (Xtarget==BlocRouge->x && Ytarget==BlocRouge->y)
+    {
+        if (direction==HAUT)
+        {
+            if (isValidMove( ROUGE, BlocRouge->x, BlocRouge->y-1, HAUT))
+            {
+                BlocRouge->y-=1;
+                return true;
+            }
+            else return false;
+        }
+        else if (direction==BAS)
+        {
+            if (isValidMove( ROUGE, BlocRouge->x, BlocRouge->y+1, BAS))
+            {
+                BlocRouge->y+=1;
+                return true;
+            }
+            else return false;
+        }
+        else if (direction==GAUCHE)
+        {
+            if (isValidMove( ROUGE, BlocRouge->x-1, BlocRouge->y, GAUCHE))
+            {
+                BlocRouge->x-=1;
+                return true;
+            }
+            else return false;
+        }
+        else if (direction==DROITE)
+        {
+            if (isValidMove( ROUGE, BlocRouge->x+1, BlocRouge->y, DROITE))
+            {
+                BlocRouge->x+=1;
+                return true;
+            }
+            else return false;
+        }
+    }
+    else if (Xtarget==BlocVert->x && Ytarget==BlocVert->y)
+    {
+        if (direction==HAUT)
+        {
+            if (isValidMove( ROUGE, BlocVert->x, BlocVert->y-1, HAUT))
+            {
+                BlocVert->y-=1;
+                return true;
+            }
+            else return false;
+        }
+        else if (direction==BAS)
+        {
+            if (isValidMove( ROUGE, BlocVert->x, BlocVert->y+1, BAS))
+            {
+                BlocVert->y+=1;
+                return true;
+            }
+            else return false;
+        }
+        else if (direction==GAUCHE)
+        {
+            if (isValidMove( ROUGE, BlocVert->x-1, BlocVert->y, GAUCHE))
+            {
+                BlocVert->x-=1;
+                return true;
+            }
+            else return false;
+        }
+        else if (direction==DROITE)
+        {
+            if (isValidMove( ROUGE, BlocVert->x+1, BlocVert->y, DROITE))
+            {
+                BlocVert->x+=1;
+                return true;
+            }
+            else return false;
+        }
+    }
+    else if (Xtarget==BlocBleu->x && Ytarget==BlocBleu->y)
+    {
+        if (direction==HAUT)
+        {
+            if (isValidMove( ROUGE, BlocBleu->x, BlocBleu->y-1, HAUT))
+            {
+                BlocBleu->y-=1;
+                return true;
+            }
+            else return false;
+        }
+        else if (direction==BAS)
+        {
+            if (isValidMove( ROUGE, BlocBleu->x, BlocBleu->y+1, BAS))
+            {
+                BlocBleu->y+=1;
+                return true;
+            }
+            else return false;
+        }
+        else if (direction==GAUCHE)
+        {
+            if (isValidMove( ROUGE, BlocBleu->x-1, BlocBleu->y, GAUCHE))
+            {
+                BlocBleu->x-=1;
+                return true;
+            }
+            else return false;
+        }
+        else if (direction==DROITE)
+        {
+            if (isValidMove( ROUGE, BlocBleu->x+1, BlocBleu->y, DROITE))
+            {
+                BlocBleu->x+=1;
+                return true;
+            }
+            else return false;
+        }
+    }
+    else if (Xtarget==BlocNoir->x && Ytarget==BlocNoir->y)
+    {
+        if (direction==HAUT)
+        {
+            if (isValidMove( ROUGE, BlocNoir->x, BlocNoir->y-1, HAUT))
+            {
+                BlocNoir->y-=1;
+                return true;
+            }
+            else return false;
+        }
+        else if (direction==BAS)
+        {
+            if (isValidMove( ROUGE, BlocNoir->x, BlocNoir->y+1, BAS))
+            {
+                BlocNoir->y+=1;
+                return true;
+            }
+            else return false;
+        }
+        else if (direction==GAUCHE)
+        {
+            if (isValidMove( ROUGE, BlocNoir->x-1, BlocNoir->y, GAUCHE))
+            {
+                BlocNoir->x-=1;
+                return true;
+            }
+            else return false;
+        }
+        else if (direction==DROITE)
+        {
+            if (isValidMove( ROUGE, BlocNoir->x+1, BlocNoir->y, DROITE))
+            {
+                BlocNoir->x+=1;
+                return true;
+            }
+            else return false;
+        }
+    }
+
+    return true;
+}
+
+void updateMonsters( void )
+{
+        for( unsigned char k=0; k<NbMonsterLevel; k++ )
+       {
+              unsigned int X = MonstersCollection[k].xcur;
+              unsigned int Y = MonstersCollection[k].ycur;
+              unsigned char mini = MonstersCollection[k].mini;
+              unsigned char maxi = MonstersCollection[k].maxi;
+              unsigned int direction = MonstersCollection[k].direction;
+              unsigned int sens = MonstersCollection[k].sens;
+              unsigned int type = MonstersCollection[k].kind;
+
+              if (direction==VERTICAL)
+              {
+                  if (sens==BAS)
+                  {
+                        if (Y<maxi && checkNextPositionMonster( X, Y+1, BAS)==true)
+                        {
+                            MonstersCollection[k].ycur++;
+                            MonstersCollection[k].sens=BAS;
+                        }
+                        else
+                        {
+                            MonstersCollection[k].sens=HAUT;
+                        }
+                  }
+                  else if (sens==HAUT)
+                  {
+                        if (Y>mini && checkNextPositionMonster( X, Y-1, HAUT)==true)
+                        {
+                            MonstersCollection[k].ycur--;
+                            MonstersCollection[k].sens=HAUT;
+                        }
+                        else
+                        {
+                            MonstersCollection[k].sens=BAS;
+                        }
+                  }
+              }
+              else if (direction==HORIZONTAL)
+              {
+
+                  if (sens==DROITE)
+                  {
+                        if (X<maxi && checkNextPositionMonster( X+1, Y, DROITE)==true)
+                        {
+                            MonstersCollection[k].xcur++;
+                            MonstersCollection[k].sens=DROITE;
+                        }
+                        else
+                        {
+                            MonstersCollection[k].sens=GAUCHE;
+                        }
+                  }
+                  else if (sens==GAUCHE)
+                  {
+                         if (X>mini && checkNextPositionMonster( X-1, Y, GAUCHE)==true)
+                        {
+                            MonstersCollection[k].xcur--;
+                            MonstersCollection[k].sens=GAUCHE;
+                        }
+                        else
+                        {
+                            MonstersCollection[k].sens=DROITE;
+                        }
+                   }
+              }
+
+       }
+}
+
+void renderMonsters( void )
+{
+        for( unsigned char k=0; k<NbMonsterLevel; k++ )
+       {
+              unsigned int lX = SIZE*MonstersCollection[k].xcur+OFFSET_X;
+              unsigned int lY = SIZE*MonstersCollection[k].ycur+OFFSET_Y;
+              unsigned char mini = MonstersCollection[k].mini;
+              unsigned char maxi = MonstersCollection[k].maxi;
+              unsigned int direction = MonstersCollection[k].direction;
+              unsigned int sens = MonstersCollection[k].sens;
+              unsigned int type = MonstersCollection[k].kind;
+
+              unsigned int OFFSET_X_MONSTER = 48*type;
+
+
+              if (direction==VERTICAL)
+              {
+
+/*
+                  if (true)
+                 {
+                    _lineRGBA( lX+SIZE/2, mini*SIZE+OFFSET_Y+SIZE/2, lX+SIZE/2, maxi*SIZE+OFFSET_Y+SIZE/2, 255, 0, 0, 255 );
+                    _lineRGBA( lX+1+SIZE/2, mini*SIZE+OFFSET_Y+SIZE/2, lX+1+SIZE/2, maxi*SIZE+OFFSET_Y+SIZE/2, 255, 0, 0, 255 );
+                    _lineRGBA( lX-1+SIZE/2, mini*SIZE+OFFSET_Y+SIZE/2, lX-1+SIZE/2, maxi*SIZE+OFFSET_Y+SIZE/2, 255, 0, 0, 255 );
+                 }
+*/
+                  if (sens==BAS && MonstersCollection[k].ycur<maxi)
+                  {
+                      if (frame_monster==0) dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,0,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==1) dsubimage( lX, lY+3, &monstres, OFFSET_X_MONSTER+16,0,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==2) dsubimage( lX, lY+5, &monstres, OFFSET_X_MONSTER+32,0,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==3) dsubimage( lX, lY+8, &monstres, OFFSET_X_MONSTER,0,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==4) dsubimage( lX, lY+11, &monstres, OFFSET_X_MONSTER+16,0,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==5) dsubimage( lX, lY+13, &monstres, OFFSET_X_MONSTER+32,0,16,16,  DIMAGE_NONE);
+                  }
+                  else if (sens==BAS && MonstersCollection[k].ycur==maxi)
+                  {
+                      dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,0,16,16,  DIMAGE_NONE);
+                  }
+                  else if (sens==HAUT && MonstersCollection[k].ycur>mini)
+                  {
+                     if (frame_monster==0) dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,32,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==1) dsubimage( lX, lY-3, &monstres, OFFSET_X_MONSTER+16,32,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==2) dsubimage( lX, lY-5, &monstres, OFFSET_X_MONSTER+32,32,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==3) dsubimage( lX, lY-8, &monstres, OFFSET_X_MONSTER,32,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==4) dsubimage( lX, lY-11, &monstres, OFFSET_X_MONSTER+16,32,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==5) dsubimage( lX, lY-13, &monstres, OFFSET_X_MONSTER+32,32,16,16,  DIMAGE_NONE);
+                  }
+                  else if (sens==HAUT && MonstersCollection[k].ycur==mini)
+                  {
+                      dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,32,16,16,  DIMAGE_NONE);
+                  }
+              }
+
+              else if (direction==HORIZONTAL)
+              {
+
+/*
+                 if (true)
+                 {
+                    _lineRGBA( mini*SIZE+OFFSET_X+SIZE/2, lY+SIZE/2, maxi*SIZE+OFFSET_X+SIZE/2, lY+SIZE/2, 255, 0, 0, 255 );
+                    _lineRGBA( mini*SIZE+OFFSET_X+SIZE/2, lY+1+SIZE/2, maxi*SIZE+OFFSET_X+SIZE/2, lY+1+SIZE/2, 255, 0, 0, 255 );
+                    _lineRGBA( mini*SIZE+OFFSET_X+SIZE/2, lY-1+SIZE/2, maxi*SIZE+OFFSET_X+SIZE/2, lY-1+SIZE/2, 255, 0, 0, 255 );
+                 }
+*/
+
+                  if (sens==GAUCHE && MonstersCollection[k].xcur>mini)
+                  {
+                     if (frame_monster==0) dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,48,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==1) dsubimage( lX-3, lY, &monstres, OFFSET_X_MONSTER+16,48,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==2) dsubimage( lX-5, lY, &monstres, OFFSET_X_MONSTER+32,48,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==3) dsubimage( lX-8, lY, &monstres, OFFSET_X_MONSTER,48,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==4) dsubimage( lX-11, lY, &monstres, OFFSET_X_MONSTER+16,48,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==5) dsubimage( lX-13, lY, &monstres, OFFSET_X_MONSTER+32,48,16,16,  DIMAGE_NONE);
+                  }
+                  else if (sens==GAUCHE && MonstersCollection[k].xcur==mini)
+                  {
+                      dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,48,16,16,  DIMAGE_NONE);
+                  }
+                  else if (sens==DROITE && MonstersCollection[k].xcur<maxi)
+                  {
+                     if (frame_monster==0) dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,16,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==1) dsubimage( lX+3, lY, &monstres, OFFSET_X_MONSTER+16,16,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==2) dsubimage( lX+5, lY, &monstres, OFFSET_X_MONSTER+32,16,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==3) dsubimage( lX+8, lY, &monstres, OFFSET_X_MONSTER,16,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==4) dsubimage( lX+11, lY, &monstres, OFFSET_X_MONSTER+16,16,16,16,  DIMAGE_NONE);
+                     else if (frame_monster==5) dsubimage( lX+13, lY, &monstres, OFFSET_X_MONSTER+32,16,16,16,  DIMAGE_NONE);
+                  }
+                  else if (sens==DROITE && MonstersCollection[k].xcur==maxi)
+                  {
+                     dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,16,16,16,  DIMAGE_NONE);
+                  }
+              }
+       }
+
+        frame_monster++;
+        if (frame_monster==6)
+        {
+                  updateMonsters();
+                  frame_monster=0;
+        }
 }
 
 void renderReceptors( void )
@@ -1729,6 +2132,96 @@ void drawQuit( void )
        }
 }
 
+static int get_inputs_loose(void)
+{
+       int opt = GETKEY_DEFAULT & ~GETKEY_REP_ARROWS;
+       int timeout = 1;
+
+       while(1)
+       {
+              key_event_t ev = getkey_opt(opt, &timeout);
+              if(ev.type == KEYEV_NONE) return -1;
+
+              int key = ev.key;
+
+              if (key==KEY_EXIT)
+              {
+                     doneLoose = true;
+                     selectOptionLoose = 1;
+              }
+              if (key==KEY_UP && selectOptionLoose>0)
+              {
+                     selectOptionLoose--;
+              }
+              if (key==KEY_DOWN && selectOptionLoose<1)
+              {
+                     selectOptionLoose++;
+              }
+              if (key==KEY_EXE)
+              {
+                     doneLoose = true;
+              }
+       }
+}
+
+void drawLoose( void )
+{
+       doneLoose = false;
+
+       unsigned int lX = 0;
+       unsigned int lY = 0;
+
+       frame_light = 0;
+
+       while (!doneLoose)
+       {
+              dclear(C_RGB(0,0,0));
+
+              dimage( 0, 10, &maintitle);
+              dfont( &font_fantasy );
+              dprint( 90, 95, C_RGB(150,150,150), "You Loose : Be Careful Of the Monsters" );
+              dprint( 89, 94, C_BLACK, "You Loose : Be Careful Of the Monsters" );
+
+              dfont( &font_fantasy );
+              dprint( 90, 105, C_RGB(150,150,150), "RetryThis Level ?" );
+              dprint( 89, 104, C_BLACK, "RetryThis Level ?" );
+
+              dfont( &font_fantasy );
+              dprint( 90, 125, C_RGB(150,150,150), "Yes - I Never Give Up !!!");
+              dprint( 89, 124, C_BLACK, "Yes - I Never Give Up !!!");
+
+              dfont( &font_fantasy );
+              dprint( 90, 140, C_RGB(150,150,150),  "No - Better If I Quit !!! ");
+              dprint( 89, 139, C_BLACK,  "No - Better If I Quit !!! ");
+
+              dfont( &font_tiny );
+
+              if (selectOptionLoose == 0)
+              {
+                     lX = 70;
+                     lY = 119;
+              }
+              else if (selectOptionLoose == 1)
+              {
+                     lX = 70;
+                     lY = 134;
+              }
+
+              frame_light%=6;
+              dsubimage( lX, lY, &light, 16*frame_light,0,16,16,  DIMAGE_NONE);
+              frame_light++;
+
+              dfont( &font_tiny );
+              dprint( 55, 170, C_RGB(150,150,150), "[UP] [DOWN] : select / [EXE] : validate / [EXIT] : escape");
+              dprint( 54, 169, C_BLACK,"[UP] [DOWN] : select / [EXE] : validate / [EXIT] : escape");
+
+              dupdate();
+
+              get_inputs_loose();
+
+       }
+}
+
 static int get_inputs_title(void)
 {
        int opt = GETKEY_DEFAULT & ~GETKEY_REP_ARROWS;
@@ -1795,8 +2288,8 @@ void drawTitle( void )
               }
 
               dfont( &font_tiny );
-              dprint( 110, 156, C_RGB(150,150,150), "Welcome to Magic Light Revision 0.3B");
-              dprint( 109, 155, C_BLACK, "Welcome to Magic Light Revision 0.3B");
+              dprint( 110, 156, C_RGB(150,150,150), "Welcome to Magic Light Revision 0.5B");
+              dprint( 109, 155, C_BLACK, "Welcome to Magic Light Revision 0.5B");
               dprint( 110, 166, C_RGB(150,150,150), "                    12/2021 - by SlyVTT                     ");
               dprint( 109, 165, C_BLACK, "                    12/2021 - by SlyVTT                     ");
 
@@ -1808,6 +2301,119 @@ void drawTitle( void )
 
               get_inputs_title();
        }
+}
+
+
+static int get_inputs_difficultymenu(void)
+{
+       int opt = GETKEY_DEFAULT & ~GETKEY_REP_ARROWS;
+       int timeout = 1;
+
+       while(1)
+       {
+              key_event_t ev = getkey_opt(opt, &timeout);
+              if(ev.type == KEYEV_NONE) return -1;
+
+              int key = ev.key;
+
+              if (key==KEY_EXE)
+                     doneDifficulty = true;
+
+              if (key==KEY_UP && selectStartMenu>0)
+                     selectDifficultyMenu--;
+
+              if (key==KEY_DOWN && selectStartMenu<2)
+                     selectDifficultyMenu++;
+       }
+}
+
+
+unsigned char drawDifficultyMenu( void )
+{
+       doneDifficulty = false;
+
+       unsigned int lX = 0;
+       unsigned int lY = 0;
+
+       frame_light = 0;
+
+       while (!doneDifficulty)
+       {
+              dclear(C_RGB(0,0,0));
+
+              dimage( 0, 10, &maintitle);
+
+              dfont( &font_fantasy );
+              dprint( 90, 100, C_RGB(150,150,150), "Sweet Like a Cherry Cake");
+              dprint( 89, 99, C_BLACK, "Sweet Like a Cherry Cake");
+
+              for( unsigned char k = 0; k< 5; k++)
+               {
+                   dsubimage( 250 + k*8, 100, &hearts, 8, 0, 8, 8,  DIMAGE_NONE);
+               }
+                for( unsigned char k = 5; k< 5; k++)
+               {
+                   dsubimage( 250 + k*8, 100, &hearts, 0, 0, 8, 8,  DIMAGE_NONE);
+               }
+
+              dfont( &font_fantasy );
+              dprint( 90, 120, C_RGB(150,150,150), "Acid Like an Orange Juice");
+              dprint( 89, 119, C_BLACK, "Acid Like an Orange Juice");
+
+              for( unsigned char k = 0; k< 3; k++)
+               {
+                   dsubimage( 250 + k*8, 120, &hearts, 8, 0, 8, 8,  DIMAGE_NONE);
+               }
+                for( unsigned char k = 3; k< 5; k++)
+               {
+                   dsubimage( 250 + k*8, 120, &hearts, 0, 0, 8, 8,  DIMAGE_NONE);
+               }
+
+              dfont( &font_fantasy );
+              dprint( 90, 140, C_RGB(150,150,150), "Bitter Like a Dark Beer");
+              dprint( 89, 139, C_BLACK, "Bitter Like a Dark Beer");
+
+              for( unsigned char k = 0; k< 1; k++)
+               {
+                   dsubimage( 250 + k*8, 140, &hearts, 8, 0, 8, 8,  DIMAGE_NONE);
+               }
+                for( unsigned char k = 1; k< 5; k++)
+               {
+                   dsubimage( 250 + k*8, 140, &hearts, 0, 0, 8, 8,  DIMAGE_NONE);
+               }
+
+
+              if (selectDifficultyMenu == 0)
+              {
+                     lX = 70;
+                     lY = 94;
+              }
+              else if (selectDifficultyMenu == 1)
+              {
+                     lX = 70;
+                     lY = 114;
+              }
+              else if (selectDifficultyMenu == 2)
+              {
+                     lX = 70;
+                     lY = 134;
+              }
+
+              frame_light%=6;
+              dsubimage( lX, lY, &light, 16*frame_light,0,16,16,  DIMAGE_NONE);
+              frame_light++;
+
+
+              dfont( &font_tiny );
+              dprint( 90, 166, C_RGB(150,150,150), "[UP] [DOWN] : select / [EXE] : validate");
+              dprint( 89, 165, C_BLACK,"[UP] [DOWN] : select / [EXE] : validate");
+
+              dupdate();
+
+              get_inputs_difficultymenu();
+       }
+
+       return selectDifficultyMenu;
 }
 
 static int get_inputs_startmenu(void)
@@ -1825,14 +2431,13 @@ static int get_inputs_startmenu(void)
               if (key==KEY_EXE)
                      doneStart = true;
 
-              if (key==KEY_UP && selectStartMenu>0)
+              if (key==KEY_UP && selectStartMenu>1)
                      selectStartMenu--;
 
               if (key==KEY_DOWN && selectStartMenu<2)
                      selectStartMenu++;
        }
 }
-
 
 unsigned char drawStartMenu( void )
 {
@@ -1843,6 +2448,9 @@ unsigned char drawStartMenu( void )
 
        frame_light = 0;
 
+       selectStartMenu = 1;
+
+
        while (!doneStart)
        {
               dclear(C_RGB(0,0,0));
@@ -1850,8 +2458,8 @@ unsigned char drawStartMenu( void )
               dimage( 0, 10, &maintitle);
 
               dfont( &font_fantasy );
-              dprint( 120, 100, C_RGB(150,150,150), "Continue Previous Game");
-              dprint( 119, 99, C_RGB(200,200,200), "Continue Previous Game");
+              dprint( 120, 100, C_RGB(150,150,150), "Continue Previous Game (Soon)");
+              dprint( 119, 99, C_RGB(240,240,240), "Continue Previous Game (Soon)");
 
               dfont( &font_fantasy );
               dprint( 120, 120, C_RGB(150,150,150), "Start New Game");
@@ -1892,6 +2500,59 @@ unsigned char drawStartMenu( void )
        }
 
        return selectStartMenu;
+}
+
+
+void updateTreasures( selection what )
+{
+    if (what==JOUEUR)
+    {
+        unsigned char X = joueur.x;
+        unsigned char Y= joueur.y;
+
+        /*
+        unsigned char X=0;
+        unsigned char Y=0;
+
+        if (joueur.direction==HAUT)
+        {
+            X=joueur.x;
+            Y=joueur.y-1;
+        }
+        if (joueur.direction==BAS)
+        {
+            X=joueur.x;
+            Y=joueur.y+1;
+        }
+        if (joueur.direction==GAUCHE)
+        {
+            X=joueur.x-1;
+            Y=joueur.y;
+        }
+        if (joueur.direction==DROITE)
+        {
+            X=joueur.x+1;
+            Y=joueur.y;
+        }
+        */
+
+
+        for (unsigned char k=0; k<NbTreasureLevel; k++)
+        {
+            if (X==TreasureCollection[k].x && Y==TreasureCollection[k].y)
+            {
+                if (TreasureCollection[k].isopen==false)
+                {
+                    score+=TreasureCollection[k].scoreboost;
+                    TreasureCollection[k].isopen=true;
+                }
+                else
+                {
+                    TreasureCollection[k].isvisible=false;
+                }
+            }
+        }
+    }
 }
 
 
@@ -1968,6 +2629,10 @@ static int get_inputs(void)
                      gameMechanics( selected, BAS);
               }
 
+              if (key==KEY_XOT)
+              {
+                     updateTreasures( selected);
+              }
 #if DEBUG==1
               if (key==KEY_1)
               {
@@ -2018,6 +2683,12 @@ int main ( int argc, char** argv )
        else if (choice==1)
        {
               // We start a new game, so we load Level #000
+              difficulty= drawDifficultyMenu();
+
+              if (difficulty==0) life=5;
+              else  if (difficulty==1) life=3;
+              else if (difficulty==2) life=1;
+
               loadLevel( 0 );
               initMap();
        }
@@ -2057,13 +2728,28 @@ int main ( int argc, char** argv )
 
               renderLight(  );
               renderTreasures( );
+
+              renderMonsters(  );
+
               renderPlayer(  );
 
               dupdate();
 
               get_inputs();
 
-              if (selectOptionPause==1) doneGame=true;
+              if (life==0) drawLoose();
+
+              if (selectOptionPause==1 || selectOptionLoose==1) doneGame=true;
+              if (life==0 && selectOptionLoose==0)
+              {
+                  if (difficulty==0) life=5;
+                  else  if (difficulty==1) life=3;
+                  else if (difficulty==2) life=1;
+
+                  loadLevel( currentLevel);
+              }
+
+
        }
 
        exitAndFree( );

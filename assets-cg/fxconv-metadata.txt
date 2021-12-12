@@ -16,6 +16,16 @@ player.png:
   profile: r5g6b5a
   name: player
 
+monstres.png:
+  type: bopti-image
+  profile: r5g6b5a
+  name: monstres
+
+hearts.png:
+  type: bopti-image
+  profile: r5g6b5a
+  name: hearts
+
 treasures.png:
   type: bopti-image
   profile: r5g6b5a

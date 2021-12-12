@@ -139,6 +139,7 @@ struct Treasure
     bool isopen;
     content  inside;
     unsigned int scoreboost;
+    bool isvisible;
 };
 
 struct Minimap
@@ -146,4 +147,22 @@ struct Minimap
     char x, y;
     unsigned char R,G,B,A;
     bool visited;
+};
+
+enum monstertype
+{
+    BLOB = 0,
+    BAT,
+    GHOST,
+    SPIDER,
+    SKELETON
+};
+
+struct Monster
+{
+    unsigned char xcur, ycur;
+    unsigned char mini, maxi;
+    orientations direction;
+    orientations sens;
+    monstertype kind;
 };

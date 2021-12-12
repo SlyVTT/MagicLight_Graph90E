@@ -34,6 +34,8 @@ set(ASSETS_cg
   assets-cg/chests.png
   assets-cg/fontFantasy.png
   assets-cg/fontTiny.png
+  assets-cg/monstres.png
+  assets-cg/hearts.png
   # ...
 )
 
