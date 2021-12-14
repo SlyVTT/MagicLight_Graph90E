@@ -8,7 +8,7 @@
 #include "structs.h"
 #include "primitives.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 #define R_ROUGE 0
 #define R_VERT 1
@@ -45,7 +45,7 @@ char LEVELCOLOR=0;
 
 
 
-#define NB_LEVELS 4
+#define NB_LEVELS 6
 
 unsigned char NbReceptorsLevel;
 unsigned char NbDoorsLevel;
@@ -53,6 +53,7 @@ unsigned char NbBlocksLevel;
 unsigned char NbTreasureLevel;
 unsigned char NbObstacleLevel;
 unsigned char NbMonsterLevel;
+unsigned char NbBossLevel;
 
 selection selected = JOUEUR;
 
@@ -80,6 +81,7 @@ Door* DoorCollection=NULL;
 Treasure* TreasureCollection=NULL;
 Obstacle* ObstaclesCollection=NULL;
 Monster* MonstersCollection=NULL;
+Boss* BossCollection=NULL;
 
 Minimap Map[ NB_LEVELS ];
 
@@ -99,7 +101,9 @@ extern bopti_image_t treasures;
 extern bopti_image_t chests;
 extern bopti_image_t monstres;
 extern bopti_image_t hearts;
-
+extern bopti_image_t bossmages;
+extern bopti_image_t bigboss;
+extern bopti_image_t bigparch;
 
 extern font_t font_fantasy;
 extern font_t font_tiny;
@@ -112,11 +116,13 @@ bool doneStart = false;
 bool doneTitle = false;
 bool doneLoose = false;
 bool doneDifficulty = false;
+bool doneStory = false;
 
 unsigned int compteur_mouvement = 0;
 unsigned char frame_cursor = 0;
 unsigned char frame_light = 0;
 unsigned char frame_monster = 0;
+unsigned char frame_boss = 0;
 unsigned char frame=0;
 bool mouvement=false;
 orientations direction=HAUT;
@@ -128,6 +134,7 @@ unsigned char selectDifficultyMenu = 0;
 unsigned char selectOptionMenu = 0;
 unsigned char selectOptionPause = 0;
 unsigned char selectOptionLoose = 0;
+unsigned char selectStoryMenu =0;
 unsigned char difficulty = 0;
 
 
@@ -242,6 +249,7 @@ void loadLevel( unsigned char numLevel )
               NbTreasureLevel = 0;
               NbObstacleLevel = 16;
               NbMonsterLevel = 3;
+              NbBossLevel = 0;
 
               BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
               ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
@@ -249,6 +257,7 @@ void loadLevel( unsigned char numLevel )
               TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
               ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
               MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
 
               Map[numLevel].x=-1;
               Map[numLevel].y=-1;
@@ -301,7 +310,7 @@ void loadLevel( unsigned char numLevel )
               // ReceptorCollection[6] = { 12, 8, GAUCHE, 255, 255, 0, false }; // Receptor YELLOW
               // ReceptorCollection[7] = { 0, 7, DROITE, 255, 255, 255, false }; // Receptor WHITE
 
-              DoorCollection[0] = { 6,0, HAUT, false, false, 0, { R_ROUGE,R_BLEU, -1 }, 1}; // Door NORTH
+              DoorCollection[0] = { 6,0, HAUT, false, true, 2, { R_ROUGE,R_BLEU, -1 }, 4}; // Door NORTH
               //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 1, { R_BLEU, -1, -1 }, 0}; // Door WEST
               DoorCollection[1] = { 12, 5, DROITE, false, true, 2, { R_VERT, R_NOIR, -1 }, 2}; // Door EAST
               //DoorCollection[3] = { 6, 10, BAS, false, false, 0, { -1 -1, -1 }, -1}; // Door SOUTH
@@ -330,6 +339,7 @@ void loadLevel( unsigned char numLevel )
               NbTreasureLevel = 2;
               NbObstacleLevel = 0;
               NbMonsterLevel = 0;
+              NbBossLevel = 0;
 
               BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
               ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
@@ -337,6 +347,7 @@ void loadLevel( unsigned char numLevel )
               TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
               ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
               MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
 
               Map[numLevel].x=0;
               Map[numLevel].y=-1;
@@ -401,6 +412,7 @@ void loadLevel( unsigned char numLevel )
               NbTreasureLevel = 0;
               NbObstacleLevel = 8;
               NbMonsterLevel = 0;
+              NbBossLevel = 0;
 
               BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
               ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
@@ -408,6 +420,7 @@ void loadLevel( unsigned char numLevel )
               TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
               ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
               MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
 
               Map[numLevel].x=1;
               Map[numLevel].y=-1;
@@ -448,7 +461,7 @@ void loadLevel( unsigned char numLevel )
               ReceptorCollection[3] = { 12, 8, GAUCHE, 255, 255, 0, false }; // Receptor YELLOW
               // ReceptorCollection[7] = { 0, 7, DROITE, 255, 255, 255, false }; // Receptor WHITE
 
-              DoorCollection[0] = { 6,0, HAUT, false, false, 0, { R_ROUGE,R_BLEU, R_VERT }, 1}; // Door NORTH
+              DoorCollection[0] = { 6,0, HAUT, false, true, 3, { R_ROUGE,R_BLEU, R_VERT }, 5}; // Door NORTH
               DoorCollection[1] = { 0, 5, GAUCHE, false, true, 1, { R_BLEU, 3, -1 }, 2}; // Door WEST
               //DoorCollection[2] = { 12, 5, DROITE, false, true, 1, { R_VERT, -1, -1 }, 0}; // Door EAST
               //DoorCollection[3] = { 6, 10, BAS, false, false, 0, { -1 -1, -1 }, -1}; // Door SOUTH
@@ -458,9 +471,161 @@ void loadLevel( unsigned char numLevel )
               //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100,  true };
               //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100,  true };
        }
+       else if (numLevel==4)
+       {
+              currentLevel = numLevel;
 
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 4;
+              NbDoorsLevel = 1;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 4;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=-1;
+              Map[numLevel].y=-2;
+              Map[numLevel].R=255;
+              Map[numLevel].G=0;
+              Map[numLevel].B=0;
+              Map[numLevel].A=255;
+              Map[numLevel].visited=true;
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              //ObstaclesCollection[0] = {2,2,BLOCK_SUN};
+              //ObstaclesCollection[1] = {10,2,BLOCK_SUN};
+              //ObstaclesCollection[2] = {2,8,BLOCK_SUN};
+              //ObstaclesCollection[3] = {10,8,BLOCK_SUN};
+              //ObstaclesCollection[4] = {4,5,BLOCK_WATER};
+              //ObstaclesCollection[5] = {8,5,BLOCK_WATER};
+              //ObstaclesCollection[6] = {6,3,BLOCK_WATER};
+              //ObstaclesCollection[7] = {6,7,BLOCK_WATER};
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              ReceptorCollection[0] = { 5, 0, BAS, 255, 0, 0, false };  // Receptor RED
+              ReceptorCollection[1] = { 12, 4, GAUCHE, 0, 255, 0, false }; // Receptor GREEN
+              ReceptorCollection[2] = { 0, 6, DROITE, 0, 0, 255, false }; // Receptor BLUE
+              ReceptorCollection[3] = { 12, 8, GAUCHE, 0, 0, 0, false }; // Receptor BLACK
+              // ReceptorCollection[4] = { 8, 0, BAS, 255, 0, 255, false }; // Receptor PINK
+              // ReceptorCollection[5] = { 9, 10, HAUT, 0, 255, 255, false }; // Receptor CYAN
+              // ReceptorCollection[6] = { 12, 8, GAUCHE, 255, 255, 0, false }; // Receptor YELLOW
+              // ReceptorCollection[7] = { 0, 7, DROITE, 255, 255, 255, false }; // Receptor WHITE
+
+              //DoorCollection[0] = { 6,0, HAUT, false, true, 3, { R_ROUGE,R_BLEU, R_VERT }, 2}; // Door NORTH
+              //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 1, { R_BLEU, -1, -1 }, 0}; // Door WEST
+              //DoorCollection[2] = { 12, 5, DROITE, false, true, 1, { R_VERT, -1, -1 }, 0}; // Door EAST
+              DoorCollection[0] = { 6, 10, BAS, false, true, 1, { R_NOIR, -1, -1 }, 1}; // Door SOUTH
+
+              //TreasureCollection[0] = {1,1, T_RED, false, PIERRE_BLANCHE, 100, true };
+              //TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100, true };
+              //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100, true };
+              //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100, true };
+
+              BossCollection[0] = { 6, 2, 2, 10, HORIZONTAL, GAUCHE, B_RED };
+              BossCollection[1] = { 2, 5, 2, 8, VERTICAL, HAUT, B_GREEN };
+              BossCollection[2] = { 6, 9, 2, 10, HORIZONTAL, GAUCHE, B_BLUE };
+              BossCollection[3] = { 10, 5, 2, 8, VERTICAL, HAUT, B_BLACK };
+       }
+       else if (numLevel==5)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 4;
+              NbDoorsLevel = 1;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 1;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=1;
+              Map[numLevel].y=-2;
+              Map[numLevel].R=255;
+              Map[numLevel].G=0;
+              Map[numLevel].B=0;
+              Map[numLevel].A=255;
+              Map[numLevel].visited=true;
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              //ObstaclesCollection[0] = {2,2,BLOCK_SUN};
+              //ObstaclesCollection[1] = {10,2,BLOCK_SUN};
+              //ObstaclesCollection[2] = {2,8,BLOCK_SUN};
+              //ObstaclesCollection[3] = {10,8,BLOCK_SUN};
+              //ObstaclesCollection[4] = {4,5,BLOCK_WATER};
+              //ObstaclesCollection[5] = {8,5,BLOCK_WATER};
+              //ObstaclesCollection[6] = {6,3,BLOCK_WATER};
+              //ObstaclesCollection[7] = {6,7,BLOCK_WATER};
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              ReceptorCollection[0] = { 5, 0, BAS, 255, 0, 0, false };  // Receptor RED
+              ReceptorCollection[1] = { 12, 4, GAUCHE, 0, 255, 0, false }; // Receptor GREEN
+              ReceptorCollection[2] = { 0, 6, DROITE, 0, 0, 255, false }; // Receptor BLUE
+              ReceptorCollection[3] = { 12, 8, GAUCHE, 0, 0, 0, false }; // Receptor BLACK
+              // ReceptorCollection[4] = { 8, 0, BAS, 255, 0, 255, false }; // Receptor PINK
+              // ReceptorCollection[5] = { 9, 10, HAUT, 0, 255, 255, false }; // Receptor CYAN
+              // ReceptorCollection[6] = { 12, 8, GAUCHE, 255, 255, 0, false }; // Receptor YELLOW
+              // ReceptorCollection[7] = { 0, 7, DROITE, 255, 255, 255, false }; // Receptor WHITE
+
+              //DoorCollection[0] = { 6,0, HAUT, false, true, 3, { R_ROUGE,R_BLEU, R_VERT }, 2}; // Door NORTH
+              //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 1, { R_BLEU, -1, -1 }, 0}; // Door WEST
+              //DoorCollection[2] = { 12, 5, DROITE, false, true, 1, { R_VERT, -1, -1 }, 0}; // Door EAST
+              DoorCollection[0] = { 6, 10, BAS, false, true, 1, { R_NOIR, -1, -1 }, 3}; // Door SOUTH
+
+              //TreasureCollection[0] = {1,1, T_RED, false, PIERRE_BLANCHE, 100, true };
+              //TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100, true };
+              //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100, true };
+              //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100, true };
+
+              BossCollection[0] = { 6, 3, 2, 10, HORIZONTAL, GAUCHE, BIGBOSS };
+
+       }
 }
-
 
 void exitAndFree( void )
 {
@@ -958,8 +1123,8 @@ void drawInterface( void )
        dsubimage( 232, 0, &parchemin, 0,0, 164, 210,  DIMAGE_NONE);
        dfont( &font_fantasy );
 
-       dprint( 256, 36, C_RGB(150,150,150), "MAGIC Light v0.5B");
-       dprint( 255, 35, C_BLACK, "MAGIC Light v0.5B");
+       dprint( 256, 36, C_RGB(150,150,150), "MAGIC Light v0.7B");
+       dprint( 255, 35, C_BLACK, "MAGIC Light v0.7B");
 
        dfont( &font_tiny );
 
@@ -974,12 +1139,12 @@ void drawInterface( void )
 
        for( unsigned char k = 0; k< life; k++)
        {
-           dsubimage( 340 + k*8, 57, &hearts, 8, 0, 8, 8,  DIMAGE_NONE);
+              dsubimage( 340 + k*8, 57, &hearts, 8, 0, 8, 8,  DIMAGE_NONE);
        }
 
-        for( unsigned char k = life; k< lifeMax; k++)
+       for( unsigned char k = life; k< lifeMax; k++)
        {
-           dsubimage( 340 + k*8, 57, &hearts, 0, 0, 8, 8,  DIMAGE_NONE);
+              dsubimage( 340 + k*8, 57, &hearts, 0, 0, 8, 8,  DIMAGE_NONE);
        }
 
 
@@ -1204,185 +1369,185 @@ void gameMechanics(  selection what, orientations touche )
 bool checkNextPositionMonster( unsigned int Xtarget, unsigned int Ytarget, unsigned int direction )
 {
 
-    for( unsigned char k=0; k<NbObstacleLevel; k++)
-    {
-        if (ObstaclesCollection[k].x==Xtarget  && ObstaclesCollection[k].y==Ytarget)
-            return false;
-    }
+       for( unsigned char k=0; k<NbObstacleLevel; k++)
+       {
+              if (ObstaclesCollection[k].x==Xtarget  && ObstaclesCollection[k].y==Ytarget)
+                     return false;
+       }
 
-    //if (Xtarget>=lumiere.x-1 && Xtarget<=lumiere.x+1 && Ytarget>=lumiere.y-1 && Ytarget<=lumiere.y+1)
-    if (Xtarget==lumiere.x && Ytarget==lumiere.y)
-    {
-        return false;
-    }
-    else if (Xtarget==joueur.x && Ytarget==joueur.y)
-    {
-        if (life>0) life--;
-        return false;
-    }
-    else if (Xtarget==BlocRouge->x && Ytarget==BlocRouge->y)
-    {
-        if (direction==HAUT)
-        {
-            if (isValidMove( ROUGE, BlocRouge->x, BlocRouge->y-1, HAUT))
-            {
-                BlocRouge->y-=1;
-                return true;
-            }
-            else return false;
-        }
-        else if (direction==BAS)
-        {
-            if (isValidMove( ROUGE, BlocRouge->x, BlocRouge->y+1, BAS))
-            {
-                BlocRouge->y+=1;
-                return true;
-            }
-            else return false;
-        }
-        else if (direction==GAUCHE)
-        {
-            if (isValidMove( ROUGE, BlocRouge->x-1, BlocRouge->y, GAUCHE))
-            {
-                BlocRouge->x-=1;
-                return true;
-            }
-            else return false;
-        }
-        else if (direction==DROITE)
-        {
-            if (isValidMove( ROUGE, BlocRouge->x+1, BlocRouge->y, DROITE))
-            {
-                BlocRouge->x+=1;
-                return true;
-            }
-            else return false;
-        }
-    }
-    else if (Xtarget==BlocVert->x && Ytarget==BlocVert->y)
-    {
-        if (direction==HAUT)
-        {
-            if (isValidMove( ROUGE, BlocVert->x, BlocVert->y-1, HAUT))
-            {
-                BlocVert->y-=1;
-                return true;
-            }
-            else return false;
-        }
-        else if (direction==BAS)
-        {
-            if (isValidMove( ROUGE, BlocVert->x, BlocVert->y+1, BAS))
-            {
-                BlocVert->y+=1;
-                return true;
-            }
-            else return false;
-        }
-        else if (direction==GAUCHE)
-        {
-            if (isValidMove( ROUGE, BlocVert->x-1, BlocVert->y, GAUCHE))
-            {
-                BlocVert->x-=1;
-                return true;
-            }
-            else return false;
-        }
-        else if (direction==DROITE)
-        {
-            if (isValidMove( ROUGE, BlocVert->x+1, BlocVert->y, DROITE))
-            {
-                BlocVert->x+=1;
-                return true;
-            }
-            else return false;
-        }
-    }
-    else if (Xtarget==BlocBleu->x && Ytarget==BlocBleu->y)
-    {
-        if (direction==HAUT)
-        {
-            if (isValidMove( ROUGE, BlocBleu->x, BlocBleu->y-1, HAUT))
-            {
-                BlocBleu->y-=1;
-                return true;
-            }
-            else return false;
-        }
-        else if (direction==BAS)
-        {
-            if (isValidMove( ROUGE, BlocBleu->x, BlocBleu->y+1, BAS))
-            {
-                BlocBleu->y+=1;
-                return true;
-            }
-            else return false;
-        }
-        else if (direction==GAUCHE)
-        {
-            if (isValidMove( ROUGE, BlocBleu->x-1, BlocBleu->y, GAUCHE))
-            {
-                BlocBleu->x-=1;
-                return true;
-            }
-            else return false;
-        }
-        else if (direction==DROITE)
-        {
-            if (isValidMove( ROUGE, BlocBleu->x+1, BlocBleu->y, DROITE))
-            {
-                BlocBleu->x+=1;
-                return true;
-            }
-            else return false;
-        }
-    }
-    else if (Xtarget==BlocNoir->x && Ytarget==BlocNoir->y)
-    {
-        if (direction==HAUT)
-        {
-            if (isValidMove( ROUGE, BlocNoir->x, BlocNoir->y-1, HAUT))
-            {
-                BlocNoir->y-=1;
-                return true;
-            }
-            else return false;
-        }
-        else if (direction==BAS)
-        {
-            if (isValidMove( ROUGE, BlocNoir->x, BlocNoir->y+1, BAS))
-            {
-                BlocNoir->y+=1;
-                return true;
-            }
-            else return false;
-        }
-        else if (direction==GAUCHE)
-        {
-            if (isValidMove( ROUGE, BlocNoir->x-1, BlocNoir->y, GAUCHE))
-            {
-                BlocNoir->x-=1;
-                return true;
-            }
-            else return false;
-        }
-        else if (direction==DROITE)
-        {
-            if (isValidMove( ROUGE, BlocNoir->x+1, BlocNoir->y, DROITE))
-            {
-                BlocNoir->x+=1;
-                return true;
-            }
-            else return false;
-        }
-    }
+       //if (Xtarget>=lumiere.x-1 && Xtarget<=lumiere.x+1 && Ytarget>=lumiere.y-1 && Ytarget<=lumiere.y+1)
+       if (Xtarget==lumiere.x && Ytarget==lumiere.y)
+       {
+              return false;
+       }
+       else if (Xtarget==joueur.x && Ytarget==joueur.y)
+       {
+              if (life>0) life--;
+              return false;
+       }
+       else if (Xtarget==BlocRouge->x && Ytarget==BlocRouge->y)
+       {
+              if (direction==HAUT)
+              {
+                     if (isValidMove( ROUGE, BlocRouge->x, BlocRouge->y-1, HAUT))
+                     {
+                            BlocRouge->y-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==BAS)
+              {
+                     if (isValidMove( ROUGE, BlocRouge->x, BlocRouge->y+1, BAS))
+                     {
+                            BlocRouge->y+=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==GAUCHE)
+              {
+                     if (isValidMove( ROUGE, BlocRouge->x-1, BlocRouge->y, GAUCHE))
+                     {
+                            BlocRouge->x-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==DROITE)
+              {
+                     if (isValidMove( ROUGE, BlocRouge->x+1, BlocRouge->y, DROITE))
+                     {
+                            BlocRouge->x+=1;
+                            return true;
+                     }
+                     else return false;
+              }
+       }
+       else if (Xtarget==BlocVert->x && Ytarget==BlocVert->y)
+       {
+              if (direction==HAUT)
+              {
+                     if (isValidMove( ROUGE, BlocVert->x, BlocVert->y-1, HAUT))
+                     {
+                            BlocVert->y-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==BAS)
+              {
+                     if (isValidMove( ROUGE, BlocVert->x, BlocVert->y+1, BAS))
+                     {
+                            BlocVert->y+=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==GAUCHE)
+              {
+                     if (isValidMove( ROUGE, BlocVert->x-1, BlocVert->y, GAUCHE))
+                     {
+                            BlocVert->x-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==DROITE)
+              {
+                     if (isValidMove( ROUGE, BlocVert->x+1, BlocVert->y, DROITE))
+                     {
+                            BlocVert->x+=1;
+                            return true;
+                     }
+                     else return false;
+              }
+       }
+       else if (Xtarget==BlocBleu->x && Ytarget==BlocBleu->y)
+       {
+              if (direction==HAUT)
+              {
+                     if (isValidMove( ROUGE, BlocBleu->x, BlocBleu->y-1, HAUT))
+                     {
+                            BlocBleu->y-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==BAS)
+              {
+                     if (isValidMove( ROUGE, BlocBleu->x, BlocBleu->y+1, BAS))
+                     {
+                            BlocBleu->y+=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==GAUCHE)
+              {
+                     if (isValidMove( ROUGE, BlocBleu->x-1, BlocBleu->y, GAUCHE))
+                     {
+                            BlocBleu->x-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==DROITE)
+              {
+                     if (isValidMove( ROUGE, BlocBleu->x+1, BlocBleu->y, DROITE))
+                     {
+                            BlocBleu->x+=1;
+                            return true;
+                     }
+                     else return false;
+              }
+       }
+       else if (Xtarget==BlocNoir->x && Ytarget==BlocNoir->y)
+       {
+              if (direction==HAUT)
+              {
+                     if (isValidMove( ROUGE, BlocNoir->x, BlocNoir->y-1, HAUT))
+                     {
+                            BlocNoir->y-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==BAS)
+              {
+                     if (isValidMove( ROUGE, BlocNoir->x, BlocNoir->y+1, BAS))
+                     {
+                            BlocNoir->y+=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==GAUCHE)
+              {
+                     if (isValidMove( ROUGE, BlocNoir->x-1, BlocNoir->y, GAUCHE))
+                     {
+                            BlocNoir->x-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==DROITE)
+              {
+                     if (isValidMove( ROUGE, BlocNoir->x+1, BlocNoir->y, DROITE))
+                     {
+                            BlocNoir->x+=1;
+                            return true;
+                     }
+                     else return false;
+              }
+       }
 
-    return true;
+       return true;
 }
 
 void updateMonsters( void )
 {
-        for( unsigned char k=0; k<NbMonsterLevel; k++ )
+       for( unsigned char k=0; k<NbMonsterLevel; k++ )
        {
               unsigned int X = MonstersCollection[k].xcur;
               unsigned int Y = MonstersCollection[k].ycur;
@@ -1394,66 +1559,67 @@ void updateMonsters( void )
 
               if (direction==VERTICAL)
               {
-                  if (sens==BAS)
-                  {
-                        if (Y<maxi && checkNextPositionMonster( X, Y+1, BAS)==true)
-                        {
-                            MonstersCollection[k].ycur++;
-                            MonstersCollection[k].sens=BAS;
-                        }
-                        else
-                        {
-                            MonstersCollection[k].sens=HAUT;
-                        }
-                  }
-                  else if (sens==HAUT)
-                  {
-                        if (Y>mini && checkNextPositionMonster( X, Y-1, HAUT)==true)
-                        {
-                            MonstersCollection[k].ycur--;
-                            MonstersCollection[k].sens=HAUT;
-                        }
-                        else
-                        {
-                            MonstersCollection[k].sens=BAS;
-                        }
-                  }
+                     if (sens==BAS)
+                     {
+                            if (Y<maxi && checkNextPositionMonster( X, Y+1, BAS)==true)
+                            {
+                                   MonstersCollection[k].ycur++;
+                                   MonstersCollection[k].sens=BAS;
+                            }
+                            else
+                            {
+                                   MonstersCollection[k].sens=HAUT;
+                            }
+                     }
+                     else if (sens==HAUT)
+                     {
+                            if (Y>mini && checkNextPositionMonster( X, Y-1, HAUT)==true)
+                            {
+                                   MonstersCollection[k].ycur--;
+                                   MonstersCollection[k].sens=HAUT;
+                            }
+                            else
+                            {
+                                   MonstersCollection[k].sens=BAS;
+                            }
+                     }
               }
               else if (direction==HORIZONTAL)
               {
 
-                  if (sens==DROITE)
-                  {
-                        if (X<maxi && checkNextPositionMonster( X+1, Y, DROITE)==true)
-                        {
-                            MonstersCollection[k].xcur++;
-                            MonstersCollection[k].sens=DROITE;
-                        }
-                        else
-                        {
-                            MonstersCollection[k].sens=GAUCHE;
-                        }
-                  }
-                  else if (sens==GAUCHE)
-                  {
-                         if (X>mini && checkNextPositionMonster( X-1, Y, GAUCHE)==true)
-                        {
-                            MonstersCollection[k].xcur--;
-                            MonstersCollection[k].sens=GAUCHE;
-                        }
-                        else
-                        {
-                            MonstersCollection[k].sens=DROITE;
-                        }
-                   }
+                     if (sens==DROITE)
+                     {
+                            if (X<maxi && checkNextPositionMonster( X+1, Y, DROITE)==true)
+                            {
+                                   MonstersCollection[k].xcur++;
+                                   MonstersCollection[k].sens=DROITE;
+                            }
+                            else
+                            {
+                                   MonstersCollection[k].sens=GAUCHE;
+                            }
+                     }
+                     else if (sens==GAUCHE)
+                     {
+                            if (X>mini && checkNextPositionMonster( X-1, Y, GAUCHE)==true)
+                            {
+                                   MonstersCollection[k].xcur--;
+                                   MonstersCollection[k].sens=GAUCHE;
+                            }
+                            else
+                            {
+                                   MonstersCollection[k].sens=DROITE;
+                            }
+                     }
               }
 
        }
 }
 
+
 void renderMonsters( void )
 {
-        for( unsigned char k=0; k<NbMonsterLevel; k++ )
+       for( unsigned char k=0; k<NbMonsterLevel; k++ )
        {
               unsigned int lX = SIZE*MonstersCollection[k].xcur+OFFSET_X;
               unsigned int lY = SIZE*MonstersCollection[k].ycur+OFFSET_Y;
@@ -1463,96 +1629,550 @@ void renderMonsters( void )
               unsigned int sens = MonstersCollection[k].sens;
               unsigned int type = MonstersCollection[k].kind;
 
-              unsigned int OFFSET_X_MONSTER = 48*type;
 
+
+              unsigned int OFFSET_X_MONSTER = 48*type;
 
               if (direction==VERTICAL)
               {
 
-/*
-                  if (true)
-                 {
-                    _lineRGBA( lX+SIZE/2, mini*SIZE+OFFSET_Y+SIZE/2, lX+SIZE/2, maxi*SIZE+OFFSET_Y+SIZE/2, 255, 0, 0, 255 );
-                    _lineRGBA( lX+1+SIZE/2, mini*SIZE+OFFSET_Y+SIZE/2, lX+1+SIZE/2, maxi*SIZE+OFFSET_Y+SIZE/2, 255, 0, 0, 255 );
-                    _lineRGBA( lX-1+SIZE/2, mini*SIZE+OFFSET_Y+SIZE/2, lX-1+SIZE/2, maxi*SIZE+OFFSET_Y+SIZE/2, 255, 0, 0, 255 );
-                 }
-*/
-                  if (sens==BAS && MonstersCollection[k].ycur<maxi)
-                  {
-                      if (frame_monster==0) dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,0,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==1) dsubimage( lX, lY+3, &monstres, OFFSET_X_MONSTER+16,0,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==2) dsubimage( lX, lY+5, &monstres, OFFSET_X_MONSTER+32,0,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==3) dsubimage( lX, lY+8, &monstres, OFFSET_X_MONSTER,0,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==4) dsubimage( lX, lY+11, &monstres, OFFSET_X_MONSTER+16,0,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==5) dsubimage( lX, lY+13, &monstres, OFFSET_X_MONSTER+32,0,16,16,  DIMAGE_NONE);
-                  }
-                  else if (sens==BAS && MonstersCollection[k].ycur==maxi)
-                  {
-                      dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,0,16,16,  DIMAGE_NONE);
-                  }
-                  else if (sens==HAUT && MonstersCollection[k].ycur>mini)
-                  {
-                     if (frame_monster==0) dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,32,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==1) dsubimage( lX, lY-3, &monstres, OFFSET_X_MONSTER+16,32,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==2) dsubimage( lX, lY-5, &monstres, OFFSET_X_MONSTER+32,32,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==3) dsubimage( lX, lY-8, &monstres, OFFSET_X_MONSTER,32,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==4) dsubimage( lX, lY-11, &monstres, OFFSET_X_MONSTER+16,32,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==5) dsubimage( lX, lY-13, &monstres, OFFSET_X_MONSTER+32,32,16,16,  DIMAGE_NONE);
-                  }
-                  else if (sens==HAUT && MonstersCollection[k].ycur==mini)
-                  {
-                      dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,32,16,16,  DIMAGE_NONE);
-                  }
+                     /*
+                                       if (true)
+                                      {
+                                         _lineRGBA( lX+SIZE/2, mini*SIZE+OFFSET_Y+SIZE/2, lX+SIZE/2, maxi*SIZE+OFFSET_Y+SIZE/2, 255, 0, 0, 255 );
+                                         _lineRGBA( lX+1+SIZE/2, mini*SIZE+OFFSET_Y+SIZE/2, lX+1+SIZE/2, maxi*SIZE+OFFSET_Y+SIZE/2, 255, 0, 0, 255 );
+                                         _lineRGBA( lX-1+SIZE/2, mini*SIZE+OFFSET_Y+SIZE/2, lX-1+SIZE/2, maxi*SIZE+OFFSET_Y+SIZE/2, 255, 0, 0, 255 );
+                                      }
+                     */
+                     if (sens==BAS && MonstersCollection[k].ycur<maxi)
+                     {
+                            if (frame_monster==0) dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,0,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==1) dsubimage( lX, lY+3, &monstres, OFFSET_X_MONSTER+16,0,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==2) dsubimage( lX, lY+5, &monstres, OFFSET_X_MONSTER+32,0,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==3) dsubimage( lX, lY+8, &monstres, OFFSET_X_MONSTER,0,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==4) dsubimage( lX, lY+11, &monstres, OFFSET_X_MONSTER+16,0,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==5) dsubimage( lX, lY+13, &monstres, OFFSET_X_MONSTER+32,0,16,16,  DIMAGE_NONE);
+                     }
+                     else if (sens==BAS && MonstersCollection[k].ycur==maxi)
+                     {
+                            dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,0,16,16,  DIMAGE_NONE);
+                     }
+                     else if (sens==HAUT && MonstersCollection[k].ycur>mini)
+                     {
+                            if (frame_monster==0) dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,32,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==1) dsubimage( lX, lY-3, &monstres, OFFSET_X_MONSTER+16,32,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==2) dsubimage( lX, lY-5, &monstres, OFFSET_X_MONSTER+32,32,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==3) dsubimage( lX, lY-8, &monstres, OFFSET_X_MONSTER,32,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==4) dsubimage( lX, lY-11, &monstres, OFFSET_X_MONSTER+16,32,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==5) dsubimage( lX, lY-13, &monstres, OFFSET_X_MONSTER+32,32,16,16,  DIMAGE_NONE);
+                     }
+                     else if (sens==HAUT && MonstersCollection[k].ycur==mini)
+                     {
+                            dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,32,16,16,  DIMAGE_NONE);
+                     }
               }
 
               else if (direction==HORIZONTAL)
               {
 
-/*
-                 if (true)
-                 {
-                    _lineRGBA( mini*SIZE+OFFSET_X+SIZE/2, lY+SIZE/2, maxi*SIZE+OFFSET_X+SIZE/2, lY+SIZE/2, 255, 0, 0, 255 );
-                    _lineRGBA( mini*SIZE+OFFSET_X+SIZE/2, lY+1+SIZE/2, maxi*SIZE+OFFSET_X+SIZE/2, lY+1+SIZE/2, 255, 0, 0, 255 );
-                    _lineRGBA( mini*SIZE+OFFSET_X+SIZE/2, lY-1+SIZE/2, maxi*SIZE+OFFSET_X+SIZE/2, lY-1+SIZE/2, 255, 0, 0, 255 );
-                 }
-*/
+                     /*
+                                      if (true)
+                                      {
+                                         _lineRGBA( mini*SIZE+OFFSET_X+SIZE/2, lY+SIZE/2, maxi*SIZE+OFFSET_X+SIZE/2, lY+SIZE/2, 255, 0, 0, 255 );
+                                         _lineRGBA( mini*SIZE+OFFSET_X+SIZE/2, lY+1+SIZE/2, maxi*SIZE+OFFSET_X+SIZE/2, lY+1+SIZE/2, 255, 0, 0, 255 );
+                                         _lineRGBA( mini*SIZE+OFFSET_X+SIZE/2, lY-1+SIZE/2, maxi*SIZE+OFFSET_X+SIZE/2, lY-1+SIZE/2, 255, 0, 0, 255 );
+                                      }
+                     */
 
-                  if (sens==GAUCHE && MonstersCollection[k].xcur>mini)
-                  {
-                     if (frame_monster==0) dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,48,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==1) dsubimage( lX-3, lY, &monstres, OFFSET_X_MONSTER+16,48,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==2) dsubimage( lX-5, lY, &monstres, OFFSET_X_MONSTER+32,48,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==3) dsubimage( lX-8, lY, &monstres, OFFSET_X_MONSTER,48,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==4) dsubimage( lX-11, lY, &monstres, OFFSET_X_MONSTER+16,48,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==5) dsubimage( lX-13, lY, &monstres, OFFSET_X_MONSTER+32,48,16,16,  DIMAGE_NONE);
-                  }
-                  else if (sens==GAUCHE && MonstersCollection[k].xcur==mini)
-                  {
-                      dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,48,16,16,  DIMAGE_NONE);
-                  }
-                  else if (sens==DROITE && MonstersCollection[k].xcur<maxi)
-                  {
-                     if (frame_monster==0) dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,16,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==1) dsubimage( lX+3, lY, &monstres, OFFSET_X_MONSTER+16,16,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==2) dsubimage( lX+5, lY, &monstres, OFFSET_X_MONSTER+32,16,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==3) dsubimage( lX+8, lY, &monstres, OFFSET_X_MONSTER,16,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==4) dsubimage( lX+11, lY, &monstres, OFFSET_X_MONSTER+16,16,16,16,  DIMAGE_NONE);
-                     else if (frame_monster==5) dsubimage( lX+13, lY, &monstres, OFFSET_X_MONSTER+32,16,16,16,  DIMAGE_NONE);
-                  }
-                  else if (sens==DROITE && MonstersCollection[k].xcur==maxi)
-                  {
-                     dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,16,16,16,  DIMAGE_NONE);
-                  }
+                     if (sens==GAUCHE && MonstersCollection[k].xcur>mini)
+                     {
+                            if (frame_monster==0) dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,48,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==1) dsubimage( lX-3, lY, &monstres, OFFSET_X_MONSTER+16,48,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==2) dsubimage( lX-5, lY, &monstres, OFFSET_X_MONSTER+32,48,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==3) dsubimage( lX-8, lY, &monstres, OFFSET_X_MONSTER,48,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==4) dsubimage( lX-11, lY, &monstres, OFFSET_X_MONSTER+16,48,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==5) dsubimage( lX-13, lY, &monstres, OFFSET_X_MONSTER+32,48,16,16,  DIMAGE_NONE);
+                     }
+                     else if (sens==GAUCHE && MonstersCollection[k].xcur==mini)
+                     {
+                            dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,48,16,16,  DIMAGE_NONE);
+                     }
+                     else if (sens==DROITE && MonstersCollection[k].xcur<maxi)
+                     {
+                            if (frame_monster==0) dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,16,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==1) dsubimage( lX+3, lY, &monstres, OFFSET_X_MONSTER+16,16,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==2) dsubimage( lX+5, lY, &monstres, OFFSET_X_MONSTER+32,16,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==3) dsubimage( lX+8, lY, &monstres, OFFSET_X_MONSTER,16,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==4) dsubimage( lX+11, lY, &monstres, OFFSET_X_MONSTER+16,16,16,16,  DIMAGE_NONE);
+                            else if (frame_monster==5) dsubimage( lX+13, lY, &monstres, OFFSET_X_MONSTER+32,16,16,16,  DIMAGE_NONE);
+                     }
+                     else if (sens==DROITE && MonstersCollection[k].xcur==maxi)
+                     {
+                            dsubimage( lX, lY, &monstres, OFFSET_X_MONSTER,16,16,16,  DIMAGE_NONE);
+                     }
+              }
+
+       }
+
+       frame_monster++;
+       if (frame_monster==6)
+       {
+              updateMonsters();
+              frame_monster=0;
+       }
+
+}
+
+
+
+bool checkNextPositionBoss( unsigned int Xtarget, unsigned int Ytarget, unsigned int direction )
+{
+
+       for( unsigned char k=0; k<NbObstacleLevel; k++)
+       {
+              if (ObstaclesCollection[k].x==Xtarget  && ObstaclesCollection[k].y==Ytarget)
+                     return false;
+       }
+
+       //if (Xtarget>=lumiere.x-1 && Xtarget<=lumiere.x+1 && Ytarget>=lumiere.y-1 && Ytarget<=lumiere.y+1)
+       if (Xtarget==lumiere.x && Ytarget==lumiere.y)
+       {
+              return false;
+       }
+       else if (Xtarget==joueur.x && Ytarget==joueur.y)
+       {
+              if (life>0) life--;
+              return false;
+       }
+       else if (Xtarget==BlocRouge->x && Ytarget==BlocRouge->y)
+       {
+              if (direction==HAUT)
+              {
+                     if (isValidMove( ROUGE, BlocRouge->x, BlocRouge->y-1, HAUT))
+                     {
+                            BlocRouge->y-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==BAS)
+              {
+                     if (isValidMove( ROUGE, BlocRouge->x, BlocRouge->y+1, BAS))
+                     {
+                            BlocRouge->y+=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==GAUCHE)
+              {
+                     if (isValidMove( ROUGE, BlocRouge->x-1, BlocRouge->y, GAUCHE))
+                     {
+                            BlocRouge->x-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==DROITE)
+              {
+                     if (isValidMove( ROUGE, BlocRouge->x+1, BlocRouge->y, DROITE))
+                     {
+                            BlocRouge->x+=1;
+                            return true;
+                     }
+                     else return false;
+              }
+       }
+       else if (Xtarget==BlocVert->x && Ytarget==BlocVert->y)
+       {
+              if (direction==HAUT)
+              {
+                     if (isValidMove( ROUGE, BlocVert->x, BlocVert->y-1, HAUT))
+                     {
+                            BlocVert->y-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==BAS)
+              {
+                     if (isValidMove( ROUGE, BlocVert->x, BlocVert->y+1, BAS))
+                     {
+                            BlocVert->y+=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==GAUCHE)
+              {
+                     if (isValidMove( ROUGE, BlocVert->x-1, BlocVert->y, GAUCHE))
+                     {
+                            BlocVert->x-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==DROITE)
+              {
+                     if (isValidMove( ROUGE, BlocVert->x+1, BlocVert->y, DROITE))
+                     {
+                            BlocVert->x+=1;
+                            return true;
+                     }
+                     else return false;
+              }
+       }
+       else if (Xtarget==BlocBleu->x && Ytarget==BlocBleu->y)
+       {
+              if (direction==HAUT)
+              {
+                     if (isValidMove( ROUGE, BlocBleu->x, BlocBleu->y-1, HAUT))
+                     {
+                            BlocBleu->y-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==BAS)
+              {
+                     if (isValidMove( ROUGE, BlocBleu->x, BlocBleu->y+1, BAS))
+                     {
+                            BlocBleu->y+=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==GAUCHE)
+              {
+                     if (isValidMove( ROUGE, BlocBleu->x-1, BlocBleu->y, GAUCHE))
+                     {
+                            BlocBleu->x-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==DROITE)
+              {
+                     if (isValidMove( ROUGE, BlocBleu->x+1, BlocBleu->y, DROITE))
+                     {
+                            BlocBleu->x+=1;
+                            return true;
+                     }
+                     else return false;
+              }
+       }
+       else if (Xtarget==BlocNoir->x && Ytarget==BlocNoir->y)
+       {
+              if (direction==HAUT)
+              {
+                     if (isValidMove( ROUGE, BlocNoir->x, BlocNoir->y-1, HAUT))
+                     {
+                            BlocNoir->y-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==BAS)
+              {
+                     if (isValidMove( ROUGE, BlocNoir->x, BlocNoir->y+1, BAS))
+                     {
+                            BlocNoir->y+=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==GAUCHE)
+              {
+                     if (isValidMove( ROUGE, BlocNoir->x-1, BlocNoir->y, GAUCHE))
+                     {
+                            BlocNoir->x-=1;
+                            return true;
+                     }
+                     else return false;
+              }
+              else if (direction==DROITE)
+              {
+                     if (isValidMove( ROUGE, BlocNoir->x+1, BlocNoir->y, DROITE))
+                     {
+                            BlocNoir->x+=1;
+                            return true;
+                     }
+                     else return false;
               }
        }
 
-        frame_monster++;
-        if (frame_monster==6)
-        {
-                  updateMonsters();
-                  frame_monster=0;
-        }
+       return true;
 }
+
+
+void updateBoss( void )
+{
+       for( unsigned char k=0; k<NbBossLevel; k++ )
+       {
+              unsigned int X = BossCollection[k].xcur;
+              unsigned int Y = BossCollection[k].ycur;
+              unsigned char mini = BossCollection[k].mini;
+              unsigned char maxi = BossCollection[k].maxi;
+              unsigned int direction = BossCollection[k].direction;
+              unsigned int sens = BossCollection[k].sens;
+              unsigned int type = BossCollection[k].color;
+
+              if (direction==VERTICAL)
+              {
+                     if (sens==BAS)
+                     {
+                            if (Y<maxi && checkNextPositionMonster( X, Y+1, BAS)==true)
+                            {
+                                   BossCollection[k].ycur++;
+                                   BossCollection[k].sens=BAS;
+                            }
+                            else
+                            {
+                                   BossCollection[k].sens=HAUT;
+                            }
+                     }
+                     else if (sens==HAUT)
+                     {
+                            if (Y>mini && checkNextPositionMonster( X, Y-1, HAUT)==true)
+                            {
+                                   BossCollection[k].ycur--;
+                                   BossCollection[k].sens=HAUT;
+                            }
+                            else
+                            {
+                                   BossCollection[k].sens=BAS;
+                            }
+                     }
+              }
+              else if (direction==HORIZONTAL)
+              {
+
+                     if (sens==DROITE)
+                     {
+                            if (X<maxi && checkNextPositionMonster( X+1, Y, DROITE)==true)
+                            {
+                                   BossCollection[k].xcur++;
+                                   BossCollection[k].sens=DROITE;
+                            }
+                            else
+                            {
+                                   BossCollection[k].sens=GAUCHE;
+                            }
+                     }
+                     else if (sens==GAUCHE)
+                     {
+                            if (X>mini && checkNextPositionMonster( X-1, Y, GAUCHE)==true)
+                            {
+                                   BossCollection[k].xcur--;
+                                   BossCollection[k].sens=GAUCHE;
+                            }
+                            else
+                            {
+                                   BossCollection[k].sens=DROITE;
+                            }
+                     }
+              }
+
+       }
+}
+
+
+
+void renderBoss( void )
+{
+
+       for( unsigned char k=0; k<NbBossLevel; k++ )
+       {
+              unsigned int lX = SIZE*BossCollection[k].xcur+OFFSET_X;
+              unsigned int lY = SIZE*BossCollection[k].ycur+OFFSET_Y - 2; //Boss are 18 pixel high instead of 16
+              unsigned char mini = BossCollection[k].mini;
+              unsigned char maxi = BossCollection[k].maxi;
+              unsigned int direction = BossCollection[k].direction;
+              unsigned int sens = BossCollection[k].sens;
+              unsigned int type = BossCollection[k].color;
+
+              if (type ==BIGBOSS)
+              {
+                    lX -= 8;
+                    lY -= 14;
+
+                     unsigned int OFFSET_X_MONSTER = 0;
+
+                     if (direction==VERTICAL)
+                     {
+
+                            /*
+                                              if (true)
+                                             {
+                                                _lineRGBA( lX+SIZE/2, mini*SIZE+OFFSET_Y+SIZE/2, lX+SIZE/2, maxi*SIZE+OFFSET_Y+SIZE/2, 255, 0, 0, 255 );
+                                                _lineRGBA( lX+1+SIZE/2, mini*SIZE+OFFSET_Y+SIZE/2, lX+1+SIZE/2, maxi*SIZE+OFFSET_Y+SIZE/2, 255, 0, 0, 255 );
+                                                _lineRGBA( lX-1+SIZE/2, mini*SIZE+OFFSET_Y+SIZE/2, lX-1+SIZE/2, maxi*SIZE+OFFSET_Y+SIZE/2, 255, 0, 0, 255 );
+                                             }
+                            */
+                            if (sens==BAS && BossCollection[k].ycur<maxi)
+                            {
+                                   if (frame_boss==0) dsubimage( lX, lY, &bigboss, OFFSET_X_MONSTER,64,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==1) dsubimage( lX, lY+3, &bigboss, OFFSET_X_MONSTER+32,64,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==2) dsubimage( lX, lY+5, &bigboss, OFFSET_X_MONSTER+64,64,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==3) dsubimage( lX, lY+8, &bigboss, OFFSET_X_MONSTER,64,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==4) dsubimage( lX, lY+11, &bigboss, OFFSET_X_MONSTER+32,64,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==5) dsubimage( lX, lY+13, &bigboss, OFFSET_X_MONSTER+64,64,32,32,  DIMAGE_NONE);
+                            }
+                            else if (sens==BAS && BossCollection[k].ycur==maxi)
+                            {
+                                   dsubimage( lX, lY, &bigboss, OFFSET_X_MONSTER,64,32,32,  DIMAGE_NONE);
+                            }
+                            else if (sens==HAUT && BossCollection[k].ycur>mini)
+                            {
+                                   if (frame_boss==0) dsubimage( lX, lY, &bigboss, OFFSET_X_MONSTER,0,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==1) dsubimage( lX, lY-3, &bigboss, OFFSET_X_MONSTER+32,0,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==2) dsubimage( lX, lY-5, &bigboss, OFFSET_X_MONSTER+64,0,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==3) dsubimage( lX, lY-8, &bigboss, OFFSET_X_MONSTER,32,0,32,  DIMAGE_NONE);
+                                   else if (frame_boss==4) dsubimage( lX, lY-11, &bigboss, OFFSET_X_MONSTER+32,0,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==5) dsubimage( lX, lY-13, &bigboss, OFFSET_X_MONSTER+64,0,32,32,  DIMAGE_NONE);
+                            }
+                            else if (sens==HAUT && BossCollection[k].ycur==mini)
+                            {
+                                   dsubimage( lX, lY, &bigboss, OFFSET_X_MONSTER,0,32,32,  DIMAGE_NONE);
+                            }
+                     }
+
+                     else if (direction==HORIZONTAL)
+                     {
+
+                            /*
+                                             if (true)
+                                             {
+                                                _lineRGBA( mini*SIZE+OFFSET_X+SIZE/2, lY+SIZE/2, maxi*SIZE+OFFSET_X+SIZE/2, lY+SIZE/2, 255, 0, 0, 255 );
+                                                _lineRGBA( mini*SIZE+OFFSET_X+SIZE/2, lY+1+SIZE/2, maxi*SIZE+OFFSET_X+SIZE/2, lY+1+SIZE/2, 255, 0, 0, 255 );
+                                                _lineRGBA( mini*SIZE+OFFSET_X+SIZE/2, lY-1+SIZE/2, maxi*SIZE+OFFSET_X+SIZE/2, lY-1+SIZE/2, 255, 0, 0, 255 );
+                                             }
+                            */
+
+                            if (sens==GAUCHE && BossCollection[k].xcur>mini)
+                            {
+                                   if (frame_boss==0) dsubimage( lX, lY, &bigboss, OFFSET_X_MONSTER,96,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==1) dsubimage( lX-3, lY, &bigboss, OFFSET_X_MONSTER+32,96,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==2) dsubimage( lX-5, lY, &bigboss, OFFSET_X_MONSTER+64,96,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==3) dsubimage( lX-8, lY, &bigboss, OFFSET_X_MONSTER,96,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==4) dsubimage( lX-11, lY, &bigboss, OFFSET_X_MONSTER+32,96,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==5) dsubimage( lX-13, lY, &bigboss, OFFSET_X_MONSTER+64,96,32,32,  DIMAGE_NONE);
+                            }
+                            else if (sens==GAUCHE && BossCollection[k].xcur==mini)
+                            {
+                                   dsubimage( lX, lY, &bigboss, OFFSET_X_MONSTER,96,32,32,  DIMAGE_NONE);
+                            }
+                            else if (sens==DROITE && BossCollection[k].xcur<maxi)
+                            {
+                                   if (frame_boss==0) dsubimage( lX, lY, &bigboss, OFFSET_X_MONSTER,32,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==1) dsubimage( lX+3, lY, &bigboss, OFFSET_X_MONSTER+32,32,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==2) dsubimage( lX+5, lY, &bigboss, OFFSET_X_MONSTER+64,32,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==3) dsubimage( lX+8, lY, &bigboss, OFFSET_X_MONSTER,32,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==4) dsubimage( lX+11, lY, &bigboss, OFFSET_X_MONSTER+32,32,32,32,  DIMAGE_NONE);
+                                   else if (frame_boss==5) dsubimage( lX+13, lY, &bigboss, OFFSET_X_MONSTER+64,32,32,32,  DIMAGE_NONE);
+                            }
+                            else if (sens==DROITE && BossCollection[k].xcur==maxi)
+                            {
+                                   dsubimage( lX, lY, &bigboss, OFFSET_X_MONSTER,32,32,32,  DIMAGE_NONE);
+                            }
+                     }
+
+              }
+              else
+              {
+
+                     unsigned int OFFSET_X_MONSTER = 48*type;
+
+
+                     if (direction==VERTICAL)
+                     {
+
+                            /*
+                                              if (true)
+                                             {
+                                                _lineRGBA( lX+SIZE/2, mini*SIZE+OFFSET_Y+SIZE/2, lX+SIZE/2, maxi*SIZE+OFFSET_Y+SIZE/2, 255, 0, 0, 255 );
+                                                _lineRGBA( lX+1+SIZE/2, mini*SIZE+OFFSET_Y+SIZE/2, lX+1+SIZE/2, maxi*SIZE+OFFSET_Y+SIZE/2, 255, 0, 0, 255 );
+                                                _lineRGBA( lX-1+SIZE/2, mini*SIZE+OFFSET_Y+SIZE/2, lX-1+SIZE/2, maxi*SIZE+OFFSET_Y+SIZE/2, 255, 0, 0, 255 );
+                                             }
+                            */
+                            if (sens==BAS && BossCollection[k].ycur<maxi)
+                            {
+                                   if (frame_boss==0) dsubimage( lX, lY, &bossmages, OFFSET_X_MONSTER,36,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==1) dsubimage( lX, lY+3, &bossmages, OFFSET_X_MONSTER+16,36,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==2) dsubimage( lX, lY+5, &bossmages, OFFSET_X_MONSTER+32,36,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==3) dsubimage( lX, lY+8, &bossmages, OFFSET_X_MONSTER,36,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==4) dsubimage( lX, lY+11, &bossmages, OFFSET_X_MONSTER+16,36,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==5) dsubimage( lX, lY+13, &bossmages, OFFSET_X_MONSTER+32,36,16,18,  DIMAGE_NONE);
+                            }
+                            else if (sens==BAS && BossCollection[k].ycur==maxi)
+                            {
+                                   dsubimage( lX, lY, &bossmages, OFFSET_X_MONSTER,36,16,18,  DIMAGE_NONE);
+                            }
+                            else if (sens==HAUT && BossCollection[k].ycur>mini)
+                            {
+                                   if (frame_boss==0) dsubimage( lX, lY, &bossmages, OFFSET_X_MONSTER,0,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==1) dsubimage( lX, lY-3, &bossmages, OFFSET_X_MONSTER+16,0,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==2) dsubimage( lX, lY-5, &bossmages, OFFSET_X_MONSTER+32,0,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==3) dsubimage( lX, lY-8, &bossmages, OFFSET_X_MONSTER,0,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==4) dsubimage( lX, lY-11, &bossmages, OFFSET_X_MONSTER+16,0,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==5) dsubimage( lX, lY-13, &bossmages, OFFSET_X_MONSTER+32,0,16,18,  DIMAGE_NONE);
+                            }
+                            else if (sens==HAUT && BossCollection[k].ycur==mini)
+                            {
+                                   dsubimage( lX, lY, &bossmages, OFFSET_X_MONSTER,0,16,18,  DIMAGE_NONE);
+                            }
+                     }
+
+                     else if (direction==HORIZONTAL)
+                     {
+
+                            /*
+                                             if (true)
+                                             {
+                                                _lineRGBA( mini*SIZE+OFFSET_X+SIZE/2, lY+SIZE/2, maxi*SIZE+OFFSET_X+SIZE/2, lY+SIZE/2, 255, 0, 0, 255 );
+                                                _lineRGBA( mini*SIZE+OFFSET_X+SIZE/2, lY+1+SIZE/2, maxi*SIZE+OFFSET_X+SIZE/2, lY+1+SIZE/2, 255, 0, 0, 255 );
+                                                _lineRGBA( mini*SIZE+OFFSET_X+SIZE/2, lY-1+SIZE/2, maxi*SIZE+OFFSET_X+SIZE/2, lY-1+SIZE/2, 255, 0, 0, 255 );
+                                             }
+                            */
+
+                            if (sens==GAUCHE && BossCollection[k].xcur>mini)
+                            {
+                                   if (frame_boss==0) dsubimage( lX, lY, &bossmages, OFFSET_X_MONSTER,54,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==1) dsubimage( lX-3, lY, &bossmages, OFFSET_X_MONSTER+16,54,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==2) dsubimage( lX-5, lY, &bossmages, OFFSET_X_MONSTER+32,54,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==3) dsubimage( lX-8, lY, &bossmages, OFFSET_X_MONSTER,54,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==4) dsubimage( lX-11, lY, &bossmages, OFFSET_X_MONSTER+16,54,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==5) dsubimage( lX-13, lY, &bossmages, OFFSET_X_MONSTER+32,54,16,18,  DIMAGE_NONE);
+                            }
+                            else if (sens==GAUCHE && BossCollection[k].xcur==mini)
+                            {
+                                   dsubimage( lX, lY, &bossmages, OFFSET_X_MONSTER,54,16,18,  DIMAGE_NONE);
+                            }
+                            else if (sens==DROITE && BossCollection[k].xcur<maxi)
+                            {
+                                   if (frame_boss==0) dsubimage( lX, lY, &bossmages, OFFSET_X_MONSTER,18,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==1) dsubimage( lX+3, lY, &bossmages, OFFSET_X_MONSTER+16,18,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==2) dsubimage( lX+5, lY, &bossmages, OFFSET_X_MONSTER+32,18,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==3) dsubimage( lX+8, lY, &bossmages, OFFSET_X_MONSTER,18,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==4) dsubimage( lX+11, lY, &bossmages, OFFSET_X_MONSTER+16,18,16,18,  DIMAGE_NONE);
+                                   else if (frame_boss==5) dsubimage( lX+13, lY, &bossmages, OFFSET_X_MONSTER+32,18,16,18,  DIMAGE_NONE);
+                            }
+                            else if (sens==DROITE && BossCollection[k].xcur==maxi)
+                            {
+                                   dsubimage( lX, lY, &bossmages, OFFSET_X_MONSTER,18,16,18,  DIMAGE_NONE);
+                            }
+                     }
+              }
+       }
+
+       frame_boss++;
+       if (frame_boss==6)
+       {
+              updateBoss();
+              frame_boss=0;
+       }
+}
+
 
 void renderReceptors( void )
 {
@@ -1800,8 +2420,8 @@ void checkDoors( void )
                                           }
                                           else if (DoorCollection[k].nbreceptor==3)
                                           {
-                                                 _boxRGBA( X+SIZE/3*(j+1)-1, Y-1, X+SIZE/3*(j+1)+1, Y+1, tempRecept->R, tempRecept->G, tempRecept->B, 255);
-                                                 _rectangleRGBA( X+SIZE/3*(j+1)-2, Y-2, X+SIZE/3*(j+1)+2, Y+2, 150, 150, 150, 255);
+                                                 _boxRGBA( X+SIZE/4*(j+1)-1, Y-1, X+SIZE/4*(j+1)+1, Y+1, tempRecept->R, tempRecept->G, tempRecept->B, 255);
+                                                 _rectangleRGBA( X+SIZE/4*(j+1)-2, Y-2, X+SIZE/4*(j+1)+2, Y+2, 150, 150, 150, 255);
                                           }
                                    }
                                    else if(DoorCollection[k].direction==BAS)
@@ -1821,8 +2441,8 @@ void checkDoors( void )
                                           }
                                           else if (DoorCollection[k].nbreceptor==3)
                                           {
-                                                 _boxRGBA( X+SIZE/3*(j+1)-1, Y-1, X+SIZE/3*(j+1)+1, Y+1, tempRecept->R, tempRecept->G, tempRecept->B, 255);
-                                                 _rectangleRGBA( X+SIZE/3*(j+1)-2, Y-2, X+SIZE/3*(j+1)+2, Y+2, 150, 150, 150, 255);
+                                                 _boxRGBA( X+SIZE/4*(j+1)-1, Y-1, X+SIZE/4*(j+1)+1, Y+1, tempRecept->R, tempRecept->G, tempRecept->B, 255);
+                                                 _rectangleRGBA( X+SIZE/4*(j+1)-2, Y-2, X+SIZE/4*(j+1)+2, Y+2, 150, 150, 150, 255);
                                           }
                                    }
                                    else if(DoorCollection[k].direction==GAUCHE)
@@ -2288,8 +2908,8 @@ void drawTitle( void )
               }
 
               dfont( &font_tiny );
-              dprint( 110, 156, C_RGB(150,150,150), "Welcome to Magic Light Revision 0.5B");
-              dprint( 109, 155, C_BLACK, "Welcome to Magic Light Revision 0.5B");
+              dprint( 110, 156, C_RGB(150,150,150), "Welcome to Magic Light Revision 0.7B");
+              dprint( 109, 155, C_BLACK, "Welcome to Magic Light Revision 0.7B");
               dprint( 110, 166, C_RGB(150,150,150), "                    12/2021 - by SlyVTT                     ");
               dprint( 109, 165, C_BLACK, "                    12/2021 - by SlyVTT                     ");
 
@@ -2302,7 +2922,6 @@ void drawTitle( void )
               get_inputs_title();
        }
 }
-
 
 static int get_inputs_difficultymenu(void)
 {
@@ -2327,7 +2946,6 @@ static int get_inputs_difficultymenu(void)
        }
 }
 
-
 unsigned char drawDifficultyMenu( void )
 {
        doneDifficulty = false;
@@ -2348,39 +2966,39 @@ unsigned char drawDifficultyMenu( void )
               dprint( 89, 99, C_BLACK, "Sweet Like a Cherry Cake");
 
               for( unsigned char k = 0; k< 5; k++)
-               {
-                   dsubimage( 250 + k*8, 100, &hearts, 8, 0, 8, 8,  DIMAGE_NONE);
-               }
-                for( unsigned char k = 5; k< 5; k++)
-               {
-                   dsubimage( 250 + k*8, 100, &hearts, 0, 0, 8, 8,  DIMAGE_NONE);
-               }
+              {
+                     dsubimage( 250 + k*8, 100, &hearts, 8, 0, 8, 8,  DIMAGE_NONE);
+              }
+              for( unsigned char k = 5; k< 5; k++)
+              {
+                     dsubimage( 250 + k*8, 100, &hearts, 0, 0, 8, 8,  DIMAGE_NONE);
+              }
 
               dfont( &font_fantasy );
               dprint( 90, 120, C_RGB(150,150,150), "Acid Like an Orange Juice");
               dprint( 89, 119, C_BLACK, "Acid Like an Orange Juice");
 
               for( unsigned char k = 0; k< 3; k++)
-               {
-                   dsubimage( 250 + k*8, 120, &hearts, 8, 0, 8, 8,  DIMAGE_NONE);
-               }
-                for( unsigned char k = 3; k< 5; k++)
-               {
-                   dsubimage( 250 + k*8, 120, &hearts, 0, 0, 8, 8,  DIMAGE_NONE);
-               }
+              {
+                     dsubimage( 250 + k*8, 120, &hearts, 8, 0, 8, 8,  DIMAGE_NONE);
+              }
+              for( unsigned char k = 3; k< 5; k++)
+              {
+                     dsubimage( 250 + k*8, 120, &hearts, 0, 0, 8, 8,  DIMAGE_NONE);
+              }
 
               dfont( &font_fantasy );
               dprint( 90, 140, C_RGB(150,150,150), "Bitter Like a Dark Beer");
               dprint( 89, 139, C_BLACK, "Bitter Like a Dark Beer");
 
               for( unsigned char k = 0; k< 1; k++)
-               {
-                   dsubimage( 250 + k*8, 140, &hearts, 8, 0, 8, 8,  DIMAGE_NONE);
-               }
-                for( unsigned char k = 1; k< 5; k++)
-               {
-                   dsubimage( 250 + k*8, 140, &hearts, 0, 0, 8, 8,  DIMAGE_NONE);
-               }
+              {
+                     dsubimage( 250 + k*8, 140, &hearts, 8, 0, 8, 8,  DIMAGE_NONE);
+              }
+              for( unsigned char k = 1; k< 5; k++)
+              {
+                     dsubimage( 250 + k*8, 140, &hearts, 0, 0, 8, 8,  DIMAGE_NONE);
+              }
 
 
               if (selectDifficultyMenu == 0)
@@ -2503,58 +3121,148 @@ unsigned char drawStartMenu( void )
 }
 
 
-void updateTreasures( selection what )
+
+static int get_inputs_story(void)
 {
-    if (what==JOUEUR)
-    {
-        unsigned char X = joueur.x;
-        unsigned char Y= joueur.y;
+       int opt = GETKEY_DEFAULT & ~GETKEY_REP_ARROWS;
+       int timeout = 1;
 
-        /*
-        unsigned char X=0;
-        unsigned char Y=0;
+       while(1)
+       {
+              key_event_t ev = getkey_opt(opt, &timeout);
+              if(ev.type == KEYEV_NONE) return -1;
 
-        if (joueur.direction==HAUT)
-        {
-            X=joueur.x;
-            Y=joueur.y-1;
-        }
-        if (joueur.direction==BAS)
-        {
-            X=joueur.x;
-            Y=joueur.y+1;
-        }
-        if (joueur.direction==GAUCHE)
-        {
-            X=joueur.x-1;
-            Y=joueur.y;
-        }
-        if (joueur.direction==DROITE)
-        {
-            X=joueur.x+1;
-            Y=joueur.y;
-        }
-        */
+              int key = ev.key;
 
+              if (key==KEY_EXE || key==KEY_EXIT)
+                     doneStory = true;
 
-        for (unsigned char k=0; k<NbTreasureLevel; k++)
-        {
-            if (X==TreasureCollection[k].x && Y==TreasureCollection[k].y)
-            {
-                if (TreasureCollection[k].isopen==false)
-                {
-                    score+=TreasureCollection[k].scoreboost;
-                    TreasureCollection[k].isopen=true;
-                }
-                else
-                {
-                    TreasureCollection[k].isvisible=false;
-                }
-            }
-        }
-    }
+              if (key==KEY_UP && selectStoryMenu>1)
+                     selectStoryMenu--;
+
+              if (key==KEY_DOWN && selectStoryMenu<2)
+                     selectStoryMenu++;
+       }
 }
 
+void drawStoryMenu( void )
+{
+       doneStory = false;
+
+       unsigned int lX = 0;
+       unsigned int lY = 0;
+
+       frame_light = 0;
+
+       selectStoryMenu = 1;
+
+
+       while (!doneStory)
+       {
+              dclear(C_RGB(0,0,0));
+
+              dimage( 0, 10, &bigparch);
+
+              dfont( &font_fantasy );
+              dprint( 70, 45, C_RGB(150,150,150), "A long time ago, in a peaceful and colorful ");
+              dprint( 69, 44, C_BLACK, "A long time ago, in a peaceful and colorful");
+
+              dfont( &font_fantasy );
+              dprint( 55, 57, C_RGB(150,150,150), "village came a Dark Sorcerer with the terrible");
+              dprint( 54, 56, C_BLACK, "village came a Dark Sorcerer with the terrible");
+
+              dfont( &font_fantasy );
+              dprint( 55, 69, C_RGB(150,150,150), "ambition of stoling all lights and colors. Making" );
+              dprint( 54, 68, C_BLACK, "ambition of stoling all lights and colors. Making " );
+
+              dfont( &font_fantasy );
+              dprint( 60, 81, C_RGB(150,150,150), "darkness and fear the only remaining things " );
+              dprint( 59, 80, C_BLACK,  "darkness and fear the only remaining things" );
+
+              dfont( &font_fantasy );
+              dprint( 60, 93, C_RGB(150,150,150), "here ... The Sorcerer returned to his Castle" );
+              dprint( 59, 92, C_BLACK,  "here ... The Sorcerer returned to his Castle" );
+
+              dfont( &font_fantasy );
+              dprint( 60, 105, C_RGB(150,150,150), "and ruled his Daughters to protect his loot..." );
+              dprint( 59, 104, C_BLACK,  "and ruled his Daughters to protect his loot..." );
+
+              dfont( &font_fantasy );
+              dprint( 65, 117, C_RGB(150,150,150), "Guided only by courage, you entered the" );
+              dprint( 64, 116, C_BLACK, "Guided only by courage, you entered the" );
+
+              dfont( &font_fantasy );
+              dprint( 65, 129, C_RGB(150,150,150), "castle to defeat all dangers and help the" );
+              dprint( 64, 128, C_BLACK,  "castle to defeat all dangers and help the" );
+
+              dfont( &font_fantasy );
+              dprint( 65, 141, C_RGB(150,150,150), "villagers ... Good luck my Friend !!!" );
+              dprint( 64, 140, C_BLACK,  "villagers ... Good luck my Friend !!!" );
+
+
+              dfont( &font_tiny );
+              dprint( 90, 166, C_RGB(150,150,150), "[UP] [DOWN] : scroll / [EXE] [EXIT] : skip");
+              dprint( 89, 165, C_BLACK,"[UP] [DOWN] : scroll / [EXE] [EXIT] : skip");
+
+              dupdate();
+
+              get_inputs_story();
+       }
+}
+
+
+
+void updateTreasures( selection what )
+{
+       if (what==JOUEUR)
+       {
+              unsigned char X = joueur.x;
+              unsigned char Y= joueur.y;
+
+              /*
+              unsigned char X=0;
+              unsigned char Y=0;
+
+              if (joueur.direction==HAUT)
+              {
+                  X=joueur.x;
+                  Y=joueur.y-1;
+              }
+              if (joueur.direction==BAS)
+              {
+                  X=joueur.x;
+                  Y=joueur.y+1;
+              }
+              if (joueur.direction==GAUCHE)
+              {
+                  X=joueur.x-1;
+                  Y=joueur.y;
+              }
+              if (joueur.direction==DROITE)
+              {
+                  X=joueur.x+1;
+                  Y=joueur.y;
+              }
+              */
+
+
+              for (unsigned char k=0; k<NbTreasureLevel; k++)
+              {
+                     if (X==TreasureCollection[k].x && Y==TreasureCollection[k].y)
+                     {
+                            if (TreasureCollection[k].isopen==false)
+                            {
+                                   score+=TreasureCollection[k].scoreboost;
+                                   TreasureCollection[k].isopen=true;
+                            }
+                            else
+                            {
+                                   TreasureCollection[k].isvisible=false;
+                            }
+                     }
+              }
+       }
+}
 
 static int get_inputs(void)
 {
@@ -2659,7 +3367,6 @@ static int get_inputs(void)
 
 
 
-
 int main ( int argc, char** argv )
 {
        doneGame = false;
@@ -2668,6 +3375,7 @@ int main ( int argc, char** argv )
        donePause = false;
        doneStart = false;
        doneTitle = false;
+       doneStory = false;
 
 
        drawTitle();
@@ -2688,6 +3396,8 @@ int main ( int argc, char** argv )
               if (difficulty==0) life=5;
               else  if (difficulty==1) life=3;
               else if (difficulty==2) life=1;
+
+              drawStoryMenu();
 
               loadLevel( 0 );
               initMap();
@@ -2730,6 +3440,7 @@ int main ( int argc, char** argv )
               renderTreasures( );
 
               renderMonsters(  );
+              renderBoss( );
 
               renderPlayer(  );
 
@@ -2742,11 +3453,11 @@ int main ( int argc, char** argv )
               if (selectOptionPause==1 || selectOptionLoose==1) doneGame=true;
               if (life==0 && selectOptionLoose==0)
               {
-                  if (difficulty==0) life=5;
-                  else  if (difficulty==1) life=3;
-                  else if (difficulty==2) life=1;
+                     if (difficulty==0) life=5;
+                     else  if (difficulty==1) life=3;
+                     else if (difficulty==2) life=1;
 
-                  loadLevel( currentLevel);
+                     loadLevel( currentLevel);
               }
 
 

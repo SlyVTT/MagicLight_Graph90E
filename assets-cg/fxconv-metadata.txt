@@ -3,6 +3,11 @@ maintitle.png:
   profile: r5g6b5a
   name: maintitle
 
+bigparchvide.png:
+  type: bopti-image
+  profile: r5g6b5a
+  name: bigparch
+
 levelsimple.png:
   type: bopti-image
   name: leveltiles
@@ -21,6 +26,11 @@ monstres.png:
   profile: r5g6b5a
   name: monstres
 
+bigboss.png:
+  type: bopti-image
+  profile: r5g6b5a
+  name: bigboss
+
 hearts.png:
   type: bopti-image
   profile: r5g6b5a
@@ -35,6 +45,11 @@ chests.png:
   type: bopti-image
   profile: r5g6b5a
   name: chests
+
+sorcerer.png:
+  type: bopti-image
+  profile: r5g6b5a
+  name: bossmages
 
 light.png:
   type: bopti-image

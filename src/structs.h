@@ -166,3 +166,22 @@ struct Monster
     orientations sens;
     monstertype kind;
 };
+
+enum bosscolor
+{
+    B_RED = 0,
+    B_GREEN,
+    B_BLUE,
+    B_BLACK,
+    BIGBOSS
+};
+
+
+struct Boss
+{
+    unsigned char xcur, ycur;
+    unsigned char mini, maxi;
+    orientations direction;
+    orientations sens;
+    bosscolor color;
+};
