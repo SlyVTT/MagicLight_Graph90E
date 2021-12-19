@@ -27,3 +27,6 @@ Listing des contrôles :
 [OPTN] affiche le menu d'options
 
 [EXIT] Pause / Menu pour quitter.
+
+[X,O,T] Ouvre les coffres / Fait disparaitre les coffres ouverts
+
