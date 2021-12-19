@@ -111,7 +111,9 @@ enum content
     BLACK_FRAGMENT ,
     RED_FRAGMENT,
     GREEN_FRAGMENT,
-    BLUE_FRAGMENT
+    BLUE_FRAGMENT,
+    HEART_SINGLE,       // to restore one single point of Life (1 heart)
+    HEART_FULL              // to restore all points of Life (up to LifeMax, function of difficulty)
 };
 
 enum chest

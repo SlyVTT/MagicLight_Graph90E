@@ -582,9 +582,8 @@ void loadLevel( unsigned char numLevel )
 
 
 
-       // if (sauvegarde.visitedLevels[numLevel]==1)   // The level to be loaded has already been played so we will have to make corrections as per save state
-       if (Map[numLevel].visited==true)       needcorrection = true;
-       else needcorrection = false;
+       if (sauvegarde.visitedLevels[numLevel]==1)   // The level to be loaded has already been played so we will have to make corrections as per save state
+              needcorrection = true;
 
        if (numLevel==0)
        {
@@ -4142,8 +4141,7 @@ int main ( int argc, char** argv )
               selectOptionMenu = 0;
               selectOptionPause = 0;
               selectOptionLoose = 0;
-              selectStoryMenu = 0;
-              selectEndMenu = 0;
+              selectStoryMenu =0;
               difficulty = 0;
 
               doneGame = false;
@@ -4175,12 +4173,11 @@ int main ( int argc, char** argv )
                      // We start a new game, so we load Level #000
                      difficulty= drawDifficultyMenu();
 
-                     BlackFrag = false;
-                     WhiteFrag = false;
-                     RedFrag = false;
-                     GreenFrag = false;
-                     BlueFrag = false;
-                     score = 0;
+                     bool BlackFrag=false;
+                     bool WhiteFrag=false;
+                     bool RedFrag=false;
+                     bool GreenFrag=false;
+                     bool BlueFrag=false;
 
                      if (difficulty==0) life=5;
                      else  if (difficulty==1) life=3;
@@ -4267,7 +4264,6 @@ int main ( int argc, char** argv )
                             the_end();
                             doneGame=true;
                             gint_world_switch( GINT_CALL( delete_save )  );
-                            initMap();
                      }
 
 
@@ -4276,7 +4272,7 @@ int main ( int argc, char** argv )
 
               //updateCurrentState( );
 
-              if (doneEnd==false) gint_world_switch( GINT_CALL( saveprogress )  );
+              gint_world_switch( GINT_CALL( saveprogress )  );
 
        }
        while (GotoMainMenu);
