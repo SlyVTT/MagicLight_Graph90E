@@ -1,9 +1,14 @@
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
+#include <stdint.h>
 
+#include <gint/rtc.h>
 #include <gint/display.h>
 #include <gint/keyboard.h>
 #include <gint/gint.h>
+#include <gint/bfile.h>
+#include <gint/std/stdlib.h>
 
 #include "structs.h"
 #include "primitives.h"
@@ -43,9 +48,19 @@ unsigned char SPEEDUP_WALL = 1;
 
 char LEVELCOLOR=0;
 
+const char* Revision = "Revision 0.8B";
+const char* RevShort = "v0.8B";
+
+
+static const uint16_t *filepath = u"\\\\fls0\\MgcLght.sav";
+bool saveexist = false;
+unsigned int sizeoffile;
+GameSaveStatus sauvegarde;
+LevelSaveStatus partielevel[33];
 
 
 #define NB_LEVELS 6
+
 
 unsigned char NbReceptorsLevel;
 unsigned char NbDoorsLevel;
@@ -54,6 +69,9 @@ unsigned char NbTreasureLevel;
 unsigned char NbObstacleLevel;
 unsigned char NbMonsterLevel;
 unsigned char NbBossLevel;
+unsigned char NbBulletLevel;
+
+unsigned char attacktype;
 
 selection selected = JOUEUR;
 
@@ -82,8 +100,11 @@ Treasure* TreasureCollection=NULL;
 Obstacle* ObstaclesCollection=NULL;
 Monster* MonstersCollection=NULL;
 Boss* BossCollection=NULL;
+Bullet* BulletCollection=NULL;
 
-Minimap Map[ NB_LEVELS ];
+
+Minimap Map[ 33 ];
+
 
 unsigned char ALPHA_VALIDE = 255;
 unsigned char ALPHA_NON_VALIDE = 100;
@@ -104,10 +125,21 @@ extern bopti_image_t hearts;
 extern bopti_image_t bossmages;
 extern bopti_image_t bigboss;
 extern bopti_image_t bigparch;
+extern bopti_image_t bulletsbicolor;
+extern bopti_image_t fragments;
+
+
+bool BlackFrag=false;
+bool WhiteFrag=false;
+bool RedFrag=false;
+bool GreenFrag=false;
+bool BlueFrag=false;
+
 
 extern font_t font_fantasy;
 extern font_t font_tiny;
 
+bool GotoMainMenu=false;
 bool doneMain = false;
 bool donePause = false;
 bool doneOption = false;
@@ -117,6 +149,7 @@ bool doneTitle = false;
 bool doneLoose = false;
 bool doneDifficulty = false;
 bool doneStory = false;
+bool attackboss = false;
 
 unsigned int compteur_mouvement = 0;
 unsigned char frame_cursor = 0;
@@ -124,6 +157,12 @@ unsigned char frame_light = 0;
 unsigned char frame_monster = 0;
 unsigned char frame_boss = 0;
 unsigned char frame=0;
+
+unsigned char frame_boss_attack=0;
+unsigned int xbossattack;
+unsigned int ybossattack;
+unsigned char frame_bullet=0;
+
 bool mouvement=false;
 orientations direction=HAUT;
 
@@ -138,11 +177,380 @@ unsigned char selectStoryMenu =0;
 unsigned char difficulty = 0;
 
 
+void is_save_existing( void )
+{
+       int file = BFile_Open( filepath, BFile_ReadOnly );
+       if (file>=0)
+       {
+              saveexist=true;
+              BFile_Close( file );
+       }
+       else
+       {
+              saveexist=false;
+              BFile_Close( file );
+       }
+}
+
+bool is_save_existing_boolean( void )
+{
+       int file = BFile_Open( filepath, BFile_ReadOnly );
+       if (file>=0)
+       {
+              BFile_Close( file );
+              return true;
+       }
+       else
+       {
+              BFile_Close( file );
+              return false;
+       }
+}
+
+void saveprogress( void )
+{
+       sizeoffile = sizeof( GameSaveStatus ) + 33*sizeof( LevelSaveStatus );
+       unsigned int sizecopy = sizeoffile;
+
+       unsigned char* buffer;
+       buffer = (unsigned char*) malloc( sizeoffile );
+
+       buffer[0] = sauvegarde.currentScore[0];
+       buffer[1] = sauvegarde.currentScore[1];
+
+       buffer[2] = sauvegarde.currentLevel;
+
+       for (unsigned char k = 0; k<=32; k++ )
+              buffer[3+k] = sauvegarde.visitedLevels[k];
+
+       buffer[36] = sauvegarde.currentDifficulty;
+       buffer[37] = sauvegarde.currentLife;
+       buffer[38] = sauvegarde.redFrag;
+       buffer[39] = sauvegarde.greenFrag;
+       buffer[40] = sauvegarde.blueFrag;
+       buffer[41] = sauvegarde.blackFrag;
+       buffer[42] = sauvegarde.whiteFrag;
+       buffer[43] = sauvegarde.terminator;
+
+       ///TODO implement Room Saves
+
+       int index;
+
+       for (unsigned char k = 0; k<=32; k++ )
+       {
+              index = sizeof( GameSaveStatus )+k*sizeof( LevelSaveStatus );
+
+              //for( int i=0; i<8; i++ )
+              buffer[index+0] =  partielevel[k].chestStatusSave[ 0 ];
+              buffer[index+1] =  partielevel[k].chestStatusSave[ 1 ];
+              buffer[index+2] =  partielevel[k].chestStatusSave[ 2 ];
+              buffer[index+3] =  partielevel[k].chestStatusSave[ 3 ];
+              buffer[index+4] =  partielevel[k].chestStatusSave[ 4 ];
+              buffer[index+5] =  partielevel[k].chestStatusSave[ 5 ];
+              buffer[index+6] =  partielevel[k].chestStatusSave[ 6 ];
+              buffer[index+7] =  partielevel[k].chestStatusSave[ 7 ];
+
+              //for( unsigned char i=8; i<12; i++ )
+              buffer[index+8] =  partielevel[k].doorStatusSave[ 0 ];
+              buffer[index+9] =  partielevel[k].doorStatusSave[ 1 ];
+              buffer[index+10] =  partielevel[k].doorStatusSave[ 2 ];
+              buffer[index+11] =  partielevel[k].doorStatusSave[ 3 ];
+
+              //for( unsigned char i=12; i<20; i++ )
+              buffer[index+12] =  partielevel[k].bossStatusSave[ 0 ];
+              buffer[index+13] =  partielevel[k].bossStatusSave[ 1 ];
+              buffer[index+14] =  partielevel[k].bossStatusSave[ 2 ];
+              buffer[index+15] =  partielevel[k].bossStatusSave[ 3 ];
+              buffer[index+16] =  partielevel[k].bossStatusSave[ 4 ];
+              buffer[index+17] =  partielevel[k].bossStatusSave[ 5 ];
+              buffer[index+18] =  partielevel[k].bossStatusSave[ 6 ];
+              buffer[index+19] =  partielevel[k].bossStatusSave[ 7 ];
+
+              //for( unsigned char i=20; i<28; i++ )
+              buffer[index+20] =  partielevel[k].monsterStatusSave[ 0 ];
+              buffer[index+21] =  partielevel[k].monsterStatusSave[ 1 ];
+              buffer[index+22] =  partielevel[k].monsterStatusSave[ 2 ];
+              buffer[index+23] =  partielevel[k].monsterStatusSave[ 3 ];
+              buffer[index+24] =  partielevel[k].monsterStatusSave[ 4 ];
+              buffer[index+25] =  partielevel[k].monsterStatusSave[ 5 ];
+              buffer[index+26] =  partielevel[k].monsterStatusSave[ 6 ];
+              buffer[index+27] =  partielevel[k].monsterStatusSave[ 7 ];
+
+              //for( unsigned char i=28; i<30; i++ )
+              buffer[index+28] =  partielevel[k].redBlockSave[ 0 ];
+              buffer[index+29] =  partielevel[k].redBlockSave[ 1 ];
+
+              //for( unsigned char i=30; i<32; i++ )
+              buffer[index+30] =  partielevel[k].greenBlockSave[ 0 ];
+              buffer[index+31] =  partielevel[k].greenBlockSave[ 1 ];
+
+              //for( unsigned char i=32; i<34; i++ )
+              buffer[index+32] =  partielevel[k].blueBlockSave[ 0 ];
+              buffer[index+33] =  partielevel[k].blueBlockSave[ 1 ];
+
+              //for( unsigned char i=34; i<36; i++ )
+              buffer[index+34] =  partielevel[k].blackBlockSave[ 0 ];
+              buffer[index+35] =  partielevel[k].blackBlockSave[ 1 ];
+
+              //for( unsigned char i=36; i<38; i++ )
+              buffer[index+36] =  partielevel[k].lightSave[ 0 ];
+              buffer[index+37] =  partielevel[k].lightSave[ 1 ];
+       }
+
+       /*
+       int file = BFile_Open( filepath, BFile_ReadOnly );
+
+       if ( file >= 0 )
+       {
+              BFile_Close( file );
+              file = BFile_Remove( filepath );
+       }
+
+
+       */
+
+       int file;
+
+       BFile_Remove( filepath );
+       BFile_Create( filepath, BFile_File, &sizecopy );
+
+       file = BFile_Open( filepath, BFile_WriteOnly );
+       BFile_Write( file, buffer, sizeoffile );
+
+       BFile_Close( file );
+
+       free( buffer );
+}
+
+
+void loadprogress( void )
+{
+       sizeoffile = sizeof( GameSaveStatus ) + 33*sizeof( LevelSaveStatus );
+       unsigned int sizecopy = sizeoffile;
+
+       unsigned char* buffer;
+       buffer = (unsigned char*) malloc( sizeoffile );
+
+
+       int file;
+       file = BFile_Open( filepath, BFile_ReadOnly );
+       BFile_Read( file, buffer, sizeoffile, -1 );
+       BFile_Close( file );
+
+
+       sauvegarde.currentScore[0] = buffer[0];
+       sauvegarde.currentScore[1] = buffer[1];
+
+       sauvegarde.currentLevel = buffer[2];
+
+       for (unsigned char k = 0; k<=32; k++ )
+              sauvegarde.visitedLevels[k] = buffer[3+k];
+
+       sauvegarde.currentDifficulty = buffer[36];
+       sauvegarde.currentLife = buffer[37];
+       sauvegarde.redFrag = buffer[38];
+       sauvegarde.greenFrag = buffer[39];
+       sauvegarde.blueFrag = buffer[40];
+       sauvegarde.blackFrag = buffer[41];
+       sauvegarde.whiteFrag = buffer[42];
+       sauvegarde.terminator = buffer[43];
+
+       int index;
+
+       for (int k = 0; k<=32; k++ )
+       {
+              index = sizeof(GameSaveStatus)+k*sizeof( LevelSaveStatus );
+
+              //for( unsigned char i=0; i<8; i++ )
+              partielevel[k].chestStatusSave[ 0 ] = buffer[index+0];
+              partielevel[k].chestStatusSave[ 1 ] = buffer[index+1];
+              partielevel[k].chestStatusSave[ 2 ] = buffer[index+2];
+              partielevel[k].chestStatusSave[ 3 ] = buffer[index+3];
+              partielevel[k].chestStatusSave[ 4 ] = buffer[index+4];
+              partielevel[k].chestStatusSave[ 5 ] = buffer[index+5];
+              partielevel[k].chestStatusSave[ 6 ] = buffer[index+6];
+              partielevel[k].chestStatusSave[ 7 ] = buffer[index+7];
+
+              //for( unsigned char i=8; i<12; i++ )
+              partielevel[k].doorStatusSave[ 0 ] = buffer[index+8];
+              partielevel[k].doorStatusSave[ 1 ] = buffer[index+9];
+              partielevel[k].doorStatusSave[ 2 ] = buffer[index+10];
+              partielevel[k].doorStatusSave[ 3 ] = buffer[index+11];
+
+              //for( unsigned char i=12; i<20; i++ )
+              partielevel[k].bossStatusSave[ 0 ] = buffer[index+12];
+              partielevel[k].bossStatusSave[ 1 ] = buffer[index+13];
+              partielevel[k].bossStatusSave[ 2 ] = buffer[index+14];
+              partielevel[k].bossStatusSave[ 3 ] = buffer[index+15];
+              partielevel[k].bossStatusSave[ 4 ] = buffer[index+16];
+              partielevel[k].bossStatusSave[ 5 ] = buffer[index+17];
+              partielevel[k].bossStatusSave[ 6 ] = buffer[index+18];
+              partielevel[k].bossStatusSave[ 7 ] = buffer[index+19];
+
+              //for( unsigned char i=20; i<28; i++ )
+              partielevel[k].monsterStatusSave[ 0 ] = buffer[index+20];
+              partielevel[k].monsterStatusSave[ 1 ] = buffer[index+21];
+              partielevel[k].monsterStatusSave[ 2 ] = buffer[index+22];
+              partielevel[k].monsterStatusSave[ 3 ] = buffer[index+23];
+              partielevel[k].monsterStatusSave[ 4 ] = buffer[index+24];
+              partielevel[k].monsterStatusSave[ 5 ] = buffer[index+25];
+              partielevel[k].monsterStatusSave[ 6 ] = buffer[index+26];
+              partielevel[k].monsterStatusSave[ 7 ] = buffer[index+27];
+
+              //for( unsigned char i=28; i<30; i++ )
+              partielevel[k].redBlockSave[ 0 ] = buffer[index+28];
+              partielevel[k].redBlockSave[ 1 ] = buffer[index+29];
+
+              //for( unsigned char i=30; i<32; i++ )
+              partielevel[k].greenBlockSave[ 0 ] = buffer[index+30];
+              partielevel[k].greenBlockSave[ 1 ] = buffer[index+31];
+
+              //for( unsigned char i=32; i<34; i++ )
+              partielevel[k].blueBlockSave[ 0 ] = buffer[index+32];
+              partielevel[k].blueBlockSave[ 1 ] = buffer[index+33];
+
+              //for( unsigned char i=34; i<36; i++ )
+              partielevel[k].blackBlockSave[ 0 ] = buffer[index+34];
+              partielevel[k].blackBlockSave[ 1 ] = buffer[index+35];
+
+              //for( unsigned char i=36; i<38; i++ )
+              partielevel[k].lightSave[ 0 ] = buffer[index+36];
+              partielevel[k].lightSave[ 1 ] = buffer[index+37];
+       }
+
+       free( buffer );
+
+}
+
+
+
+void updateCurrentState( void  )
+{
+       sauvegarde.currentScore[0] = score/256;
+       sauvegarde.currentScore[1] = score%256;
+       sauvegarde.currentLevel = currentLevel;
+
+       for( unsigned char k=0; k<=32; k++ )
+              if (Map[k].visited==true) sauvegarde.visitedLevels[k] = 1;
+              else sauvegarde.visitedLevels[k] = 0;
+
+       sauvegarde.currentDifficulty = difficulty;
+       sauvegarde.currentLife = life;
+
+       if (RedFrag==true) sauvegarde.redFrag=true;
+       else sauvegarde.redFrag=false;
+
+       if (GreenFrag==true) sauvegarde.greenFrag=true;
+       else sauvegarde.greenFrag=false;
+
+       if (BlueFrag==true) sauvegarde.blueFrag=true;
+       else sauvegarde.blueFrag=false;
+
+       if (BlackFrag==true) sauvegarde.blackFrag=true;
+       else sauvegarde.blackFrag=false;
+
+       if (WhiteFrag==true) sauvegarde.whiteFrag=true;
+       else sauvegarde.whiteFrag=false;
+
+
+       for( unsigned char i=0; i<NbTreasureLevel; i++ )
+              if (TreasureCollection[i].isopen==false && TreasureCollection[i].isvisible==true)
+                     partielevel[currentLevel].chestStatusSave[i]=0x00;
+              else if (TreasureCollection[i].isopen==true && TreasureCollection[i].isvisible==true)
+                     partielevel[currentLevel].chestStatusSave[i]=0x01;
+              else if (TreasureCollection[i].isvisible==false)
+                     partielevel[currentLevel].chestStatusSave[i]=0x02;
+
+
+       for( unsigned char i=0; i<NbDoorsLevel; i++ )
+              if (DoorCollection[i].isopen==true)
+                     partielevel[currentLevel].doorStatusSave[i]=0x01;
+              else
+                     partielevel[currentLevel].doorStatusSave[i]=0x00;
+
+
+       //TODO : save boss status
+       //for( int i=0; i<NbBossLevel; i++ )
+
+       //TODO : save monster status
+       //for( int i=0; i<NbMonsterLevel; i++ )
+
+       partielevel[currentLevel].redBlockSave[0]=BlocRouge->x;
+       partielevel[currentLevel].redBlockSave[1]=BlocRouge->y;
+
+       partielevel[currentLevel].greenBlockSave[0]=BlocVert->x;
+       partielevel[currentLevel].greenBlockSave[1]=BlocVert->y;
+
+       partielevel[currentLevel].blueBlockSave[0]=BlocBleu->x;
+       partielevel[currentLevel].blueBlockSave[1]=BlocBleu->y;
+
+       partielevel[currentLevel].blackBlockSave[0]=BlocNoir->x;
+       partielevel[currentLevel].blackBlockSave[1]=BlocNoir->y;
+
+       partielevel[currentLevel].lightSave[0]=lumiere.x;
+       partielevel[currentLevel].lightSave[1]=lumiere.y;
+}
+
+
+
 void initMap( void )
 {
-       for( unsigned char k=0; k < NB_LEVELS; k++) Map[k].visited = true;
+       for( unsigned char k=0; k < 33; k++) Map[k].visited = false;
        currentLevel = 0;
 }
+
+
+void adjustLevel( int lev )
+{
+
+       for( int i=0; i<NbTreasureLevel; i++ )
+              if (partielevel[lev].chestStatusSave[i]==0)
+              {
+                     TreasureCollection[i].isopen = false;
+                     TreasureCollection[i].isvisible = true;
+              }
+              else if (partielevel[lev].chestStatusSave[i]==1)
+              {
+                     TreasureCollection[i].isopen = true;
+                     TreasureCollection[i].isvisible = true;
+              }
+              else if (partielevel[lev].chestStatusSave[i]==2)
+              {
+                     TreasureCollection[i].isopen = true;
+                     TreasureCollection[i].isvisible = false;
+              }
+
+       for( int i=0; i<NbDoorsLevel; i++ )
+              if (partielevel[lev].doorStatusSave[i]==1) DoorCollection[i].isopen=true;
+              else DoorCollection[i].isopen = false;
+
+       for( int i=0; i<NbBossLevel; i++ )
+       {
+              //TODO : make appropriate code
+       }
+
+       for( int i=0; i<NbMonsterLevel; i++ )
+       {
+              //TODO : make appropriate code
+       }
+
+       BlocRouge->x = partielevel[lev].redBlockSave[0];
+       BlocRouge->y = partielevel[lev].redBlockSave[1];
+
+       BlocVert->x = partielevel[lev].greenBlockSave[0];
+       BlocVert->y = partielevel[lev].greenBlockSave[1];
+
+       BlocBleu->x = partielevel[lev].blueBlockSave[0];
+       BlocBleu->y = partielevel[lev].blueBlockSave[1];
+
+       BlocNoir->x = partielevel[lev].blackBlockSave[0];
+       BlocNoir->y = partielevel[lev].blackBlockSave[1];
+
+       lumiere.x = partielevel[lev].lightSave[0];
+       lumiere.y = partielevel[lev].lightSave[1];
+
+}
+
 
 void loadLevel( unsigned char numLevel )
 {
@@ -160,6 +568,14 @@ void loadLevel( unsigned char numLevel )
        ObstaclesCollection=NULL;
        MonstersCollection=NULL;
 
+       attackboss=false;
+       bool needcorrection=false;
+
+
+
+       if (sauvegarde.visitedLevels[numLevel]==1)   // The level to be loaded has already been played so we will have to make corrections as per save state
+              needcorrection = true;
+
        if (numLevel==0)
        {
               currentLevel = numLevel;
@@ -171,9 +587,10 @@ void loadLevel( unsigned char numLevel )
               NbReceptorsLevel = 3;
               NbDoorsLevel = 1;
               NbBlocksLevel = 4;
-              NbTreasureLevel = 1;
+              NbTreasureLevel = 5;
               NbObstacleLevel = 8;
               NbMonsterLevel = 2;
+              NbBossLevel = 0;
 
               BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
               ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
@@ -181,14 +598,19 @@ void loadLevel( unsigned char numLevel )
               TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
               ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
               MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
 
               Map[numLevel].x=0;
               Map[numLevel].y=0;
-              Map[numLevel].R=0;
-              Map[numLevel].G=0;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
               Map[numLevel].B=255;
               Map[numLevel].A=255;
               Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=false;
 
               joueur = { 6, 9, HAUT };
               lumiere = { 6, 5, 1,1,1,0, false };
@@ -226,10 +648,11 @@ void loadLevel( unsigned char numLevel )
               //DoorCollection[2] = { 12, 5, DROITE, false, true, 1, { R_VERT, -1, -1 }, 0}; // Door EAST
               //DoorCollection[3] = { 6, 10, BAS, false, false, 0, { -1 -1, -1 }, -1}; // Door SOUTH
 
-              TreasureCollection[0] = {1,1, T_RED, false, PIERRE_BLANCHE, 100, true };
-              //TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100, true };
-              //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100, true };
-              //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100, true };
+              TreasureCollection[0] = {1,1, T_RED, false, WHITE_FRAGMENT, 100, true };
+              TreasureCollection[1] = {2,1, T_YELLOW, false, BLACK_FRAGMENT, 100, true };
+              TreasureCollection[2] = {3,1, T_GREEN, false, RED_FRAGMENT, 100, true };
+              TreasureCollection[3] = {4,1, T_BLUE, false, GREEN_FRAGMENT, 100, true };
+              TreasureCollection[4] = {5,1, T_BLUE, false, BLUE_FRAGMENT, 100, true };
 
               MonstersCollection[0] = { 6, 4, 2, 10, HORIZONTAL, GAUCHE, BLOB };
               MonstersCollection[1] = { 7, 5, 2, 8, VERTICAL, HAUT, SKELETON };
@@ -261,11 +684,15 @@ void loadLevel( unsigned char numLevel )
 
               Map[numLevel].x=-1;
               Map[numLevel].y=-1;
-              Map[numLevel].R=0;
-              Map[numLevel].G=0;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
               Map[numLevel].B=255;
               Map[numLevel].A=255;
               Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=false;
 
               joueur = { 6, 9, HAUT };
               lumiere = { 6, 5, 1,1,1,0, false };
@@ -351,11 +778,15 @@ void loadLevel( unsigned char numLevel )
 
               Map[numLevel].x=0;
               Map[numLevel].y=-1;
-              Map[numLevel].R=0;
-              Map[numLevel].G=0;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
               Map[numLevel].B=255;
               Map[numLevel].A=255;
               Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=true;
 
               joueur = { 6, 9, HAUT };
               lumiere = { 6, 5, 1,1,1,0, false };
@@ -397,6 +828,7 @@ void loadLevel( unsigned char numLevel )
               TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100,  true };
               //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100,  true };
               //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100,  true };
+
        }
        else if (numLevel==3)
        {
@@ -424,11 +856,15 @@ void loadLevel( unsigned char numLevel )
 
               Map[numLevel].x=1;
               Map[numLevel].y=-1;
-              Map[numLevel].R=0;
-              Map[numLevel].G=0;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
               Map[numLevel].B=255;
               Map[numLevel].A=255;
-              Map[numLevel].visited=true;;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=false;
 
               joueur = { 6, 9, HAUT };
               lumiere = { 6, 5, 1,1,1,0, false };
@@ -470,6 +906,7 @@ void loadLevel( unsigned char numLevel )
               //TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100,  true };
               //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100,  true };
               //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100,  true };
+
        }
        else if (numLevel==4)
        {
@@ -498,10 +935,14 @@ void loadLevel( unsigned char numLevel )
               Map[numLevel].x=-1;
               Map[numLevel].y=-2;
               Map[numLevel].R=255;
-              Map[numLevel].G=0;
-              Map[numLevel].B=0;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
               Map[numLevel].A=255;
               Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=true;
 
               joueur = { 6, 9, HAUT };
               lumiere = { 6, 5, 1,1,1,0, false };
@@ -548,6 +989,7 @@ void loadLevel( unsigned char numLevel )
               BossCollection[1] = { 2, 5, 2, 8, VERTICAL, HAUT, B_GREEN };
               BossCollection[2] = { 6, 9, 2, 10, HORIZONTAL, GAUCHE, B_BLUE };
               BossCollection[3] = { 10, 5, 2, 8, VERTICAL, HAUT, B_BLACK };
+
        }
        else if (numLevel==5)
        {
@@ -576,10 +1018,15 @@ void loadLevel( unsigned char numLevel )
               Map[numLevel].x=1;
               Map[numLevel].y=-2;
               Map[numLevel].R=255;
-              Map[numLevel].G=0;
-              Map[numLevel].B=0;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
               Map[numLevel].A=255;
               Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=true;
+
 
               joueur = { 6, 9, HAUT };
               lumiere = { 6, 5, 1,1,1,0, false };
@@ -625,7 +1072,36 @@ void loadLevel( unsigned char numLevel )
               BossCollection[0] = { 6, 3, 2, 10, HORIZONTAL, GAUCHE, BIGBOSS };
 
        }
+
+       if (needcorrection==true)
+              adjustLevel( numLevel );
 }
+
+
+void synchroniseGame( void )
+{
+       score = sauvegarde.currentScore[0]*256+sauvegarde.currentScore[1];
+       currentLevel = sauvegarde.currentLevel;
+       difficulty = sauvegarde.currentDifficulty;
+
+       life = sauvegarde.currentLife;
+
+       RedFrag = sauvegarde.redFrag==1 ? true : false;
+       GreenFrag = sauvegarde.greenFrag==1 ? true : false;
+       BlueFrag = sauvegarde.blueFrag==1 ? true : false;
+       BlackFrag = sauvegarde.blackFrag==1 ? true : false;
+       WhiteFrag = sauvegarde.whiteFrag==1 ? true : false;
+
+       for( unsigned char k =0; k<33; k++)
+       {
+              if (sauvegarde.visitedLevels[k]==0x01)
+              {
+                  loadLevel( k );
+              }
+              else Map[k].visited= false;
+       }
+}
+
 
 void exitAndFree( void )
 {
@@ -1112,6 +1588,11 @@ void drawMinimap( void )
                             _boxRGBA( lX-4, lY-3, lX+4, lY+3, 0, 255, 0, A/2);
 
                      _rectangleRGBA( lX-4, lY-3, lX+4, lY+3, R, G, B, A);
+
+                     if (Map[k].doorWest==true) _rectangleRGBA( lX-6, lY-1, lX-4, lY+1, R, G, B, A);
+                     if (Map[k].doorEast==true) _rectangleRGBA( lX+4, lY-1, lX+6, lY+1, R, G, B, A);
+                     if (Map[k].doorNorth==true) _rectangleRGBA( lX-1, lY-5, lX+1, lY-3, R, G, B, A);
+                     if (Map[k].doorSouth==true) _rectangleRGBA( lX-1, lY+3, lX+1, lY+5, R, G, B, A);
               }
        }
 }
@@ -1123,8 +1604,8 @@ void drawInterface( void )
        dsubimage( 232, 0, &parchemin, 0,0, 164, 210,  DIMAGE_NONE);
        dfont( &font_fantasy );
 
-       dprint( 256, 36, C_RGB(150,150,150), "MAGIC Light v0.7B");
-       dprint( 255, 35, C_BLACK, "MAGIC Light v0.7B");
+       dprint( 256, 36, C_RGB(150,150,150), "MAGIC Light %s", RevShort);
+       dprint( 255, 35, C_BLACK, "MAGIC Light %s", RevShort);
 
        dfont( &font_tiny );
 
@@ -1146,6 +1627,13 @@ void drawInterface( void )
        {
               dsubimage( 340 + k*8, 57, &hearts, 0, 0, 8, 8,  DIMAGE_NONE);
        }
+
+
+       if (WhiteFrag==true) dsubimage( 340, 66, &fragments, 0, 0, 32, 32,  DIMAGE_NONE);
+       if (BlackFrag==true) dsubimage( 340, 66, &fragments, 32, 0, 32, 32,  DIMAGE_NONE);
+       if (RedFrag==true) dsubimage( 340, 66, &fragments, 64, 0, 32, 32,  DIMAGE_NONE);
+       if (GreenFrag==true) dsubimage( 340, 66, &fragments, 96, 0, 32, 32,  DIMAGE_NONE);
+       if (BlueFrag==true) dsubimage( 340, 66, &fragments, 128, 0, 32, 32,  DIMAGE_NONE);
 
 
        midY=(200+224)/2;
@@ -1178,6 +1666,7 @@ void drawInterface( void )
        }
 }
 
+
 bool isValidMove( selection selected, unsigned char x, unsigned char y, orientations sens )
 {
        for(unsigned char k=0; k<NbDoorsLevel; k++)
@@ -1186,6 +1675,7 @@ bool isValidMove( selection selected, unsigned char x, unsigned char y, orientat
               {
                      if (DoorCollection[k].isdoor && DoorCollection[k].isopen)
                      {
+                            updateCurrentState( );
                             loadLevel(  DoorCollection[k].nextLevelNumber );
                             joueur = { 11-10*x/12, 9-8*y/10, sens };
                             return false;
@@ -1555,7 +2045,6 @@ void updateMonsters( void )
               unsigned char maxi = MonstersCollection[k].maxi;
               unsigned int direction = MonstersCollection[k].direction;
               unsigned int sens = MonstersCollection[k].sens;
-              unsigned int type = MonstersCollection[k].kind;
 
               if (direction==VERTICAL)
               {
@@ -1915,7 +2404,6 @@ void updateBoss( void )
               unsigned char maxi = BossCollection[k].maxi;
               unsigned int direction = BossCollection[k].direction;
               unsigned int sens = BossCollection[k].sens;
-              unsigned int type = BossCollection[k].color;
 
               if (direction==VERTICAL)
               {
@@ -1993,8 +2481,8 @@ void renderBoss( void )
 
               if (type ==BIGBOSS)
               {
-                    lX -= 8;
-                    lY -= 14;
+                     lX -= 8;
+                     lY -= 14;
 
                      unsigned int OFFSET_X_MONSTER = 0;
 
@@ -2683,7 +3171,7 @@ static int get_inputs_quit(void)
               {
                      selectOptionPause--;
               }
-              if (key==KEY_DOWN && selectOptionPause<1)
+              if (key==KEY_DOWN && selectOptionPause<2)
               {
                      selectOptionPause++;
               }
@@ -2724,17 +3212,30 @@ void drawQuit( void )
               dprint( 90, 140, C_RGB(150,150,150), "Yes - For Now, But I'll Come Back !");
               dprint( 89, 139, C_BLACK, "Yes - For Now, But I'll Come Back !");
 
+              dfont( &font_fantasy );
+              dprint( 90, 155, C_RGB(150,150,150), "Please, Send Me Back to Main Menu");
+              dprint( 89, 154, C_BLACK,  "Please, Send Me Back to Main Menu");
+
+
               dfont( &font_tiny );
 
               if (selectOptionPause == 0)
               {
                      lX = 70;
                      lY = 119;
+                     GotoMainMenu=false;
               }
               else if (selectOptionPause == 1)
               {
                      lX = 70;
                      lY = 134;
+                     GotoMainMenu=false;
+              }
+              else if (selectOptionPause == 2)
+              {
+                     lX = 70;
+                     lY = 149;
+                     GotoMainMenu=true;
               }
 
               frame_light%=6;
@@ -2908,8 +3409,8 @@ void drawTitle( void )
               }
 
               dfont( &font_tiny );
-              dprint( 110, 156, C_RGB(150,150,150), "Welcome to Magic Light Revision 0.7B");
-              dprint( 109, 155, C_BLACK, "Welcome to Magic Light Revision 0.7B");
+              dprint( 110, 156, C_RGB(150,150,150), "Welcome to Magic Light %s", Revision);
+              dprint( 109, 155, C_BLACK, "Welcome to Magic Light %s", Revision);
               dprint( 110, 166, C_RGB(150,150,150), "                    12/2021 - by SlyVTT                     ");
               dprint( 109, 165, C_BLACK, "                    12/2021 - by SlyVTT                     ");
 
@@ -3049,7 +3550,10 @@ static int get_inputs_startmenu(void)
               if (key==KEY_EXE)
                      doneStart = true;
 
-              if (key==KEY_UP && selectStartMenu>1)
+              if (saveexist==false && key==KEY_UP && selectStartMenu>1)
+                     selectStartMenu--;
+
+              if (saveexist==true && key==KEY_UP && selectStartMenu>0)
                      selectStartMenu--;
 
               if (key==KEY_DOWN && selectStartMenu<2)
@@ -3066,8 +3570,12 @@ unsigned char drawStartMenu( void )
 
        frame_light = 0;
 
-       selectStartMenu = 1;
+       saveexist = false;
 
+       gint_world_switch( GINT_CALL( is_save_existing ) );
+
+       if (saveexist==false) selectStartMenu = 1;
+       else selectStartMenu = 0;
 
        while (!doneStart)
        {
@@ -3075,31 +3583,45 @@ unsigned char drawStartMenu( void )
 
               dimage( 0, 10, &maintitle);
 
-              dfont( &font_fantasy );
-              dprint( 120, 100, C_RGB(150,150,150), "Continue Previous Game (Soon)");
-              dprint( 119, 99, C_RGB(240,240,240), "Continue Previous Game (Soon)");
+              if (saveexist==false)
+              {
+                     dfont( &font_fantasy );
+                     dprint( 80, 100, C_RGB(150,150,150), "Continue Previous Game");
+                     dprint( 79, 99, C_RGB(240,240,240), "Continue Previous Game");
+
+                     dfont( &font_fantasy );
+                     dprint( 80, 120, C_RGB(150,150,150), "Start New Game");
+                     dprint( 79, 119, C_BLACK, "Start New Game");
+              }
+              else
+              {
+                     dfont( &font_fantasy );
+                     dprint( 80, 100, C_RGB(150,150,150), "Continue Previous Game");
+                     dprint( 79, 99, C_BLACK, "Continue Previous Game");
+
+                     dfont( &font_fantasy );
+                     dprint( 80, 120, C_RGB(150,150,150), "Start New Game (Will Trash Previous Save)");
+                     dprint( 79, 119, C_RED, "Start New Game (Will Trash Previous Save)");
+              }
+
 
               dfont( &font_fantasy );
-              dprint( 120, 120, C_RGB(150,150,150), "Start New Game");
-              dprint( 119, 119, C_BLACK, "Start New Game");
-
-              dfont( &font_fantasy );
-              dprint( 120, 140, C_RGB(150,150,150), "Quit And Back To OS");
-              dprint( 119, 139, C_BLACK, "Quit And Back To OS");
+              dprint( 80, 140, C_RGB(150,150,150), "Quit And Back To OS");
+              dprint( 79, 139, C_BLACK, "Quit And Back To OS");
 
               if (selectStartMenu == 0)
               {
-                     lX = 100;
+                     lX = 60;
                      lY = 94;
               }
               else if (selectStartMenu == 1)
               {
-                     lX = 100;
+                     lX = 60;
                      lY = 114;
               }
               else if (selectStartMenu == 2)
               {
-                     lX = 100;
+                     lX = 60;
                      lY = 134;
               }
 
@@ -3149,13 +3671,7 @@ void drawStoryMenu( void )
 {
        doneStory = false;
 
-       unsigned int lX = 0;
-       unsigned int lY = 0;
-
-       frame_light = 0;
-
        selectStoryMenu = 1;
-
 
        while (!doneStory)
        {
@@ -3254,6 +3770,12 @@ void updateTreasures( selection what )
                             {
                                    score+=TreasureCollection[k].scoreboost;
                                    TreasureCollection[k].isopen=true;
+
+                                   if (TreasureCollection[k].inside == BLACK_FRAGMENT)  BlackFrag=true;
+                                   if (TreasureCollection[k].inside == WHITE_FRAGMENT)  WhiteFrag=true;
+                                   if (TreasureCollection[k].inside == RED_FRAGMENT)  RedFrag=true;
+                                   if (TreasureCollection[k].inside == GREEN_FRAGMENT)  GreenFrag=true;
+                                   if (TreasureCollection[k].inside == BLUE_FRAGMENT)  BlueFrag=true;
                             }
                             else
                             {
@@ -3261,6 +3783,95 @@ void updateTreasures( selection what )
                             }
                      }
               }
+       }
+}
+
+
+void launch_Boss_Attack( void )
+{
+
+       if (frame_boss_attack==0)
+       {
+              attackboss=true;
+              xbossattack=BossCollection[0].xcur*SIZE+OFFSET_X+SIZE/2;
+              ybossattack=BossCollection[0].ycur*SIZE+OFFSET_Y+SIZE/2;
+
+              srand( rtc_ticks() );
+              attacktype = rand() % 3;
+
+              if (attacktype==0) NbBulletLevel=10;
+              else if (attacktype==1) NbBulletLevel=20;
+              else if (attacktype==2) NbBulletLevel=30;
+              else NbBulletLevel=40;
+
+              free( BulletCollection );
+              BulletCollection = (Bullet*) malloc( NbBulletLevel * sizeof( Bullet ) );
+
+              for( unsigned char k = 0; k<NbBulletLevel; k++)
+              {
+                     BulletCollection[k].visible = true;
+              }
+
+       }
+
+       dprint_opt( 5, 5, C_WHITE, C_NONE, DTEXT_CENTER, DTEXT_MIDDLE, "%d", attacktype );
+
+       //if ( attacktype == 0)
+       {
+              for( unsigned char k=0; k<NbBulletLevel; k++)
+              {
+                     if ( BulletCollection[k].visible == true )
+                     {
+                            int xpart = xbossattack + 2*frame_boss_attack*cos( k*360/NbBulletLevel*3.1415927/180.0 );
+                            int ypart = ybossattack + 2*frame_boss_attack*sin( k*360/NbBulletLevel*3.1415927/180.0 );
+
+                            unsigned char cellX = (xpart-OFFSET_X)/SIZE;
+                            unsigned char cellY = (ypart-OFFSET_Y)/SIZE;
+
+                            for (unsigned char j = 0; j<NbObstacleLevel; j++)
+                            {
+                                   if (ObstaclesCollection[j].x==cellX && ObstaclesCollection[j].y==cellY && ObstaclesCollection[j].type!=BLOCK_WATER)
+                                   {
+                                          BulletCollection[k].visible = false;
+                                   }
+                            }
+                            for (unsigned char j = 0; j<NbBlocksLevel; j++)
+                            {
+                                   if (BlocksCollection[j].x==cellX && BlocksCollection[j].y==cellY)
+                                   {
+                                          BulletCollection[k].visible = false;
+                                   }
+                            }
+                            if (cellX==joueur.x && cellY==joueur.y)
+                            {
+                                   if (life>0) life--;
+                                   BulletCollection[k].visible = false;
+                            }
+
+                            if (xpart<OFFSET_X+SIZE || xpart>OFFSET_X+SIZE*(SIZE_MAP_X-1) || ypart <OFFSET_Y+SIZE || ypart>OFFSET_Y+SIZE*(SIZE_MAP_Y-1))
+                            {
+                                   BulletCollection[k].visible = false;
+                            }
+
+
+                            if ( BulletCollection[k].visible == true ) dsubimage( xpart-8, ypart-8, &bulletsbicolor, frame_bullet*16,attacktype*16,16,16,  DIMAGE_NONE);
+                     }
+
+              }
+       }
+
+
+
+       frame_bullet++;
+       if (frame_bullet==8) frame_bullet=0;
+
+       frame_boss_attack++;
+       if (frame_boss_attack==100)
+       {
+              frame_boss_attack=0;
+              attackboss=false;
+              free( BulletCollection );
+              BulletCollection=NULL;
        }
 }
 
@@ -3346,6 +3957,7 @@ static int get_inputs(void)
               {
                      if (currentLevel>0)
                      {
+                            updateCurrentState();
                             currentLevel-- ;
                             loadLevel( currentLevel );
                      }
@@ -3356,9 +3968,15 @@ static int get_inputs(void)
               {
                      if (currentLevel<NB_LEVELS -1)
                      {
+                            updateCurrentState();
                             currentLevel++ ;
                             loadLevel( currentLevel );
                      }
+              }
+
+              if (key==KEY_8 && NbBossLevel!=0)
+              {
+                     attackboss = true;
               }
 #endif
 
@@ -3366,102 +3984,146 @@ static int get_inputs(void)
 }
 
 
+void the_end( void )
+{
+
+}
+
 
 int main ( int argc, char** argv )
 {
-       doneGame = false;
-       doneMain = false;
-       doneOption = false;
-       donePause = false;
-       doneStart = false;
-       doneTitle = false;
-       doneStory = false;
 
-
-       drawTitle();
-
-       unsigned char choice = drawStartMenu();
-
-       if (choice==0)
+       do
        {
-              // TODO : Load previous status
-              loadLevel( 0 );
-              initMap();
-       }
-       else if (choice==1)
-       {
-              // We start a new game, so we load Level #000
-              difficulty= drawDifficultyMenu();
 
-              if (difficulty==0) life=5;
-              else  if (difficulty==1) life=3;
-              else if (difficulty==2) life=1;
+              selectStartMenu = 0;
+              selectDifficultyMenu = 0;
+              selectOptionMenu = 0;
+              selectOptionPause = 0;
+              selectOptionLoose = 0;
+              selectStoryMenu =0;
+              difficulty = 0;
 
-              drawStoryMenu();
+              doneGame = false;
+              doneMain = false;
+              doneOption = false;
+              donePause = false;
+              doneStart = false;
+              doneTitle = false;
+              doneStory = false;
+              GotoMainMenu=false;
 
-              loadLevel( 0 );
-              initMap();
-       }
-       else if (choice==2)
-       {
-              exitAndFree();
-              return 0;
-       }
+              drawTitle();
 
+              unsigned char choice = drawStartMenu();
 
-       initWalls();
-
-
-       while (!doneGame)
-       {
-              dclear(C_RGB(0,0,0));
-
-              frame_cursor++;
-              frame_cursor = frame_cursor % 4;
-
-              drawInterface(  );
-              drawMinimap( );
-              renderMap(  );
-
-              checkDoors( );
-              renderDoors( );
-
-              renderObstacles( LAYER_BELOW_RAYS );
-              renderObstacles( LAYER_ABOVE_RAYS );
-
-              renderWalls(  );
-
-              checkReceptors(  );
-              renderReceptors(  );
-
-              renderMovable(  );
-
-              renderLight(  );
-              renderTreasures( );
-
-              renderMonsters(  );
-              renderBoss( );
-
-              renderPlayer(  );
-
-              dupdate();
-
-              get_inputs();
-
-              if (life==0) drawLoose();
-
-              if (selectOptionPause==1 || selectOptionLoose==1) doneGame=true;
-              if (life==0 && selectOptionLoose==0)
+              if (choice==0)
               {
+                     initMap();
+                     loadprogress();
+
+                     synchroniseGame( );
+                     loadLevel( currentLevel );
+                     adjustLevel( currentLevel );
+
+              }
+              else if (choice==1)
+              {
+                     // We start a new game, so we load Level #000
+                     difficulty= drawDifficultyMenu();
+
                      if (difficulty==0) life=5;
                      else  if (difficulty==1) life=3;
                      else if (difficulty==2) life=1;
 
-                     loadLevel( currentLevel);
+                     drawStoryMenu();
+
+                     initMap();
+
+                     loadLevel( 0 );
+              }
+              else if (choice==2)
+              {
+                     exitAndFree();
+                     return 0;
               }
 
+              initWalls();
+
+              while (!doneGame)
+              {
+                     dclear(C_RGB(0,0,0));
+
+                     frame_cursor++;
+                     frame_cursor = frame_cursor % 4;
+
+                     drawInterface(  );
+                     drawMinimap( );
+                     renderMap(  );
+
+                     checkDoors( );
+                     renderDoors( );
+
+                     renderObstacles( LAYER_BELOW_RAYS );
+                     renderObstacles( LAYER_ABOVE_RAYS );
+
+                     renderWalls(  );
+
+                     checkReceptors(  );
+                     renderReceptors(  );
+
+                     renderMovable(  );
+
+                     renderLight(  );
+                     renderTreasures( );
+
+                     renderMonsters(  );
+                     renderBoss( );
+
+                     if (attackboss==false && NbBossLevel!=0 && frame_boss_attack == 0 )
+                     {
+                            srand( rtc_ticks() );
+                            unsigned char randomattack = rand() % 101;
+
+                            if (randomattack>=45 && randomattack<=65) launch_Boss_Attack();
+                     }
+                     if (attackboss==true) launch_Boss_Attack();
+
+
+                     renderPlayer(  );
+
+                     dupdate();
+
+                     get_inputs();
+
+                     if (life==0) drawLoose();
+
+                     if (selectOptionPause==1 || selectOptionPause==2 || selectOptionLoose==1) doneGame=true;
+                     if (life==0 && selectOptionLoose==0)
+                     {
+                            if (difficulty==0) life=5;
+                            else  if (difficulty==1) life=3;
+                            else if (difficulty==2) life=1;
+
+                            loadLevel( currentLevel);
+                     }
+
+                     if (WhiteFrag && BlackFrag && RedFrag && GreenFrag && BlueFrag )
+                     {
+                            the_end();
+                            doneGame=true;
+                     }
+
+                     updateCurrentState( );
+
+              }
+
+              //updateCurrentState( );
+
+              gint_world_switch( GINT_CALL( saveprogress )  );
 
        }
+       while (GotoMainMenu);
 
        exitAndFree( );
 

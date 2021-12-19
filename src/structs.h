@@ -106,7 +106,12 @@ enum content
     LINGOT_BRONZE,
     LINGOT_ARGENT,
     LINGOT_OR,
-    LINGOT_PLATINE
+    LINGOT_PLATINE,
+    WHITE_FRAGMENT,
+    BLACK_FRAGMENT ,
+    RED_FRAGMENT,
+    GREEN_FRAGMENT,
+    BLUE_FRAGMENT
 };
 
 enum chest
@@ -147,7 +152,39 @@ struct Minimap
     char x, y;
     unsigned char R,G,B,A;
     bool visited;
+    bool doorNorth;
+    bool doorSouth;
+    bool doorWest;
+    bool doorEast;
 };
+
+struct LevelSaveStatus
+{
+    unsigned char chestStatusSave[8]={0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA};              // max 8 chest per level : status = 0 if chest not touched yet / 1 if open (and then empty) (activated one time) / 2 if not visible (activated 2 times)
+    unsigned char doorStatusSave[4]={0xBB,0xBB,0xBB,0xBB};                  // status of the door (0 = closed; 1 = open )
+    unsigned char bossStatusSave[8]={0xCC,0xCC,0xCC,0xCC,0xCC,0xCC,0xCC,0xCC};               // max 8 bosses per level (0 = normal; 1 = defeated )
+    unsigned char monsterStatusSave[8]={0xDD,0xDD,0xDD,0xDD,0xDD,0xDD,0xDD,0xDD};               // max 8 monsters per level (0 = normal; 1 = defeated )
+    unsigned char redBlockSave[2]={0xEE,0xEE};                          // X and Y coordinates
+    unsigned char greenBlockSave[2]={0xEE,0xEE};                          // X and Y coordinates
+    unsigned char blueBlockSave[2]={0xEE,0xEE};                          // X and Y coordinates
+    unsigned char blackBlockSave[2]={0xEE,0xEE};                          // X and Y coordinates
+    unsigned char lightSave[2]={0xFF,0xFF};                          // X and Y coordinates
+}; // TOTAL 38 bytes per level saved
+
+struct GameSaveStatus
+{
+    unsigned char currentScore[2];          // Score between 0 and 65535 [byte 1 : score / 256] and [byte 2 : score % 256 ]
+    unsigned char currentLevel;
+    unsigned char visitedLevels[33];        // Levels 1 to 32 save status as level 0 is always visited (0 = not visited, 1 = visited)
+    unsigned char currentDifficulty;
+    unsigned char currentLife;
+    unsigned char redFrag;                      // 0 = bot collected yet - 1 = collected
+    unsigned char greenFrag;                      // 0 = bot collected yet - 1 = collected
+    unsigned char blueFrag;                      // 0 = bot collected yet - 1 = collected
+    unsigned char blackFrag;                      // 0 = bot collected yet - 1 = collected
+    unsigned char whiteFrag;                      // 0 = bot collected yet - 1 = collected
+    unsigned char terminator = 0x99;
+};  // TOTAL 44 bytes
 
 enum monstertype
 {
@@ -184,4 +221,13 @@ struct Boss
     orientations direction;
     orientations sens;
     bosscolor color;
+};
+
+
+struct Bullet
+{
+    unsigned int xpart;
+    unsigned int ypart;
+    unsigned int color;
+    bool visible;
 };

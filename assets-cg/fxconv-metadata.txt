@@ -3,6 +3,11 @@ maintitle.png:
   profile: r5g6b5a
   name: maintitle
 
+fragments.png:
+  type: bopti-image
+  profile: r5g6b5a
+  name: fragments
+
 bigparchvide.png:
   type: bopti-image
   profile: r5g6b5a
@@ -25,6 +30,11 @@ monstres.png:
   type: bopti-image
   profile: r5g6b5a
   name: monstres
+
+bulletsbicolor.png:
+  type: bopti-image
+  profile: r5g6b5a
+  name: bulletsbicolor
 
 bigboss.png:
   type: bopti-image
