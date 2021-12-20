@@ -22,16 +22,18 @@ Quand une porte est ouverte, donnant sur un escalier, notre perso peut franchir 
 Listing des contrôles :
 
 Casio Graph 90+E
-    [F1] à [F6] sélectionner l'entité à déplacer : JOUEUR / LUMIERE / BLOCS de CONVERSION
-    [OPTN] affiche le menu d'options
-    [EXIT] Pause / Menu pour quitter.
-    [X,O,T] Ouvre les coffres / Fait disparaitre les coffres ouverts
-    [FLECHES] pour mouvoir l'entité selectionnée
+
+[F1] à [F6] sélectionner l'entité à déplacer : JOUEUR / LUMIERE / BLOCS de CONVERSION
+[OPTN] affiche le menu d'options
+[EXIT] Pause / Menu pour quitter.
+[X,O,T] Ouvre les coffres / Fait disparaitre les coffres ouverts
+[FLECHES] pour mouvoir l'entité selectionnée
     
 TI nSpire
-    [TAB] / [MENU] sélectionner l'entité à déplacer : JOUEUR / LUMIERE / BLOCS de CONVERSION
-    [DOC] affiche le menu d'options
-    [ESC] Pause / Menu pour quitter.
-    [CTRL] Ouvre les coffres / Fait disparaitre les coffres ouverts
-    [FLECHES] pour mouvoir l'entité selectionnée
+
+[TAB] / [MENU] sélectionner l'entité à déplacer : JOUEUR / LUMIERE / BLOCS de CONVERSION
+[DOC] affiche le menu d'options
+[ESC] Pause / Menu pour quitter.
+[CTRL] Ouvre les coffres / Fait disparaitre les coffres ouverts
+[FLECHES] pour mouvoir l'entité selectionnée
 
