@@ -1,4 +1,4 @@
-# MagicLight Add-ins pour Casio Graph 90+E et pour TI nSpire CX /CX-II 
+# MagicLight pour Casio Graph 90+E et TI nSpire CX /CX-II 
 
 
 
