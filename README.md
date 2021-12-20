@@ -1,10 +1,10 @@
-# MagicLight Add-ins pour Casio Graph 90+E
+# MagicLight Add-ins pour Casio Graph 90+E et pour TI nSpire CX /CX-II 
 
 
 
 Hello,
 
-voici la première release de Magic Light en version 0.2B pour vous amuser un peu.
+voici la première release de Magic Light en version 0.9B pour vous amuser un peu.
 
 <img src="https://i.imgur.com/tEkzLh6.png" align="center">
 
@@ -21,12 +21,17 @@ Quand une porte est ouverte, donnant sur un escalier, notre perso peut franchir 
 
 Listing des contrôles :
 
-
-[F1] à [F6] sélectionner l'entité à déplacer : JOUEUR / LUMIERE / BLOCS de CONVERSION
-
-[OPTN] affiche le menu d'options
-
-[EXIT] Pause / Menu pour quitter.
-
-[X,O,T] Ouvre les coffres / Fait disparaitre les coffres ouverts
+Casio Graph 90+E
+    [F1] à [F6] sélectionner l'entité à déplacer : JOUEUR / LUMIERE / BLOCS de CONVERSION
+    [OPTN] affiche le menu d'options
+    [EXIT] Pause / Menu pour quitter.
+    [X,O,T] Ouvre les coffres / Fait disparaitre les coffres ouverts
+    [FLECHES] pour mouvoir l'entité selectionnée
+    
+TI nSpire
+    [TAB] / [MENU] sélectionner l'entité à déplacer : JOUEUR / LUMIERE / BLOCS de CONVERSION
+    [DOC] affiche le menu d'options
+    [ESC] Pause / Menu pour quitter.
+    [CTRL] Ouvre les coffres / Fait disparaitre les coffres ouverts
+    [FLECHES] pour mouvoir l'entité selectionnée
 
