@@ -13,7 +13,7 @@
 #include "structs.h"
 #include "primitives.h"
 
-#define DEBUG 1
+//#define DEBUG 1
 
 #define R_ROUGE 0
 #define R_VERT 1
@@ -209,12 +209,10 @@ bool is_save_existing_boolean( void )
        }
 }
 
-
 void delete_save( void )
 {
            BFile_Remove( filepath );
 }
-
 
 void saveprogress( void )
 {
@@ -331,7 +329,6 @@ void saveprogress( void )
        free( buffer );
 }
 
-
 void loadprogress( void )
 {
        sizeoffile = sizeof( GameSaveStatus ) + 33*sizeof( LevelSaveStatus );
@@ -431,8 +428,6 @@ void loadprogress( void )
 
 }
 
-
-
 void updateCurrentState( void  )
 {
        sauvegarde.currentScore[0] = score/256;
@@ -500,14 +495,11 @@ void updateCurrentState( void  )
        partielevel[currentLevel].lightSave[1]=lumiere.y;
 }
 
-
-
 void initMap( void )
 {
        for( unsigned char k=0; k < 33; k++) Map[k].visited = false;
        currentLevel = 0;
 }
-
 
 void adjustLevel( int lev )
 {
@@ -586,7 +578,7 @@ void loadLevel( unsigned char numLevel )
        if (Map[numLevel].visited==true)       needcorrection = true;
        else needcorrection = false;
 
-       if (numLevel==0)
+       if (numLevel==0) // VALIDATED [OK]
        {
               currentLevel = numLevel;
 
@@ -594,12 +586,12 @@ void loadLevel( unsigned char numLevel )
               SIZE_MAP_X=13;
               SIZE_MAP_Y=11;
 
-              NbReceptorsLevel = 3;
+              NbReceptorsLevel = 4;
               NbDoorsLevel = 1;
               NbBlocksLevel = 4;
-              NbTreasureLevel = 5;
-              NbObstacleLevel = 8;
-              NbMonsterLevel = 2;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 16;
+              NbMonsterLevel = 0;
               NbBossLevel = 0;
 
               BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
@@ -625,50 +617,59 @@ void loadLevel( unsigned char numLevel )
               joueur = { 6, 9, HAUT };
               lumiere = { 6, 5, 1,1,1,0, false };
 
-              ObstaclesCollection[0] = {2,2,BLOCK_SUN};
-              ObstaclesCollection[1] = {10,2,BLOCK_SUN};
-              ObstaclesCollection[2] = {2,8,BLOCK_SUN};
-              ObstaclesCollection[3] = {10,8,BLOCK_SUN};
-              ObstaclesCollection[4] = {4,5,BLOCK_WATER};
-              ObstaclesCollection[5] = {8,5,BLOCK_WATER};
-              ObstaclesCollection[6] = {6,3,BLOCK_WATER};
-              ObstaclesCollection[7] = {6,7,BLOCK_WATER};
+              ObstaclesCollection[0] = {4,1,BLOCK_STONE};
+              ObstaclesCollection[1] = {8,1,BLOCK_STONE};
+              ObstaclesCollection[2] = {1,3,BLOCK_STONE};
+              ObstaclesCollection[3] = {11,3,BLOCK_STONE};
+              ObstaclesCollection[4] = {1,7,BLOCK_STONE};
+              ObstaclesCollection[5] = {11,7,BLOCK_STONE};
+              ObstaclesCollection[6] = {4,9,BLOCK_STONE};
+              ObstaclesCollection[7] = {8,9,BLOCK_STONE};
 
-              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
-              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
-              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
-              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+              ObstaclesCollection[8] = {5,4,BLOCK_WATER};
+              ObstaclesCollection[9] = {6,4,BLOCK_WATER};
+              ObstaclesCollection[10] = {7,4,BLOCK_WATER};
+              ObstaclesCollection[11] = {5,5,BLOCK_WATER};
+              ObstaclesCollection[12] = {7,5,BLOCK_WATER};
+              ObstaclesCollection[13] = {5,6,BLOCK_WATER};
+              ObstaclesCollection[14] = {6,6,BLOCK_WATER};
+              ObstaclesCollection[15] = {7,6,BLOCK_WATER};
+
+
+              BlocksCollection[0] = { 2, 4, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 10, 4, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 10, 6, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 2, 6, 0, 0, 0, 255, OPAQUE };
 
               BlocRouge = &BlocksCollection[0];
               BlocVert = &BlocksCollection[1];
               BlocBleu = &BlocksCollection[2];
               BlocNoir = &BlocksCollection[3];
 
-              ReceptorCollection[0] = { 5, 0, BAS, 255, 0, 0, false };  // Receptor RED
-              ReceptorCollection[1] = { 12, 4, GAUCHE, 0, 255, 0, false }; // Receptor GREEN
-              ReceptorCollection[2] = { 0, 6, DROITE, 0, 0, 255, false }; // Receptor BLUE
-              // ReceptorCollection[3] = { 10, 8, GAUCHE, 0, 0, 0, false }; // Receptor BLACK
+              ReceptorCollection[0] = { 2, 0, BAS, 255, 0, 0, false };  // Receptor RED
+              ReceptorCollection[1] = { 10, 0, BAS, 0, 255, 0, false }; // Receptor GREEN
+              ReceptorCollection[2] = { 10, 10, HAUT, 0, 0, 255, false }; // Receptor BLUE
+              ReceptorCollection[3] = { 2, 10, HAUT, 0, 0, 0, false }; // Receptor BLACK
               // ReceptorCollection[4] = { 8, 0, BAS, 255, 0, 255, false }; // Receptor PINK
               // ReceptorCollection[5] = { 9, 10, HAUT, 0, 255, 255, false }; // Receptor CYAN
               // ReceptorCollection[6] = { 12, 8, GAUCHE, 255, 255, 0, false }; // Receptor YELLOW
               // ReceptorCollection[7] = { 0, 7, DROITE, 255, 255, 255, false }; // Receptor WHITE
 
-              DoorCollection[0] = { 6,0, HAUT, false, true, 3, { R_ROUGE,R_BLEU, R_VERT }, 2}; // Door NORTH
+              DoorCollection[0] = { 6,0, HAUT, false, true, 1, { R_ROUGE, -1, -1 }, 2}; // Door NORTH
               //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 1, { R_BLEU, -1, -1 }, 0}; // Door WEST
               //DoorCollection[2] = { 12, 5, DROITE, false, true, 1, { R_VERT, -1, -1 }, 0}; // Door EAST
               //DoorCollection[3] = { 6, 10, BAS, false, false, 0, { -1 -1, -1 }, -1}; // Door SOUTH
 
-              TreasureCollection[0] = {1,1, T_RED, false, WHITE_FRAGMENT, 100, true };
-              TreasureCollection[1] = {2,1, T_YELLOW, false, BLACK_FRAGMENT, 100, true };
-              TreasureCollection[2] = {3,1, T_GREEN, false, RED_FRAGMENT, 100, true };
-              TreasureCollection[3] = {4,1, T_BLUE, false, GREEN_FRAGMENT, 100, true };
-              TreasureCollection[4] = {5,1, T_BLUE, false, BLUE_FRAGMENT, 100, true };
+              //TreasureCollection[0] = {1,1, T_RED, false, WHITE_FRAGMENT, 100, true };
+              //TreasureCollection[1] = {2,1, T_YELLOW, false, BLACK_FRAGMENT, 100, true };
+              //TreasureCollection[2] = {3,1, T_GREEN, false, RED_FRAGMENT, 100, true };
+              //TreasureCollection[3] = {4,1, T_BLUE, false, GREEN_FRAGMENT, 100, true };
+              //TreasureCollection[4] = {5,1, T_BLUE, false, BLUE_FRAGMENT, 100, true };
 
-              MonstersCollection[0] = { 6, 4, 2, 10, HORIZONTAL, GAUCHE, BLOB };
-              MonstersCollection[1] = { 7, 5, 2, 8, VERTICAL, HAUT, SKELETON };
-
+              //MonstersCollection[0] = { 6, 4, 2, 10, HORIZONTAL, GAUCHE, BLOB };
+              //MonstersCollection[1] = { 7, 5, 2, 8, VERTICAL, HAUT, SKELETON };
        }
-       else if (numLevel==1)
+       else if (numLevel==1) // VALIDATED [OK]
        {
               currentLevel = numLevel;
 
@@ -762,7 +763,7 @@ void loadLevel( unsigned char numLevel )
               MonstersCollection[2] = { 10, 5, 1, 9, VERTICAL, HAUT, GHOST };
 
        }
-       else if (numLevel==2)
+       else if (numLevel==2) // VALIDATED [OK]
        {
               currentLevel = numLevel;
 
@@ -770,11 +771,11 @@ void loadLevel( unsigned char numLevel )
               SIZE_MAP_X=13;
               SIZE_MAP_Y=11;
 
-              NbReceptorsLevel = 8;
+              NbReceptorsLevel = 4;
               NbDoorsLevel = 3;
               NbBlocksLevel = 4;
-              NbTreasureLevel = 2;
-              NbObstacleLevel = 0;
+              NbTreasureLevel = 4;
+              NbObstacleLevel = 24;
               NbMonsterLevel = 0;
               NbBossLevel = 0;
 
@@ -801,43 +802,59 @@ void loadLevel( unsigned char numLevel )
               joueur = { 6, 9, HAUT };
               lumiere = { 6, 5, 1,1,1,0, false };
 
-              //ObstaclesCollection[0] = {2,2,BLOCK_SUN};
-              //ObstaclesCollection[1] = {10,2,BLOCK_SUN};
-              //ObstaclesCollection[2] = {2,8,BLOCK_SUN};
-              //ObstaclesCollection[3] = {10,8,BLOCK_SUN};
-              //ObstaclesCollection[4] = {4,5,BLOCK_WATER};
-              //ObstaclesCollection[5] = {8,5,BLOCK_WATER};
-              //ObstaclesCollection[6] = {6,3,BLOCK_WATER};
-              //ObstaclesCollection[7] = {6,7,BLOCK_WATER};
+              ObstaclesCollection[0] = {1,4,BLOCK_STONE};
+              ObstaclesCollection[1] = {2,4,BLOCK_STONE};
+              ObstaclesCollection[2] = {1,6,BLOCK_STONE};
+              ObstaclesCollection[3] = {2,6,BLOCK_STONE};
+              ObstaclesCollection[4] = {10,4,BLOCK_STONE};
+              ObstaclesCollection[5] = {11,4,BLOCK_STONE};
+              ObstaclesCollection[6] = {10,6,BLOCK_STONE};
+              ObstaclesCollection[7] = {11,6,BLOCK_STONE};
+              ObstaclesCollection[8] = {5,8,BLOCK_STONE};
+              ObstaclesCollection[9] = {5,9,BLOCK_STONE};
+              ObstaclesCollection[10] = {7,8,BLOCK_STONE};
+              ObstaclesCollection[11] = {7,9,BLOCK_STONE};
+              ObstaclesCollection[12] = {5,2,BLOCK_WATER};
+              ObstaclesCollection[13] = {6,2,BLOCK_WATER};
+              ObstaclesCollection[14] = {7,2,BLOCK_WATER};
+              ObstaclesCollection[15] = {5,3,BLOCK_WATER};
+              ObstaclesCollection[16] = {7,3,BLOCK_WATER};
+              ObstaclesCollection[17] = {5,4,BLOCK_WATER};
+              ObstaclesCollection[18] = {7,4,BLOCK_WATER};
+              ObstaclesCollection[19] = {5,5,BLOCK_WATER};
+              ObstaclesCollection[20] = {7,5,BLOCK_WATER};
+              ObstaclesCollection[21] = {5,6,BLOCK_WATER};
+              ObstaclesCollection[22] = {6,6,BLOCK_WATER};
+              ObstaclesCollection[23] = {7,6,BLOCK_WATER};
 
-              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
-              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
-              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
-              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+              BlocksCollection[0] = { 2, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 3, 1, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 10, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 9, 1, 0, 0, 0, 255, OPAQUE };
 
               BlocRouge = &BlocksCollection[0];
               BlocVert = &BlocksCollection[1];
               BlocBleu = &BlocksCollection[2];
               BlocNoir = &BlocksCollection[3];
 
-              ReceptorCollection[0] = { 5, 0, BAS, 255, 0, 0, false };  // Receptor RED
-              ReceptorCollection[1] = { 12, 4, GAUCHE, 0, 255, 0, false }; // Receptor GREEN
-              ReceptorCollection[2] = { 0, 6, DROITE, 0, 0, 255, false }; // Receptor BLUE
-              ReceptorCollection[3] = { 4, 10, HAUT, 0, 0, 0, false }; // Receptor BLACK
-              ReceptorCollection[4] = { 8, 0, BAS, 255, 0, 255, false }; // Receptor PINK
-              ReceptorCollection[5] = { 9, 10, HAUT, 0, 255, 255, false }; // Receptor CYAN
-              ReceptorCollection[6] = { 12, 8, GAUCHE, 255, 255, 0, false }; // Receptor YELLOW
-              ReceptorCollection[7] = { 0, 7, DROITE, 255, 255, 255, false }; // Receptor WHITE
+              ReceptorCollection[0] = { 0, 3, DROITE, 255, 0, 0, false };  // Receptor RED
+              ReceptorCollection[1] = { 2, 0, BAS, 0, 255, 0, false }; // Receptor GREEN
+              ReceptorCollection[2] = { 12, 3, GAUCHE, 0, 0, 255, false }; // Receptor BLUE
+              ReceptorCollection[3] = { 10, 0, BAS, 0, 0, 0, false }; // Receptor BLACK
+              //ReceptorCollection[4] = { 8, 0, BAS, 255, 0, 255, false }; // Receptor PINK
+              //ReceptorCollection[5] = { 9, 10, HAUT, 0, 255, 255, false }; // Receptor CYAN
+              //ReceptorCollection[6] = { 12, 8, GAUCHE, 255, 255, 0, false }; // Receptor YELLOW
+              //ReceptorCollection[7] = { 0, 7, DROITE, 255, 255, 255, false }; // Receptor WHITE
 
               //DoorCollection[0] = { 6,0, HAUT, false, true, 1, { R_ROUGE,R_BLEU, R_VERT }, 1}; // Door NORTH
-              DoorCollection[0] = { 0, 5, GAUCHE, false, true, 3, { R_BLEU, R_ROUGE, R_VERT }, 1}; // Door WEST
-              DoorCollection[1] = { 12, 5, DROITE, false, true, 1, { R_BLANC, -1, -1 }, 3}; // Door EAST
-              DoorCollection[2] = { 6, 10, BAS, false, true, 2, { R_NOIR, R_ROSE, -1 }, 0}; // Door SOUTH
+              DoorCollection[0] = { 0, 5, GAUCHE, false, true, 2, { R_ROUGE, R_VERT, -1 }, 1}; // Door WEST
+              DoorCollection[1] = { 12, 5, DROITE, false, true, 2, { R_BLEU, R_NOIR, -1 }, 3}; // Door EAST
+              DoorCollection[2] = { 6, 10, BAS, false, true, 2, { R_ROUGE, R_BLEU, -1 }, 0}; // Door SOUTH
 
-              TreasureCollection[0] = {1,2, T_RED, false, PIERRE_BLANCHE, 100,  true };
-              TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100,  true };
-              //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100,  true };
-              //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100,  true };
+              TreasureCollection[0] = {1,1, T_RED, false, PIERRE_BLANCHE, 100,  true };
+              TreasureCollection[1] = {11,1, T_YELLOW, false, PIERRE_BLANCHE, 100,  true };
+              TreasureCollection[2] = {1,9, T_GREEN, false, PIERRE_BLANCHE, 100,  true };
+              TreasureCollection[3] = {11,9, T_BLUE, false, PIERRE_BLANCHE, 100,  true };
 
        }
        else if (numLevel==3)
@@ -932,7 +949,7 @@ void loadLevel( unsigned char numLevel )
               NbTreasureLevel = 0;
               NbObstacleLevel = 0;
               NbMonsterLevel = 0;
-              NbBossLevel = 4;
+              NbBossLevel = 1;
 
               BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
               ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
@@ -996,9 +1013,9 @@ void loadLevel( unsigned char numLevel )
               //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100, true };
 
               BossCollection[0] = { 6, 2, 2, 10, HORIZONTAL, GAUCHE, B_RED };
-              BossCollection[1] = { 2, 5, 2, 8, VERTICAL, HAUT, B_GREEN };
-              BossCollection[2] = { 6, 9, 2, 10, HORIZONTAL, GAUCHE, B_BLUE };
-              BossCollection[3] = { 10, 5, 2, 8, VERTICAL, HAUT, B_BLACK };
+              //BossCollection[1] = { 2, 5, 2, 8, VERTICAL, HAUT, B_GREEN };
+              //BossCollection[2] = { 6, 9, 2, 10, HORIZONTAL, GAUCHE, B_BLUE };
+              //BossCollection[3] = { 10, 5, 2, 8, VERTICAL, HAUT, B_BLACK };
 
        }
        else if (numLevel==5)
@@ -1079,8 +1096,8 @@ void loadLevel( unsigned char numLevel )
               //TreasureCollection[2] = {10,4, T_GREEN, false, PIERRE_BLANCHE, 100, true };
               //TreasureCollection[3] = {1,1, T_BLUE, true, PIERRE_BLANCHE, 100, true };
 
-              BossCollection[0] = { 6, 3, 2, 10, HORIZONTAL, GAUCHE, BIGBOSS };
-
+              //BossCollection[0] = { 6, 3, 2, 10, HORIZONTAL, GAUCHE, BIGBOSS };
+              BossCollection[0] = { 6, 3, 2, 10, HORIZONTAL, GAUCHE, B_BLUE };
        }
 
        if (needcorrection==true)
@@ -1120,6 +1137,9 @@ void exitAndFree( void )
        free(DoorCollection);
        free(TreasureCollection);
        free(ObstaclesCollection);
+	   free(MonstersCollection);
+	   free(BossCollection);
+	   free(BulletCollection);
 }
 
 void initWalls( void )
@@ -3090,7 +3110,8 @@ void drawOption( void )
        {
               dclear(C_RGB(0,0,0));
 
-              dimage( 0, 10, &maintitle);
+              dimage( 0, 10, &bigparch);
+              dimage( 88, 42, &maintitle);
 
               dfont( &font_fantasy );
               dprint( 90, 95, C_RGB(150,150,150), "Back to Game");
@@ -3205,7 +3226,9 @@ void drawQuit( void )
        {
               dclear(C_RGB(0,0,0));
 
-              dimage( 0, 10, &maintitle);
+              dimage( 0, 10, &bigparch);
+              dimage( 88, 42, &maintitle);
+
               dfont( &font_fantasy );
               dprint( 90, 95, C_RGB(150,150,150), "Game Currently in Pause Mode");
               dprint( 89, 94, C_BLACK, "Game Currently in Pause Mode");
@@ -3308,7 +3331,9 @@ void drawLoose( void )
        {
               dclear(C_RGB(0,0,0));
 
-              dimage( 0, 10, &maintitle);
+              dimage( 0, 10, &bigparch);
+              dimage( 88, 42, &maintitle);
+
               dfont( &font_fantasy );
               dprint( 90, 95, C_RGB(150,150,150), "You Loose : Be Careful Of the Monsters" );
               dprint( 89, 94, C_BLACK, "You Loose : Be Careful Of the Monsters" );
@@ -3384,7 +3409,8 @@ void drawTitle( void )
        {
               dclear(C_RGB(0,0,0));
 
-              dimage( 0, 10, &maintitle);
+              dimage( 0, 10, &bigparch);
+              dimage( 88, 42, &maintitle);
 
               if (dir==1) // the guy is going to the right
               {
@@ -3470,7 +3496,8 @@ unsigned char drawDifficultyMenu( void )
        {
               dclear(C_RGB(0,0,0));
 
-              dimage( 0, 10, &maintitle);
+              dimage( 0, 10, &bigparch);
+              dimage( 88, 42, &maintitle);
 
               dfont( &font_fantasy );
               dprint( 90, 100, C_RGB(150,150,150), "Sweet Like a Cherry Cake");
@@ -3591,7 +3618,8 @@ unsigned char drawStartMenu( void )
        {
               dclear(C_RGB(0,0,0));
 
-              dimage( 0, 10, &maintitle);
+              dimage( 0, 10, &bigparch);
+              dimage( 88, 42, &maintitle);
 
               if (saveexist==false)
               {
@@ -3816,10 +3844,6 @@ void launch_Boss_Attack( void )
               }
 
        }
-
-#if DEBUG==1
-       dprint( 5, 5, C_WHITE, "color = %d - pattern = %d", attacktype, attackpattern );
-#endif // DEBUG
 
        if ( attackpattern == 0)
        {

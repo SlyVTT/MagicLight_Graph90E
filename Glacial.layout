@@ -2,15 +2,14 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="src\structs.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
+	<File name="src\primitives.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="9" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4317" topLine="148" />
+			<Cursor1 position="770" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="src\main.cpp" open="1" top="1" tabpos="1" split="2" active="1" splitpos="782" zoom_1="3" zoom_2="3">
+	<File name="src\structs.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="13821" topLine="399" />
-			<Cursor2 position="69949" topLine="1653" />
+			<Cursor1 position="1792" topLine="83" />
 		</Cursor>
 	</File>
 	<File name="src\primitives.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
@@ -22,9 +21,26 @@
 			<Collapse line="174" />
 		</Folding>
 	</File>
-	<File name="src\primitives.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="9" zoom_2="0">
+	<File name="src\main.cpp" open="1" top="1" tabpos="1" split="2" active="2" splitpos="612" zoom_1="0" zoom_2="-1">
 		<Cursor>
-			<Cursor1 position="770" topLine="0" />
+			<Cursor1 position="157426" topLine="2807" />
+			<Cursor2 position="3167" topLine="124" />
 		</Cursor>
+		<Folding>
+			<Collapse line="219" />
+			<Collapse line="248" />
+			<Collapse line="335" />
+			<Collapse line="369" />
+			<Collapse line="436" />
+			<Collapse line="512" />
+			<Collapse line="564" />
+			<Collapse line="3573" />
+			<Collapse line="3682" />
+			<Collapse line="3766" />
+			<Collapse line="3813" />
+			<Collapse line="3952" />
+			<Collapse line="4079" />
+			<Collapse line="4105" />
+		</Folding>
 	</File>
 </CodeBlocks_layout_file>

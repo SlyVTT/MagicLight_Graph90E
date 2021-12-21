@@ -1,16 +1,16 @@
 maintitle.png:
   type: bopti-image
-  profile: r5g6b5a
+  profile: p4
   name: maintitle
 
 fragments.png:
   type: bopti-image
-  profile: r5g6b5a
+  profile: p4
   name: fragments
 
 bigparchvide.png:
   type: bopti-image
-  profile: r5g6b5a
+  profile: p8
   name: bigparch
 
 levelsimple.png:
@@ -23,57 +23,57 @@ sprites.png:
 
 player.png:
   type: bopti-image
-  profile: r5g6b5a
+  profile: p4
   name: player
 
 monstres.png:
   type: bopti-image
-  profile: r5g6b5a
+  profile: p4
   name: monstres
 
 bulletsbicolor.png:
   type: bopti-image
-  profile: r5g6b5a
+  profile: p4
   name: bulletsbicolor
 
 bigboss.png:
   type: bopti-image
-  profile: r5g6b5a
+  profile: p4
   name: bigboss
 
 hearts.png:
   type: bopti-image
-  profile: r5g6b5a
+  profile: p4
   name: hearts
 
 treasures.png:
   type: bopti-image
-  profile: r5g6b5a
+  profile: p4
   name: treasures
 
 chests.png:
   type: bopti-image
-  profile: r5g6b5a
+  profile: p4
   name: chests
 
 sorcerer.png:
   type: bopti-image
-  profile: r5g6b5a
+  profile: p4
   name: bossmages
 
 light.png:
   type: bopti-image
-  profile: r5g6b5a
+  profile: p4
   name: light
 
 cursor.png:
   type: bopti-image
-  profile: r5g6b5a
+  profile: p4
   name: cursor
 
 parchemin.png:
   type: bopti-image
-  profile: r5g6b5a
+  profile: p8
   name: parchemin
 
 fontFantasy.png:
