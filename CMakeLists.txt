@@ -47,13 +47,13 @@ set(ASSETS_cg
 fxconv_declare_assets(${ASSETS} ${ASSETS_fx} ${ASSETS_cg} WITH_METADATA)
 
 add_executable(myaddin ${SOURCES} ${ASSETS} ${ASSETS_${FXSDK_PLATFORM}})
-target_compile_options(myaddin PRIVATE -fpermissive -Wall -Wextra -Os)
+target_compile_options(myaddin PRIVATE -fpermissive -Wall -Wextra -O3)
 target_link_libraries(myaddin Gint::Gint)
 
 if("${FXSDK_PLATFORM_LONG}" STREQUAL fx9860G)
   generate_g1a(TARGET myaddin OUTPUT "Glacial.g1a"
-    NAME "Glacial" ICON assets-fx/icon.png)
+    NAME "MagicLight" ICON assets-fx/icon.png)
 elseif("${FXSDK_PLATFORM_LONG}" STREQUAL fxCG50)
-  generate_g3a(TARGET myaddin OUTPUT "MagicLight.g3a"
-    NAME " " ICONS assets-cg/icon-uns.png assets-cg/icon-sel.png)
+  generate_g3a(TARGET myaddin OUTPUT "MagicLight.g3a" VERSION 0.9b
+    NAME "MagicLight" ICONS assets-cg/icon-uns.png assets-cg/icon-sel.png)
 endif()

@@ -13,7 +13,7 @@
 #include "structs.h"
 #include "primitives.h"
 
-//#define DEBUG 1
+#define DEBUG 1
 
 #define R_ROUGE 0
 #define R_VERT 1
@@ -59,7 +59,7 @@ GameSaveStatus sauvegarde;
 LevelSaveStatus partielevel[33];
 
 
-#define NB_LEVELS 6
+#define NB_LEVELS 32
 
 
 unsigned char NbReceptorsLevel;
@@ -607,7 +607,7 @@ void loadLevel( unsigned char numLevel )
               Map[numLevel].R=255;
               Map[numLevel].G=255;
               Map[numLevel].B=255;
-              Map[numLevel].A=255;
+              Map[numLevel].A=0;
               Map[numLevel].visited=true;
               Map[numLevel].doorWest=false;
               Map[numLevel].doorNorth=true;
@@ -698,7 +698,7 @@ void loadLevel( unsigned char numLevel )
               Map[numLevel].R=255;
               Map[numLevel].G=255;
               Map[numLevel].B=255;
-              Map[numLevel].A=255;
+              Map[numLevel].A=0;
               Map[numLevel].visited=true;
               Map[numLevel].doorWest=false;
               Map[numLevel].doorNorth=true;
@@ -792,7 +792,7 @@ void loadLevel( unsigned char numLevel )
               Map[numLevel].R=255;
               Map[numLevel].G=255;
               Map[numLevel].B=255;
-              Map[numLevel].A=255;
+              Map[numLevel].A=0;
               Map[numLevel].visited=true;
               Map[numLevel].doorWest=true;
               Map[numLevel].doorNorth=false;
@@ -886,7 +886,7 @@ void loadLevel( unsigned char numLevel )
               Map[numLevel].R=255;
               Map[numLevel].G=255;
               Map[numLevel].B=255;
-              Map[numLevel].A=255;
+              Map[numLevel].A=0;
               Map[numLevel].visited=true;
               Map[numLevel].doorWest=true;
               Map[numLevel].doorNorth=true;
@@ -944,7 +944,7 @@ void loadLevel( unsigned char numLevel )
               SIZE_MAP_Y=11;
 
               NbReceptorsLevel = 4;
-              NbDoorsLevel = 1;
+              NbDoorsLevel = 2;
               NbBlocksLevel = 4;
               NbTreasureLevel = 0;
               NbObstacleLevel = 0;
@@ -964,7 +964,7 @@ void loadLevel( unsigned char numLevel )
               Map[numLevel].R=255;
               Map[numLevel].G=255;
               Map[numLevel].B=255;
-              Map[numLevel].A=255;
+              Map[numLevel].A=0;
               Map[numLevel].visited=true;
               Map[numLevel].doorWest=false;
               Map[numLevel].doorNorth=true;
@@ -1002,10 +1002,10 @@ void loadLevel( unsigned char numLevel )
               // ReceptorCollection[6] = { 12, 8, GAUCHE, 255, 255, 0, false }; // Receptor YELLOW
               // ReceptorCollection[7] = { 0, 7, DROITE, 255, 255, 255, false }; // Receptor WHITE
 
-              //DoorCollection[0] = { 6,0, HAUT, false, true, 3, { R_ROUGE,R_BLEU, R_VERT }, 2}; // Door NORTH
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 }, 7}; // Door NORTH
               //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 1, { R_BLEU, -1, -1 }, 0}; // Door WEST
               //DoorCollection[2] = { 12, 5, DROITE, false, true, 1, { R_VERT, -1, -1 }, 0}; // Door EAST
-              DoorCollection[0] = { 6, 10, BAS, false, true, 1, { R_NOIR, -1, -1 }, 1}; // Door SOUTH
+              DoorCollection[1] = { 6, 10, BAS, false, true, 1, { R_NOIR, -1, -1 }, 1}; // Door SOUTH
 
               //TreasureCollection[0] = {1,1, T_RED, false, PIERRE_BLANCHE, 100, true };
               //TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100, true };
@@ -1027,7 +1027,7 @@ void loadLevel( unsigned char numLevel )
               SIZE_MAP_Y=11;
 
               NbReceptorsLevel = 4;
-              NbDoorsLevel = 1;
+              NbDoorsLevel = 2;
               NbBlocksLevel = 4;
               NbTreasureLevel = 0;
               NbObstacleLevel = 0;
@@ -1047,7 +1047,7 @@ void loadLevel( unsigned char numLevel )
               Map[numLevel].R=255;
               Map[numLevel].G=255;
               Map[numLevel].B=255;
-              Map[numLevel].A=255;
+              Map[numLevel].A=0;
               Map[numLevel].visited=true;
               Map[numLevel].doorWest=false;
               Map[numLevel].doorNorth=true;
@@ -1086,10 +1086,10 @@ void loadLevel( unsigned char numLevel )
               // ReceptorCollection[6] = { 12, 8, GAUCHE, 255, 255, 0, false }; // Receptor YELLOW
               // ReceptorCollection[7] = { 0, 7, DROITE, 255, 255, 255, false }; // Receptor WHITE
 
-              //DoorCollection[0] = { 6,0, HAUT, false, true, 3, { R_ROUGE,R_BLEU, R_VERT }, 2}; // Door NORTH
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 }, 9}; // Door NORTH
               //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 1, { R_BLEU, -1, -1 }, 0}; // Door WEST
               //DoorCollection[2] = { 12, 5, DROITE, false, true, 1, { R_VERT, -1, -1 }, 0}; // Door EAST
-              DoorCollection[0] = { 6, 10, BAS, false, true, 1, { R_NOIR, -1, -1 }, 3}; // Door SOUTH
+              DoorCollection[1] = { 6, 10, BAS, false, true, 1, { R_NOIR, -1, -1 }, 3}; // Door SOUTH
 
               //TreasureCollection[0] = {1,1, T_RED, false, PIERRE_BLANCHE, 100, true };
               //TreasureCollection[1] = {11,9, T_YELLOW, false, PIERRE_BLANCHE, 100, true };
@@ -1099,6 +1099,1492 @@ void loadLevel( unsigned char numLevel )
               //BossCollection[0] = { 6, 3, 2, 10, HORIZONTAL, GAUCHE, BIGBOSS };
               BossCollection[0] = { 6, 3, 2, 10, HORIZONTAL, GAUCHE, B_BLUE };
        }
+       else if (numLevel==6)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 2;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=-2;
+              Map[numLevel].y=-3;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=false;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 }, 11}; // Door NORTH
+              //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 0}; // Door WEST
+              DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 7}; // Door EAST
+              //DoorCollection[1] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 0}; // Door SOUTH
+       }
+       else if (numLevel==7)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 3;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=-1;
+              Map[numLevel].y=-3;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              //DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 }, 11}; // Door NORTH
+              DoorCollection[0] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 6}; // Door WEST
+              DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 8}; // Door EAST
+              DoorCollection[2] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 4}; // Door SOUTH
+       }
+       else if (numLevel==8)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 3;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=0;
+              Map[numLevel].y=-3;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=false;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },12}; // Door NORTH
+              DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 7}; // Door WEST
+              DoorCollection[2] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 9}; // Door EAST
+              //DoorCollection[2] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 4}; // Door SOUTH
+       }
+       else if (numLevel==9)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 3;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=1;
+              Map[numLevel].y=-3;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              //DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },12}; // Door NORTH
+              DoorCollection[0] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 8}; // Door WEST
+              DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 10}; // Door EAST
+              DoorCollection[2] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 5}; // Door SOUTH
+       }
+       else if (numLevel==10)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 2;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=2;
+              Map[numLevel].y=-3;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=false;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },13}; // Door NORTH
+              DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 9}; // Door WEST
+              //DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 10}; // Door EAST
+              //DoorCollection[2] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 5}; // Door SOUTH
+       }
+       else if (numLevel==11)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 2;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=-2;
+              Map[numLevel].y=-4;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },15}; // Door NORTH
+              //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 9}; // Door WEST
+              //DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 10}; // Door EAST
+              DoorCollection[1] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 6}; // Door SOUTH
+       }
+       else if (numLevel==12)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 1;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=0;
+              Map[numLevel].y=-4;
+              Map[numLevel].R=255;
+              Map[numLevel].G=0;
+              Map[numLevel].B=0;
+              Map[numLevel].A=255;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              //DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },6}; // Door NORTH
+              //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 9}; // Door WEST
+              //DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 10}; // Door EAST
+              DoorCollection[0] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 8}; // Door SOUTH
+       }
+       else if (numLevel==13)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 2;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=2;
+              Map[numLevel].y=-4;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },19}; // Door NORTH
+              //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 9}; // Door WEST
+              //DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 10}; // Door EAST
+              DoorCollection[1] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 10}; // Door SOUTH
+       }
+       else if (numLevel==14)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 2;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=-3;
+              Map[numLevel].y=-5;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=false;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 }, 21}; // Door NORTH
+              //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 0}; // Door WEST
+              DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 15}; // Door EAST
+              //DoorCollection[1] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 0}; // Door SOUTH
+       }
+       else if (numLevel==15)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 3;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=-2;
+              Map[numLevel].y=-5;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              //DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 }, 11}; // Door NORTH
+              DoorCollection[0] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 14}; // Door WEST
+              DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 16}; // Door EAST
+              DoorCollection[2] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 11}; // Door SOUTH
+       }
+       else if (numLevel==16)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 3;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=-1;
+              Map[numLevel].y=-5;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=false;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },22}; // Door NORTH
+              DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 15}; // Door WEST
+              DoorCollection[2] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 17}; // Door EAST
+              //DoorCollection[2] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 4}; // Door SOUTH
+       }
+       else if (numLevel==17)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 2;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=-0;
+              Map[numLevel].y=-5;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=false;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              //DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },22}; // Door NORTH
+              DoorCollection[0] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 16}; // Door WEST
+              DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 18}; // Door EAST
+              //DoorCollection[2] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 4}; // Door SOUTH
+       }
+       else if (numLevel==18)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 3;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=1;
+              Map[numLevel].y=-5;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=false;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },24}; // Door NORTH
+              DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 17}; // Door WEST
+              DoorCollection[2] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 19}; // Door EAST
+              //DoorCollection[2] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 4}; // Door SOUTH
+       }
+       else if (numLevel==19)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 3;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=2;
+              Map[numLevel].y=-5;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              //DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },12}; // Door NORTH
+              DoorCollection[0] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 18}; // Door WEST
+              DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 20}; // Door EAST
+              DoorCollection[2] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 13}; // Door SOUTH
+       }
+       else if (numLevel==20)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 2;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=3;
+              Map[numLevel].y=-5;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=false;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },25}; // Door NORTH
+              DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 19}; // Door WEST
+              //DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 10}; // Door EAST
+              //DoorCollection[2] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 5}; // Door SOUTH
+       }
+       else if (numLevel==21)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 1;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=-3;
+              Map[numLevel].y=-6;
+              Map[numLevel].R=0;
+              Map[numLevel].G=255;
+              Map[numLevel].B=0;
+              Map[numLevel].A=255;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              //DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },6}; // Door NORTH
+              //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 9}; // Door WEST
+              //DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 10}; // Door EAST
+              DoorCollection[0] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 14}; // Door SOUTH
+       }
+       else if (numLevel==22)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 2;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=-1;
+              Map[numLevel].y=-6;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },27}; // Door NORTH
+              //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 9}; // Door WEST
+              //DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 10}; // Door EAST
+              DoorCollection[1] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 16}; // Door SOUTH
+       }
+       else if (numLevel==23)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 1;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=-0;
+              Map[numLevel].y=-6;
+              Map[numLevel].R=0;
+              Map[numLevel].G=0;
+              Map[numLevel].B=0;
+              Map[numLevel].A=255;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },28}; // Door NORTH
+              //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 9}; // Door WEST
+              //DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 10}; // Door EAST
+              //DoorCollection[0] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 14}; // Door SOUTH
+       }
+       else if (numLevel==24)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 2;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=1;
+              Map[numLevel].y=-6;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },29}; // Door NORTH
+              //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 9}; // Door WEST
+              //DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 10}; // Door EAST
+              DoorCollection[1] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 18}; // Door SOUTH
+       }
+       else if (numLevel==25)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 1;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=3;
+              Map[numLevel].y=-6;
+              Map[numLevel].R=0;
+              Map[numLevel].G=0;
+              Map[numLevel].B=255;
+              Map[numLevel].A=255;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              //DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },6}; // Door NORTH
+              //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 9}; // Door WEST
+              //DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 10}; // Door EAST
+              DoorCollection[0] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 20}; // Door SOUTH
+       }
+       else if (numLevel==26)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 1;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=-2;
+              Map[numLevel].y=-7;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=false;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              //DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },6}; // Door NORTH
+              //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 9}; // Door WEST
+              DoorCollection[0] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 27}; // Door EAST
+              //DoorCollection[0] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 14}; // Door SOUTH
+       }
+      else if (numLevel==27)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 3;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=-1;
+              Map[numLevel].y=-7;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              //DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 }, 11}; // Door NORTH
+              DoorCollection[0] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 26}; // Door WEST
+              DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 28}; // Door EAST
+              DoorCollection[2] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 22}; // Door SOUTH
+       }
+       else if (numLevel==28)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 4;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=0;
+              Map[numLevel].y=-7;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },31}; // Door NORTH
+              DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 27}; // Door WEST
+              DoorCollection[2] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 29}; // Door EAST
+              DoorCollection[3] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 23}; // Door SOUTH
+       }
+       else if (numLevel==29)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 3;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=1;
+              Map[numLevel].y=-7;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=true;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              //DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },12}; // Door NORTH
+              DoorCollection[0] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 28}; // Door WEST
+              DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 30}; // Door EAST
+              DoorCollection[2] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 24}; // Door SOUTH
+       }
+       else if (numLevel==30)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 1;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=2;
+              Map[numLevel].y=-7;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=true;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=false;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              //DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },12}; // Door NORTH
+              DoorCollection[0] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 29}; // Door WEST
+              //DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 30}; // Door EAST
+              //DoorCollection[2] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 24}; // Door SOUTH
+       }
+       else if (numLevel==31)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 2;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=-0;
+              Map[numLevel].y=-8;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=0;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=true;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },32}; // Door NORTH
+              //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 9}; // Door WEST
+              //DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 10}; // Door EAST
+              DoorCollection[1] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 28}; // Door SOUTH
+       }
+       else if (numLevel==32)
+       {
+              currentLevel = numLevel;
+
+              LEVELCOLOR = 0;
+              SIZE_MAP_X=13;
+              SIZE_MAP_Y=11;
+
+              NbReceptorsLevel = 0;
+              NbDoorsLevel = 1;
+              NbBlocksLevel = 4;
+              NbTreasureLevel = 0;
+              NbObstacleLevel = 0;
+              NbMonsterLevel = 0;
+              NbBossLevel = 0;
+
+              BlocksCollection = (Blocks*) malloc( NbBlocksLevel * sizeof( Blocks) );
+              ReceptorCollection = (Receptor*) malloc( NbReceptorsLevel * sizeof( Receptor) );
+              DoorCollection = (Door*) malloc( NbDoorsLevel * sizeof( Door) );
+              TreasureCollection = (Treasure*) malloc( NbTreasureLevel * sizeof( Treasure) );
+              ObstaclesCollection = (Obstacle*) malloc( NbObstacleLevel * sizeof( Obstacle) );
+              MonstersCollection = (Monster*) malloc( NbMonsterLevel * sizeof( Monster) );
+              BossCollection = (Boss*) malloc( NbBossLevel * sizeof( Boss ) );
+
+              Map[numLevel].x=0;
+              Map[numLevel].y=-9;
+              Map[numLevel].R=255;
+              Map[numLevel].G=255;
+              Map[numLevel].B=255;
+              Map[numLevel].A=255;
+              Map[numLevel].visited=true;
+              Map[numLevel].doorWest=false;
+              Map[numLevel].doorNorth=false;
+              Map[numLevel].doorEast=false;
+              Map[numLevel].doorSouth=true;
+
+
+              joueur = { 6, 9, HAUT };
+              lumiere = { 6, 5, 1,1,1,0, false };
+
+              BlocksCollection[0] = { 8, 3, 255, 0, 0, 127, TRANSPARENT };
+              BlocksCollection[1] = { 4, 7, 0, 255, 0, 127, TRANSPARENT };
+              BlocksCollection[2] = { 4, 3, 0, 0, 255, 127, TRANSPARENT };
+              BlocksCollection[3] = { 8, 7, 0, 0, 0, 255, OPAQUE };
+
+              BlocRouge = &BlocksCollection[0];
+              BlocVert = &BlocksCollection[1];
+              BlocBleu = &BlocksCollection[2];
+              BlocNoir = &BlocksCollection[3];
+
+              //DoorCollection[0] = { 6,0, HAUT, false, true, 0, { -1,-1, -1 },6}; // Door NORTH
+              //DoorCollection[1] = { 0, 5, GAUCHE, false, true, 0, { -1, -1, -1 }, 9}; // Door WEST
+              //DoorCollection[1] = { 12, 5, DROITE, false, true, 0, { -1, -1, -1 }, 10}; // Door EAST
+              DoorCollection[0] = { 6, 10, BAS, false, true, 0, { -1, -1, -1 }, 31}; // Door SOUTH
+       }
+
 
        if (needcorrection==true)
               adjustLevel( numLevel );
@@ -1602,7 +3088,7 @@ void renderLight( void )
 
 void drawMinimap( void )
 {
-       for( unsigned char k=0; k< NB_LEVELS; k++ )
+       for( unsigned char k=0; k<=NB_LEVELS; k++ )
        {
               if (Map[k].visited==true)
               {
@@ -1614,15 +3100,19 @@ void drawMinimap( void )
                      unsigned int lX = OFFSET_X_MINIMAP + Map[k].x*(SCALE_X_MINIMAP+2);
                      unsigned int lY = OFFSET_Y_MINIMAP + Map[k].y*(SCALE_Y_MINIMAP+2);
 
+                     _boxRGBA( lX-4, lY-3, lX+4, lY+3, R, G, B, A>>1 );
+                     _rectangleRGBA( lX-4, lY-3, lX+4, lY+3, R, G, B, 255);
+
+                     if (Map[k].doorWest==true) _lineRGBA( lX-5, lY-1, lX-5, lY+1, 255, 255, 255, 255);
+                     if (Map[k].doorEast==true) _lineRGBA( lX+5, lY-1, lX+5, lY+1, 255, 255, 255, 255);
+                     if (Map[k].doorNorth==true) _lineRGBA( lX-1, lY-4, lX+1, lY-4, 255, 255, 255, 255);
+                     if (Map[k].doorSouth==true) _lineRGBA( lX-1, lY+4, lX+1, lY+4, 255, 255, 255, 255);
+
                      if (k==currentLevel)
-                            _boxRGBA( lX-4, lY-3, lX+4, lY+3, 0, 255, 0, A/2);
-
-                     _rectangleRGBA( lX-4, lY-3, lX+4, lY+3, R, G, B, A);
-
-                     if (Map[k].doorWest==true) _rectangleRGBA( lX-6, lY-1, lX-4, lY+1, R, G, B, A);
-                     if (Map[k].doorEast==true) _rectangleRGBA( lX+4, lY-1, lX+6, lY+1, R, G, B, A);
-                     if (Map[k].doorNorth==true) _rectangleRGBA( lX-1, lY-5, lX+1, lY-3, R, G, B, A);
-                     if (Map[k].doorSouth==true) _rectangleRGBA( lX-1, lY+3, lX+1, lY+5, R, G, B, A);
+                     {
+                            _rectangleRGBA( lX-4, lY-3, lX+4, lY+3, 255, 0, 255, 255);
+                            _rectangleRGBA( lX-3, lY-2, lX+3, lY+2, 255, 0, 255, 255);
+                     }
               }
        }
 }
@@ -3494,6 +4984,7 @@ unsigned char drawDifficultyMenu( void )
 
        while (!doneDifficulty)
        {
+
               dclear(C_RGB(0,0,0));
 
               dimage( 0, 10, &bigparch);
@@ -4028,23 +5519,32 @@ static int get_inputs(void)
 #if DEBUG==1
               if (key==KEY_1)
               {
+                  /*
                      if (currentLevel>0)
                      {
                             updateCurrentState();
                             currentLevel-- ;
                             loadLevel( currentLevel );
                      }
+                     */
+
+                                   if (currentLevel>0)                      loadLevel(currentLevel-1);
 
               }
 
               if (key==KEY_7)
               {
-                     if (currentLevel<NB_LEVELS -1)
+                  /*
+                     if (currentLevel<NB_LEVELS)
                      {
                             updateCurrentState();
                             currentLevel++ ;
                             loadLevel( currentLevel );
                      }
+                     */
+
+                                   if (currentLevel<NB_LEVELS)                     loadLevel(currentLevel+1);
+
               }
 
               if (key==KEY_8 && NbBossLevel!=0)
