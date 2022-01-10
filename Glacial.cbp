@@ -19,6 +19,8 @@
 				<Option compiler="null" />
 			</Target>
 		</Build>
+		<Unit filename="CMakeLists.txt" />
+		<Unit filename="assets-cg/fxconv-metadata.txt" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/primitives.cpp" />
 		<Unit filename="src/primitives.h" />

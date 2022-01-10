@@ -91,3 +91,20 @@ fontTiny.png:
   grid.size: 8x8
   grid.padding: 1
   proportional: true
+
+villagealpha.png:
+  type: bopti-image
+  section: .data
+  profile: p8
+  name: village
+
+castletitle.png:
+  type: bopti-image
+  profile: p8
+  name: castletitle
+
+theend.png:
+  type: bopti-image
+  profile: p4
+  name: theend
+

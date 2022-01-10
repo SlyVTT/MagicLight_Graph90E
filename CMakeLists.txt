@@ -41,6 +41,9 @@ set(ASSETS_cg
   assets-cg/bigparchvide.png
   assets-cg/bulletsbicolor.png
   assets-cg/fragments.png
+  assets-cg/villagealpha.png
+  assets-cg/castletitle.png
+  assets-cg/theend.png
   # ...
 )
 
