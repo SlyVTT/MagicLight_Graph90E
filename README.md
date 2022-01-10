@@ -1,14 +1,13 @@
-# MagicLight pour Casio Graph 90+E et TI nSpire CX /CX-II 
-
+# MagicLight pour Casio Graph 90+E
 
 
 Hello,
 
-voici la première release de Magic Light en version 0.9B pour vous amuser un peu.
+voici la première release de Magic Light en version 1.0A pour vous amuser un peu.
 
 <img src="https://i.imgur.com/tEkzLh6.png" align="center">
 
-Le jeu dispose de 4 niveaux simples hardcodés afin de vous faire découvrir le gameplay.
+Le jeu dispose de 33 niveaux hardcodés afin de vous faire découvrir le gameplay.
 
 Il s'agit d'un petit puzzle game dont le but sera de se balader dans un château, mais avec des portes fermées qui ne peuvent s'ouvrir que si les bons détecteurs sont éclairés avec la bonne lumière (correspondant à la couleur du détecteur), chaque porte peut être ouverte en activant 1, 2 ou 3 détecteurs de couleur à la fois.
 
@@ -26,14 +25,5 @@ Casio Graph 90+E
 [F1] à [F6] sélectionner l'entité à déplacer : JOUEUR / LUMIERE / BLOCS de CONVERSION
 [OPTN] affiche le menu d'options
 [EXIT] Pause / Menu pour quitter.
-[X,O,T] Ouvre les coffres / Fait disparaitre les coffres ouverts
+[SHIFT] Ouvre les coffres / Fait disparaitre les coffres ouverts
 [FLECHES] pour mouvoir l'entité selectionnée
-    
-TI nSpire
-
-[TAB] / [MENU] sélectionner l'entité à déplacer : JOUEUR / LUMIERE / BLOCS de CONVERSION
-[DOC] affiche le menu d'options
-[ESC] Pause / Menu pour quitter.
-[CTRL] Ouvre les coffres / Fait disparaitre les coffres ouverts
-[FLECHES] pour mouvoir l'entité selectionnée
-
