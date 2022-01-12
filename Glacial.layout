@@ -2,7 +2,17 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Release" />
-	<File name="src\primitives.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+	<File name="src/structs.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1794" topLine="177" />
+		</Cursor>
+	</File>
+	<File name="CMakeLists.txt" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1522" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="src/primitives.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="904" topLine="10" />
 		</Cursor>
@@ -12,35 +22,34 @@
 			<Collapse line="217" />
 		</Folding>
 	</File>
-	<File name="src\primitives.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="9" zoom_2="0">
+	<File name="src/primitives.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="9" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="770" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="src\main.cpp" open="1" top="1" tabpos="1" split="2" active="1" splitpos="820" zoom_1="1" zoom_2="1">
+	<File name="assets-cg/fxconv-metadata.txt" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="230421" topLine="6023" />
-			<Cursor2 position="2749" topLine="120" />
+			<Cursor1 position="1048" topLine="52" />
+		</Cursor>
+	</File>
+	<File name="src/main.cpp" open="1" top="1" tabpos="1" split="2" active="1" splitpos="820" zoom_1="1" zoom_2="1">
+		<Cursor>
+			<Cursor1 position="231701" topLine="6151" />
+			<Cursor2 position="3104" topLine="111" />
 		</Cursor>
 		<Folding>
-			<Collapse line="6398" />
-			<Collapse line="6427" />
-			<Collapse line="6521" />
+			<Collapse line="5663" />
+			<Collapse line="5673" />
+			<Collapse line="5728" />
+			<Collapse line="5751" />
+			<Collapse line="6001" />
+			<Collapse line="6041" />
+			<Collapse line="6071" />
+			<Collapse line="6100" />
+			<Collapse line="6203" />
+			<Collapse line="6250" />
+			<Collapse line="6505" />
+			<Collapse line="6728" />
 		</Folding>
-	</File>
-	<File name="src\structs.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1794" topLine="180" />
-		</Cursor>
-	</File>
-	<File name="assets-cg\fxconv-metadata.txt" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1360" topLine="41" />
-		</Cursor>
-	</File>
-	<File name="CMakeLists.txt" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="955" topLine="0" />
-		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
